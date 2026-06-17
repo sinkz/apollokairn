@@ -25,3 +25,10 @@ def scan_text(text: str) -> list[SecretFinding]:
             if pattern.search(line):
                 findings.append(SecretFinding(line=line_number, kind=kind))
     return findings
+
+
+def redact_text(text: str) -> str:
+    redacted = text
+    for kind, pattern in _PATTERNS:
+        redacted = pattern.sub(f"[REDACTED:{kind}]", redacted)
+    return redacted

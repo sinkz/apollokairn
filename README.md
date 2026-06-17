@@ -73,6 +73,7 @@ Cairn currently includes:
 - incremental local index;
 - search with filters;
 - budgeted retrieval;
+- retrieval redaction for common secret-like values;
 - passage-based retrieval;
 - experimental RRF ranker;
 - partial document reads;

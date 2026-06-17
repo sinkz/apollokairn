@@ -265,7 +265,8 @@ cairn retrieve "deploy token rotation kubernetes secret" --path ~/brain --ranker
 
 Use quando um agente precisa de contexto útil imediatamente sem rodar `search` e
 `show` manualmente. O orçamento usa uma aproximação simples de 4 caracteres por
-token.
+token. A recuperação redige valores comuns com aparência de segredo antes de
+imprimir o pacote de contexto.
 
 Use `--mode passages` quando o agente precisa das menores seções úteis em vez de
 documentos completos. A saída de passagem inclui path, heading e intervalo de

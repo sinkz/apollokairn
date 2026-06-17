@@ -75,6 +75,7 @@ Cairn atualmente inclui:
 - índice local incremental;
 - busca com filtros;
 - recuperação com orçamento de tokens;
+- redação de segredos comuns durante recuperação;
 - recuperação baseada em passagens;
 - ranker RRF experimental;
 - leitura parcial de documentos;

@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Sequence
 
 from cairn.indexer import search, search_passages, show
+from cairn.secret_scan import redact_text
 
 
 CHARS_PER_TOKEN = 4
@@ -75,7 +76,7 @@ def retrieve(
             if remaining <= 0:
                 break
             content = _fit(result.text, remaining)
-            block = separator + prefix + content
+            block = redact_text(separator + prefix + content)
             parts.append(block)
             used_chars += len(block)
             if used_chars >= max_chars or len(content) < remaining:
@@ -105,7 +106,7 @@ def retrieve(
         if remaining <= 0:
             break
         content = _fit(show(root, result.path), remaining)
-        block = separator + prefix + content
+        block = redact_text(separator + prefix + content)
         parts.append(block)
         used_chars += len(block)
         if used_chars >= max_chars or len(content) < remaining:

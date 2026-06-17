@@ -160,6 +160,33 @@ class RetrieverTests(unittest.TestCase):
             self.assertIn("knowledge/deploy-secret.md", result.stdout)
             self.assertIn("Update the CI secret", result.stdout)
 
+    def test_cli_retrieve_redacts_secret_like_values(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="engineering")
+            secret_value = "AKIAIOSFODNN7EXAMPLE"
+            write_concept(
+                root,
+                "secret.md",
+                (
+                    "type: Runbook",
+                    "title: Secret handling",
+                    "description: Contains a fake access key for redaction.",
+                    "tags: [bug]",
+                    "timestamp: 2026-06-17T10:00:00Z",
+                    "signals: [access key redaction]",
+                ),
+                "# Context\n\n"
+                f"An AWS access key {secret_value} was accidentally pasted here.\n",
+            )
+            run_cairn(root, "index", "--rebuild")
+
+            result = run_cairn(root, "retrieve", "access key redaction", "--budget", "400")
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertNotIn(secret_value, result.stdout)
+            self.assertIn("[REDACTED:AWS access key]", result.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

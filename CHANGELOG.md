@@ -14,6 +14,7 @@ Initial public release.
 - Incremental SQLite FTS search index.
 - Metadata filters for type, tag, and system.
 - Budgeted retrieval for low-context agent workflows.
+- Retrieval redaction for common secret-like values.
 - Passage-based retrieval for section-level context packets.
 - Experimental RRF ranker for noisy document queries.
 - Partial document reads by line range, section, and snippet.

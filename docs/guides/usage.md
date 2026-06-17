@@ -263,7 +263,8 @@ cairn retrieve "deploy token rotation kubernetes secret" --path ~/brain --ranker
 
 Use this when an agent needs useful context immediately without manually running
 `search` and `show`. The budget uses a simple approximation of 4 characters per
-token.
+token. Retrieval redacts common secret-like values before printing the context
+packet.
 
 Use `--mode passages` when the agent needs the smallest useful sections instead
 of full matching documents. Passage output includes the source path, heading,
