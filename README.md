@@ -28,12 +28,12 @@ Cairn keeps that reusable knowledge in a structured, searchable Markdown vault:
 
 ```bash
 python -m pip install -e .
-cairn init --path .sandbox/my-vault --profile personal
-cairn validate --path .sandbox/my-vault
-cairn index --path .sandbox/my-vault --rebuild
-cairn doctor --path .sandbox/my-vault
-cairn search "deploy 403" --path .sandbox/my-vault --limit 3
-cairn retrieve "deploy 403" --path .sandbox/my-vault --budget 800
+cairn init --path PATH_TO_VAULT --profile personal
+cairn validate --path PATH_TO_VAULT
+cairn index --path PATH_TO_VAULT --rebuild
+cairn doctor --path PATH_TO_VAULT
+cairn search "deploy 403" --path PATH_TO_VAULT --limit 3
+cairn retrieve "deploy 403" --path PATH_TO_VAULT --budget 800
 ```
 
 From a source checkout without installing, set `PYTHONPATH=src` and use
@@ -60,7 +60,7 @@ reference implementation.
 
 ## Status
 
-Cairn currently has a working Core MVP plus post-MVP search operations:
+Cairn currently includes:
 
 - vault initialization profiles;
 - validation;

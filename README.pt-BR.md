@@ -30,12 +30,12 @@ pesquisável:
 
 ```bash
 python -m pip install -e .
-cairn init --path .sandbox/my-vault --profile personal
-cairn validate --path .sandbox/my-vault
-cairn index --path .sandbox/my-vault --rebuild
-cairn doctor --path .sandbox/my-vault
-cairn search "deploy 403" --path .sandbox/my-vault --limit 3
-cairn retrieve "deploy 403" --path .sandbox/my-vault --budget 800
+cairn init --path CAMINHO_DO_VAULT --profile personal
+cairn validate --path CAMINHO_DO_VAULT
+cairn index --path CAMINHO_DO_VAULT --rebuild
+cairn doctor --path CAMINHO_DO_VAULT
+cairn search "deploy 403" --path CAMINHO_DO_VAULT --limit 3
+cairn retrieve "deploy 403" --path CAMINHO_DO_VAULT --budget 800
 ```
 
 Em um checkout fonte sem instalar, configure `PYTHONPATH=src` e use
@@ -62,7 +62,7 @@ implementação de referência do OKF.
 
 ## Status
 
-Cairn já tem um Core MVP funcional com melhorias pós-MVP de busca:
+Cairn atualmente inclui:
 
 - inicialização de vault com perfis;
 - validação;
