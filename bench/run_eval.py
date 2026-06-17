@@ -236,6 +236,14 @@ def main(argv: list[str] | None = None) -> int:
         mean_ndcg = sum(float(item["ndcg_at_k"]) for item in per_topic) / len(per_topic)
         returned_tokens = sum(int(item["returned_tokens"]) for item in per_topic)
         full_context_tokens = full_tokens * len(per_topic)
+        compared = [item for item in per_topic if isinstance(item.get("compare"), dict)]
+        comparison_candidate_tokens = sum(int(item["returned_tokens"]) for item in compared)
+        comparison_baseline_tokens = sum(int(item["compare"]["returned_tokens"]) for item in compared)
+        comparison_reduction = (
+            1 - (comparison_candidate_tokens / comparison_baseline_tokens)
+            if comparison_baseline_tokens
+            else 0
+        )
         output = {
             "topics": len(topics),
             "limit": args.limit,
@@ -247,6 +255,12 @@ def main(argv: list[str] | None = None) -> int:
             "context_reduction": round(1 - (returned_tokens / full_context_tokens), 4)
             if full_context_tokens
             else 0,
+            "comparison": {
+                "topics": len(compared),
+                "candidate_tokens": comparison_candidate_tokens,
+                "baseline_tokens": comparison_baseline_tokens,
+                "token_reduction": round(comparison_reduction, 4),
+            },
             "per_topic": per_topic,
         }
     actual_run = run_map(per_topic)
@@ -265,7 +279,8 @@ def main(argv: list[str] | None = None) -> int:
             f"recall@{args.limit}={output['mean_recall_at_k']} "
             f"mrr@{args.limit}={output['mean_mrr_at_k']} "
             f"ndcg@{args.limit}={output['mean_ndcg_at_k']} "
-            f"context_reduction={output['context_reduction']}"
+            f"context_reduction={output['context_reduction']} "
+            f"comparison_reduction={output['comparison']['token_reduction']}"
         )
     else:
         print(json.dumps(output, indent=2))

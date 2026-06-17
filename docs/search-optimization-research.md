@@ -96,22 +96,26 @@ Consensus:
   stable critical queries.
 - Added Markdown passage splitting, passage FTS indexing, and
   `cairn retrieve --mode passages`.
-- Added benchmark `compare_mode` support to compare token usage between
-  document and passage retrieval on the same topic.
+- Added benchmark `compare_mode` support and aggregate comparison metrics to
+  compare token usage between document and passage retrieval on the same topic.
 - Added an agent workflow test that captures, indexes, searches, retrieves,
   checks similarity, and updates a note through the CLI.
 
 Current benchmark result:
 
 ```text
-topics: 12
+topics: 16
 limit: 3
 mean_recall_at_3: 1.0
 mean_mrr_at_3: 1.0
-mean_ndcg_at_3: 0.9862
-full_context_tokens: 27336
-returned_tokens: 3020
-context_reduction: 0.8895
+mean_ndcg_at_3: 0.9896
+full_context_tokens: 36448
+returned_tokens: 3451
+context_reduction: 0.9053
+comparison_topics: 5
+comparison_candidate_tokens: 521
+comparison_baseline_tokens: 1126
+comparison_token_reduction: 0.5373
 ```
 
 Regression gates:
@@ -129,10 +133,10 @@ multiple plausible matches, so aggregate metrics and golden checks are used
 together: metrics allow legitimate ranking improvements, while golden checks
 protect critical exact cases from silent regressions.
 
-The first passage-mode benchmark topic returns the relevant deploy resolution in
-approximately 90 tokens against a 250-token budget. The same query in document
-mode returns approximately 240 tokens, so passage mode reduces that topic's
-retrieved context by 62.5%.
+The passage-mode benchmark topics cover deploy resolution, JWT clock skew,
+support escalation steps, hotfix rollback steps, and database pool exhaustion
+resolution. Together they return 521 candidate tokens versus 1126 document-mode
+baseline tokens, a 53.73% reduction while preserving `Recall@3 = 1.0`.
 
 ## Next Experiments
 
@@ -152,9 +156,9 @@ Success criteria:
 - reduce `returned_tokens` by at least 20% versus document-level retrieval;
 - preserve stable `show --section` and `show --lines` references.
 
-Status: initial heading-based passage retrieval is implemented. Next work should
-compare passage mode against document mode across more benchmark topics and add
-paragraph-level splitting only if heading-level passages are too coarse.
+Status: initial heading-based passage retrieval and aggregate passage-vs-document
+benchmark coverage are implemented. Next work should add paragraph-level
+splitting only if heading-level passages are too coarse.
 
 ### RRF Query Variants
 

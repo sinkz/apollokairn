@@ -31,5 +31,17 @@
   ],
   "q12": [
     "knowledge/deploy-403.md"
+  ],
+  "q13": [
+    "knowledge/jwt-clock-skew.md"
+  ],
+  "q14": [
+    "processes/support-escalation.md"
+  ],
+  "q15": [
+    "processes/hotfix-rollback.md"
+  ],
+  "q16": [
+    "knowledge/db-pool-exhausted.md"
   ]
 }

@@ -371,6 +371,8 @@ python bench/run_eval.py --quiet --compare-golden bench/golden.json
 
 Benchmark topics may include `mode` and `compare_mode` fields. This lets Cairn
 measure whether `passages` reduce returned tokens against `documents` for the
-same query and relevance judgment.
+same query and relevance judgment. The benchmark output includes a `comparison`
+summary with the number of compared topics, candidate tokens, baseline tokens,
+and aggregate token reduction.
 
 The runtime uses only the Python standard library.

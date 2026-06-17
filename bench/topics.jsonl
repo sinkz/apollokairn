@@ -10,3 +10,7 @@
 {"id":"q10","query":"consolidated deploy forbidden token duplicate","budget":600}
 {"id":"q11","query":"hotfix release rollback production","type":"Process","budget":600}
 {"id":"q12","query":"update ci secret failed deploy job rotation release log","mode":"passages","compare_mode":"documents","budget":250}
+{"id":"q13","query":"fix ntp synchronization validation leeway rotate affected sessions clocks stable","mode":"passages","compare_mode":"documents","budget":250}
+{"id":"q14","query":"capture customer impact reproduction logs screenshots assign owning team severity customer facing update support owner","mode":"passages","compare_mode":"documents","budget":250}
+{"id":"q15","query":"stop rollout redeploy previous artifact verify original production signal announce rollback status","mode":"passages","compare_mode":"documents","budget":250}
+{"id":"q16","query":"lower checkout worker concurrency inspect slow transactions restart affected worker group connection pressure drops","mode":"passages","compare_mode":"documents","budget":250}

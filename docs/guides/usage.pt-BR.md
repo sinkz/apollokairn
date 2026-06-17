@@ -376,6 +376,8 @@ python bench/run_eval.py --quiet --compare-golden bench/golden.json
 
 Tópicos do benchmark podem incluir `mode` e `compare_mode`. Isso permite medir
 se `passages` reduz os tokens retornados contra `documents` para a mesma busca e
-o mesmo julgamento de relevância.
+o mesmo julgamento de relevância. A saída do benchmark inclui um resumo
+`comparison` com número de tópicos comparados, tokens candidatos, tokens da linha
+de base e redução agregada de tokens.
 
 O runtime usa apenas a biblioteca padrão do Python.

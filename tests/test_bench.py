@@ -60,6 +60,16 @@ class BenchTests(unittest.TestCase):
         self.assertEqual(passage_topic["compare"]["mode"], "documents")
         self.assertGreater(passage_topic["compare"]["returned_tokens"], passage_topic["returned_tokens"])
         self.assertGreaterEqual(passage_topic["compare"]["token_reduction"], 0.2)
+        compare_topics = [item for item in payload["per_topic"] if "compare" in item]
+        comparison = payload["comparison"]
+        self.assertGreaterEqual(comparison["topics"], 4)
+        self.assertEqual(comparison["topics"], len(compare_topics))
+        self.assertEqual(comparison["candidate_tokens"], sum(item["returned_tokens"] for item in compare_topics))
+        self.assertEqual(
+            comparison["baseline_tokens"],
+            sum(item["compare"]["returned_tokens"] for item in compare_topics),
+        )
+        self.assertGreaterEqual(comparison["token_reduction"], 0.4)
 
     def test_benchmark_applies_topic_filters(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
