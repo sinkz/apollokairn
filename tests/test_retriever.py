@@ -90,6 +90,43 @@ class RetrieverTests(unittest.TestCase):
             self.assertIn("PRIMARY_DETAIL", result.stdout)
             self.assertNotIn("SECOND_BODY_SHOULD_NOT_APPEAR", result.stdout)
 
+    def test_cli_retrieve_passages_uses_less_context_than_documents(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="engineering")
+            write_concept(
+                root,
+                "large.md",
+                (
+                    "type: Runbook",
+                    "title: Large deploy note",
+                    "description: Deploy troubleshooting.",
+                    "tags: [deploy]",
+                    "timestamp: 2026-06-17T10:00:00Z",
+                ),
+                "# Context\n\n"
+                + ("noise " * 200)
+                + "\n\n# Resolution\n\nrotate token needle\n",
+            )
+            run_cairn(root, "index", "--rebuild")
+
+            doc = run_cairn(root, "retrieve", "rotate token needle", "--budget", "800")
+            passage = run_cairn(
+                root,
+                "retrieve",
+                "rotate token needle",
+                "--budget",
+                "800",
+                "--mode",
+                "passages",
+            )
+
+            self.assertEqual(doc.returncode, 0, doc.stderr)
+            self.assertEqual(passage.returncode, 0, passage.stderr)
+            self.assertIn("heading: Resolution", passage.stdout)
+            self.assertIn("rotate token needle", passage.stdout)
+            self.assertLess(len(passage.stdout), len(doc.stdout))
+
 
 if __name__ == "__main__":
     unittest.main()

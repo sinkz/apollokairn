@@ -9,6 +9,7 @@ from typing import Sequence
 
 from cairn.config import is_excluded, load_config
 from cairn.frontmatter import FrontmatterError, parse_document
+from cairn.passages import split_passages
 from cairn.validate import RESERVED_NAMES
 
 
@@ -24,6 +25,20 @@ class SearchResult:
     tags: list[str]
     score: float
     snippet: str
+
+
+@dataclass(frozen=True)
+class PassageSearchResult:
+    path: str
+    title: str
+    type: str
+    tags: list[str]
+    heading: str
+    start_line: int
+    end_line: int
+    score: float
+    snippet: str
+    text: str
 
 
 @dataclass(frozen=True)
@@ -43,6 +58,7 @@ _FTS_OPERATORS = {"AND", "OR", "NOT", "NEAR"}
 _HIGHLIGHT_START = "__CAIRN_HIGHLIGHT_START__"
 _HIGHLIGHT_END = "__CAIRN_HIGHLIGHT_END__"
 _BM25_WEIGHTS = (0.1, 1.5, 8.0, 4.0, 6.0, 6.0, 5.0, 5.0, 0.2, 3.0)
+_PASSAGE_BM25_WEIGHTS = (0.1, 1.5, 8.0, 6.0, 5.0, 4.0, 0.1, 0.1, 1.0, 3.0)
 
 
 def _db_path(root: Path) -> Path:
@@ -118,10 +134,18 @@ def _best_snippet(content_snippet: str, body_snippet: str) -> str:
 
 def _reset_schema(con: sqlite3.Connection) -> None:
     con.execute("DROP TABLE IF EXISTS docs")
+    con.execute("DROP TABLE IF EXISTS passages")
     con.execute("DROP TABLE IF EXISTS index_meta")
     con.execute(
         "CREATE VIRTUAL TABLE docs USING fts5("
         "path, type, title, description, tags, aliases, systems, signals, body, content, "
+        "tokenize = 'unicode61 remove_diacritics 2'"
+        ")"
+    )
+    con.execute(
+        "CREATE VIRTUAL TABLE passages USING fts5("
+        "path UNINDEXED, type, title, tags, systems, heading, "
+        "start_line UNINDEXED, end_line UNINDEXED, text, content, "
         "tokenize = 'unicode61 remove_diacritics 2'"
         ")"
     )
@@ -132,9 +156,9 @@ def _reset_schema(con: sqlite3.Connection) -> None:
 
 def _has_current_schema(con: sqlite3.Connection) -> bool:
     rows = con.execute(
-        "SELECT name FROM sqlite_master WHERE type IN ('table', 'view') AND name IN ('docs', 'index_meta')"
+        "SELECT name FROM sqlite_master WHERE type IN ('table', 'view') AND name IN ('docs', 'passages', 'index_meta')"
     ).fetchall()
-    return {row[0] for row in rows} == {"docs", "index_meta"}
+    return {row[0] for row in rows} == {"docs", "passages", "index_meta"}
 
 
 def _file_signature(path: Path) -> tuple[int, int, str]:
@@ -145,6 +169,7 @@ def _file_signature(path: Path) -> tuple[int, int, str]:
 
 def _delete_doc(con: sqlite3.Connection, rel: str) -> None:
     con.execute("DELETE FROM docs WHERE path = ?", (rel,))
+    con.execute("DELETE FROM passages WHERE path = ?", (rel,))
     con.execute("DELETE FROM index_meta WHERE path = ?", (rel,))
 
 
@@ -157,8 +182,9 @@ def _upsert_doc(
     sha256: str,
 ) -> bool:
     rel = path.relative_to(root).as_posix()
+    text = path.read_text(encoding="utf-8")
     try:
-        parsed = parse_document(path.read_text(encoding="utf-8"))
+        parsed = parse_document(text)
     except FrontmatterError:
         _delete_doc(con, rel)
         return False
@@ -171,6 +197,7 @@ def _upsert_doc(
     systems = _as_text(fm.get("systems"))
     signals = _as_text(fm.get("signals"))
     con.execute("DELETE FROM docs WHERE path = ?", (rel,))
+    con.execute("DELETE FROM passages WHERE path = ?", (rel,))
     con.execute(
         "INSERT INTO docs(path, type, title, description, tags, aliases, systems, signals, body, content) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         (
@@ -186,6 +213,23 @@ def _upsert_doc(
             _content(typ, title, description, tags, aliases, systems, signals),
         ),
     )
+    for passage in split_passages(rel, text):
+        con.execute(
+            "INSERT INTO passages(path, type, title, tags, systems, heading, start_line, end_line, text, content) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                rel,
+                typ,
+                title,
+                tags,
+                systems,
+                passage.heading,
+                passage.start_line,
+                passage.end_line,
+                passage.text,
+                _content(typ, title, tags, aliases, systems, signals, passage.heading),
+            ),
+        )
     con.execute(
         "INSERT OR REPLACE INTO index_meta(path, mtime_ns, size, sha256) VALUES (?, ?, ?, ?)",
         (rel, mtime_ns, size, sha256),
@@ -304,6 +348,76 @@ def search(
                 tags=tags,
                 score=float(row[5]),
                 snippet=_best_snippet(row[6], row[7]),
+            )
+        )
+        if len(results) >= limit:
+            break
+    return results
+
+
+def search_passages(
+    root: Path,
+    query: str,
+    limit: int = 3,
+    type_filter: str | None = None,
+    tag_filters: Sequence[str] = (),
+    system_filters: Sequence[str] = (),
+) -> list[PassageSearchResult]:
+    root = Path(root)
+    if limit <= 0:
+        raise ValueError("limit must be positive")
+    fts_query = _fts_query(query)
+    if not fts_query:
+        return []
+    db = _db_path(root)
+    if not db.exists():
+        raise CairnIndexError(_INDEX_ERROR)
+    try:
+        con = sqlite3.connect(db)
+    except sqlite3.Error as exc:
+        raise CairnIndexError(_INDEX_ERROR) from exc
+    try:
+        try:
+            candidate_limit = max(limit * 20, 100) if type_filter or tag_filters or system_filters else limit
+            rows = con.execute(
+                "SELECT path, type, title, tags, systems, heading, start_line, end_line, "
+                "bm25(passages, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) AS score, "
+                "snippet(passages, 8, ?, ?, '...', 12), "
+                "snippet(passages, 9, ?, ?, '...', 12), "
+                "text "
+                "FROM passages WHERE passages MATCH ? ORDER BY score LIMIT ?",
+                (
+                    *_PASSAGE_BM25_WEIGHTS,
+                    _HIGHLIGHT_START,
+                    _HIGHLIGHT_END,
+                    _HIGHLIGHT_START,
+                    _HIGHLIGHT_END,
+                    fts_query,
+                    candidate_limit,
+                ),
+            ).fetchall()
+        except sqlite3.Error as exc:
+            raise CairnIndexError(_INDEX_ERROR) from exc
+    finally:
+        con.close()
+    results: list[PassageSearchResult] = []
+    for row in rows:
+        tags = [tag for tag in row[3].split() if tag]
+        systems = [system for system in row[4].split() if system]
+        if not _matches_filters(row[1], tags, systems, type_filter, tag_filters, system_filters):
+            continue
+        results.append(
+            PassageSearchResult(
+                path=row[0],
+                type=row[1],
+                title=row[2],
+                tags=tags,
+                heading=row[5],
+                start_line=int(row[6]),
+                end_line=int(row[7]),
+                score=float(row[8]),
+                snippet=_best_snippet(row[9], row[10]),
+                text=row[11],
             )
         )
         if len(results) >= limit:

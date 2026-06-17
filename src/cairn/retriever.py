@@ -4,7 +4,7 @@ import math
 from pathlib import Path
 from typing import Sequence
 
-from cairn.indexer import search, show
+from cairn.indexer import search, search_passages, show
 
 
 CHARS_PER_TOKEN = 4
@@ -30,6 +30,7 @@ def retrieve(
     query: str,
     limit: int = 3,
     budget_tokens: int = 1000,
+    mode: str = "documents",
     type_filter: str | None = None,
     tag_filters: Sequence[str] = (),
     system_filters: Sequence[str] = (),
@@ -38,10 +39,44 @@ def retrieve(
         raise ValueError("limit must be positive")
     if budget_tokens <= 0:
         raise ValueError("budget must be positive")
+    if mode not in {"documents", "passages"}:
+        raise ValueError("mode must be 'documents' or 'passages'")
 
     max_chars = budget_tokens * CHARS_PER_TOKEN
     parts: list[str] = []
     used_chars = 0
+
+    if mode == "passages":
+        for result in search_passages(
+            root,
+            query,
+            limit=limit,
+            type_filter=type_filter,
+            tag_filters=tag_filters,
+            system_filters=system_filters,
+        ):
+            prefix = (
+                f"path: {result.path}\n"
+                f"title: {result.title}\n"
+                f"type: {result.type}\n"
+                f"tags: {', '.join(result.tags)}\n"
+                f"heading: {result.heading}\n"
+                f"lines: {result.start_line}:{result.end_line}\n"
+                f"snippet: {result.snippet}\n"
+                "content:\n"
+            )
+            separator = "\n---\n" if parts else ""
+            remaining = max_chars - used_chars - len(separator) - len(prefix)
+            if remaining <= 0:
+                break
+            content = _fit(result.text, remaining)
+            block = separator + prefix + content
+            parts.append(block)
+            used_chars += len(block)
+            if used_chars >= max_chars or len(content) < remaining:
+                continue
+            break
+        return "".join(parts)
 
     for result in search(
         root,

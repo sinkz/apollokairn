@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import sqlite3
 import subprocess
 import sys
 import tempfile
@@ -81,6 +82,24 @@ class DoctorTests(unittest.TestCase):
             self.assertEqual(result.returncode, 1)
             self.assertIn("STALE index", result.stdout)
             self.assertIn("changed 1", result.stdout)
+
+    def test_cli_doctor_reports_incomplete_index_schema(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="personal")
+            write_note(root)
+            run_cairn(root, "index", "--rebuild")
+            con = sqlite3.connect(root / ".cairn" / "index.db")
+            try:
+                con.execute("DROP TABLE passages")
+                con.commit()
+            finally:
+                con.close()
+
+            result = run_cairn(root, "doctor")
+
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("ERROR index invalid", result.stdout)
 
 
 if __name__ == "__main__":

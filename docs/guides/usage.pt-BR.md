@@ -254,11 +254,16 @@ Monta um pacote de contexto para LLM dentro de um orçamento aproximado de token
 
 ```bash
 cairn retrieve "deploy 403" --path ~/brain --limit 3 --budget 800
+cairn retrieve "deploy 403" --path ~/brain --mode passages --budget 500
 ```
 
 Use quando um agente precisa de contexto útil imediatamente sem rodar `search` e
 `show` manualmente. O orçamento usa uma aproximação simples de 4 caracteres por
 token.
+
+Use `--mode passages` quando o agente precisa das menores seções úteis em vez de
+documentos completos. A saída de passagem inclui path, heading e intervalo de
+linhas para o agente reabrir o contexto exato se precisar.
 
 Filtros funcionam como em `search`:
 

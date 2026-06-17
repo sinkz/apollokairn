@@ -28,5 +28,8 @@
   ],
   "q11": [
     "processes/hotfix-rollback.md"
+  ],
+  "q12": [
+    "knowledge/deploy-403.md"
   ]
 }

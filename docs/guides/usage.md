@@ -251,11 +251,16 @@ Builds a context packet for an LLM under an approximate token budget.
 
 ```bash
 cairn retrieve "deploy 403" --path ~/brain --limit 3 --budget 800
+cairn retrieve "deploy 403" --path ~/brain --mode passages --budget 500
 ```
 
 Use this when an agent needs useful context immediately without manually running
 `search` and `show`. The budget uses a simple approximation of 4 characters per
 token.
+
+Use `--mode passages` when the agent needs the smallest useful sections instead
+of full matching documents. Passage output includes the source path, heading,
+and line range so the agent can reopen the exact context if needed.
 
 Filters work the same way as `search`:
 

@@ -72,6 +72,7 @@ def build_parser() -> argparse.ArgumentParser:
     retrieve_cmd.add_argument("query")
     retrieve_cmd.add_argument("--limit", type=int, default=3)
     retrieve_cmd.add_argument("--budget", type=int, default=1000, help="Approximate token budget.")
+    retrieve_cmd.add_argument("--mode", choices=["documents", "passages"], default="documents")
     retrieve_cmd.add_argument("--type", dest="type_filter", help="Filter results by document type.")
     retrieve_cmd.add_argument("--tag", action="append", default=[], help="Filter results by tag. Can be repeated.")
     retrieve_cmd.add_argument("--system", action="append", default=[], help="Filter results by system. Can be repeated.")
@@ -278,6 +279,7 @@ def main(argv: list[str] | None = None) -> int:
                     args.query,
                     limit=args.limit,
                     budget_tokens=args.budget,
+                    mode=args.mode,
                     type_filter=args.type_filter,
                     tag_filters=args.tag,
                     system_filters=args.system,

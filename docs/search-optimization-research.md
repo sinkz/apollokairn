@@ -94,18 +94,22 @@ Consensus:
   decisions, near duplicates, hotfix rollback, and synonym/alias retrieval.
 - Added `bench/golden.json` and CI comparison to catch ranking regressions on
   stable critical queries.
+- Added Markdown passage splitting, passage FTS indexing, and
+  `cairn retrieve --mode passages`.
+- Added an agent workflow test that captures, indexes, searches, retrieves,
+  checks similarity, and updates a note through the CLI.
 
 Current benchmark result:
 
 ```text
-topics: 11
+topics: 12
 limit: 3
 mean_recall_at_3: 1.0
 mean_mrr_at_3: 1.0
-mean_ndcg_at_3: 0.9849
-full_context_tokens: 25058
-returned_tokens: 2930
-context_reduction: 0.8831
+mean_ndcg_at_3: 0.9862
+full_context_tokens: 27336
+returned_tokens: 3020
+context_reduction: 0.8895
 ```
 
 Regression gates:
@@ -122,6 +126,9 @@ The benchmark is intentionally no longer perfect. A generic deploy query now has
 multiple plausible matches, so aggregate metrics and golden checks are used
 together: metrics allow legitimate ranking improvements, while golden checks
 protect critical exact cases from silent regressions.
+
+The first passage-mode benchmark topic returns the relevant deploy resolution in
+approximately 90 tokens against a 250-token budget.
 
 ## Next Experiments
 
@@ -140,6 +147,10 @@ Success criteria:
 - maintain `Recall@3 >= 1.0` on current fixtures;
 - reduce `returned_tokens` by at least 20% versus document-level retrieval;
 - preserve stable `show --section` and `show --lines` references.
+
+Status: initial heading-based passage retrieval is implemented. Next work should
+compare passage mode against document mode across more benchmark topics and add
+paragraph-level splitting only if heading-level passages are too coarse.
 
 ### RRF Query Variants
 

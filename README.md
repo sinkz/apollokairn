@@ -71,6 +71,7 @@ Cairn currently includes:
 - incremental local index;
 - search with filters;
 - budgeted retrieval;
+- passage-based retrieval;
 - partial document reads;
 - note creation and append updates;
 - similar-note checks;

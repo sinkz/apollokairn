@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from cairn.config import validate_config
-from cairn.indexer import _concept_files, _db_path, _file_signature
+from cairn.indexer import _concept_files, _db_path, _file_signature, _has_current_schema
 from cairn.validate import validate_vault
 
 
@@ -25,6 +25,8 @@ def _index_lines(root: Path) -> tuple[bool, list[str]]:
         return False, ["ERROR index invalid; run `cairn index --rebuild`"]
     try:
         try:
+            if not _has_current_schema(con):
+                return False, ["ERROR index invalid; run `cairn index --rebuild`"]
             rows = con.execute("SELECT path, mtime_ns, size, sha256 FROM index_meta").fetchall()
         except sqlite3.Error:
             return False, ["ERROR index invalid; run `cairn index --rebuild`"]

@@ -198,6 +198,33 @@ class IndexerTests(unittest.TestCase):
             self.assertEqual(len(results), 1)
             self.assertIn("ultraunique", results[0].snippet)
 
+    def test_search_passages_returns_heading_and_line_range(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="engineering")
+            write_concept(
+                root,
+                "deploy-403.md",
+                (
+                    "type: Runbook",
+                    "title: Deploy 403",
+                    "description: Fix deploy failures.",
+                    "tags: [deploy, bug]",
+                    "timestamp: 2026-06-17T10:00:00Z",
+                ),
+                "# Context\n\nNoise.\n\n# Resolution\n\nRotate the CI token.\n",
+            )
+            rebuild_index(root)
+
+            from cairn.indexer import search_passages
+
+            results = search_passages(root, "rotate ci token", limit=3)
+
+            self.assertEqual(results[0].path, "knowledge/deploy-403.md")
+            self.assertEqual(results[0].heading, "Resolution")
+            self.assertGreater(results[0].end_line, results[0].start_line)
+            self.assertIn("token", results[0].snippet.casefold())
+
     def test_config_excluded_folders_are_not_indexed(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

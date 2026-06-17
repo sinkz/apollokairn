@@ -14,7 +14,7 @@ from typing import Sequence
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from cairn.indexer import rebuild_index, search
+from cairn.indexer import rebuild_index, search, search_passages
 from cairn.retriever import approx_tokens, retrieve
 
 
@@ -89,15 +89,26 @@ def _filters(topic: Topic) -> dict[str, object]:
 
 def evaluate_topic(root: Path, topic: Topic, relevant: dict[str, int], default_limit: int) -> dict[str, object]:
     limit = topic.limit or default_limit
-    results = search(
-        root,
-        topic.query,
-        limit=limit,
-        type_filter=topic.type_filter,
-        tag_filters=topic.tag_filters,
-        system_filters=topic.system_filters,
-    )
-    docs = [result.path for result in results]
+    if topic.mode == "passages":
+        passage_results = search_passages(
+            root,
+            topic.query,
+            limit=limit,
+            type_filter=topic.type_filter,
+            tag_filters=topic.tag_filters,
+            system_filters=topic.system_filters,
+        )
+        docs = [result.path for result in passage_results]
+    else:
+        results = search(
+            root,
+            topic.query,
+            limit=limit,
+            type_filter=topic.type_filter,
+            tag_filters=topic.tag_filters,
+            system_filters=topic.system_filters,
+        )
+        docs = [result.path for result in results]
     relevant_docs = {doc for doc, rel in relevant.items() if rel > 0}
     retrieved_relevant = [doc for doc in docs[:limit] if doc in relevant_docs]
     first_rank = next((idx for idx, doc in enumerate(docs[:limit], start=1) if doc in relevant_docs), None)
@@ -109,6 +120,7 @@ def evaluate_topic(root: Path, topic: Topic, relevant: dict[str, int], default_l
         topic.query,
         limit=limit,
         budget_tokens=topic.budget,
+        mode=topic.mode,
         type_filter=topic.type_filter,
         tag_filters=topic.tag_filters,
         system_filters=topic.system_filters,
