@@ -120,7 +120,10 @@ def _reset_schema(con: sqlite3.Connection) -> None:
     con.execute("DROP TABLE IF EXISTS docs")
     con.execute("DROP TABLE IF EXISTS index_meta")
     con.execute(
-        "CREATE VIRTUAL TABLE docs USING fts5(path, type, title, description, tags, aliases, systems, signals, body, content)"
+        "CREATE VIRTUAL TABLE docs USING fts5("
+        "path, type, title, description, tags, aliases, systems, signals, body, content, "
+        "tokenize = 'unicode61 remove_diacritics 2'"
+        ")"
     )
     con.execute(
         "CREATE TABLE index_meta(path TEXT PRIMARY KEY, mtime_ns INTEGER NOT NULL, size INTEGER NOT NULL, sha256 TEXT NOT NULL)"

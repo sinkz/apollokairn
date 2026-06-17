@@ -178,6 +178,8 @@ class ValidateTests(unittest.TestCase):
             init_vault(root, profile_name="personal")
             (root / "index.md").write_text("# No frontmatter\n", encoding="utf-8")
             (root / "log.md").write_text("# No frontmatter\n", encoding="utf-8")
+            (root / "README.md").write_text("# No frontmatter\n", encoding="utf-8")
+            (root / "OPENCODE.md").write_text("# No frontmatter\n", encoding="utf-8")
             (root / "_templates" / "ignored.md").write_text("# No frontmatter\n", encoding="utf-8")
             (root / ".cairn" / "ignored.md").write_text("# No frontmatter\n", encoding="utf-8")
 

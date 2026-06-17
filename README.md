@@ -43,6 +43,10 @@ From a source checkout without installing, set `PYTHONPATH=src` and use
 
 - [English usage guide](docs/guides/usage.md)
 - [Guia de uso em PT-BR](docs/guides/usage.pt-BR.md)
+- [Roadmap](ROADMAP.md)
+- [Changelog](CHANGELOG.md)
+- [Example engineering vault](examples/engineering-vault)
+- [Search optimization research](docs/search-optimization-research.md)
 - [Product requirements](docs/prd.md)
 - [Design notes](docs/plans/2026-06-17-cairn-design.md)
 - [OKF research](docs/pesquisa.md)
@@ -68,8 +72,11 @@ Cairn currently includes:
 - search with filters;
 - budgeted retrieval;
 - partial document reads;
+- note creation and append updates;
 - similar-note checks;
-- vault/index doctor.
+- agent guide generation;
+- vault/index doctor, stats, export, and import;
+- deterministic search benchmark.
 
 The runtime uses only the Python standard library.
 

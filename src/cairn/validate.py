@@ -9,7 +9,16 @@ from cairn.frontmatter import FrontmatterError, parse_document
 from cairn.schema import parse_schema
 
 
-RESERVED_NAMES = {"index.md", "log.md", "AGENTS.md", "CLAUDE.md", "CODEX.md", "SCHEMA.md"}
+RESERVED_NAMES = {
+    "index.md",
+    "log.md",
+    "README.md",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "CODEX.md",
+    "OPENCODE.md",
+    "SCHEMA.md",
+}
 REQUIRED_FIELDS = ("type", "title", "description", "tags", "timestamp")
 REQUIRED_SCALAR_FIELDS = ("type", "title", "description", "timestamp")
 

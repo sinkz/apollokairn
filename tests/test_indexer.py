@@ -94,6 +94,29 @@ class IndexerTests(unittest.TestCase):
             self.assertEqual(len(results), 1)
             self.assertEqual(results[0].path, "knowledge/deploy-403.md")
 
+    def test_search_matches_portuguese_terms_without_accents(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="support")
+            write_concept(
+                root,
+                "autenticacao.md",
+                (
+                    "type: Procedure",
+                    "title: Falha de autenticação",
+                    "description: Corrige renovação de sessão no atendimento.",
+                    "tags: [suporte, processo]",
+                    "timestamp: 2026-06-17T10:00:00Z",
+                ),
+                "# Context\n\nUsuário não consegue renovar a sessão.\n",
+            )
+            rebuild_index(root)
+
+            results = search(root, "autenticacao renovacao sessao", limit=3)
+
+            self.assertEqual(len(results), 1)
+            self.assertEqual(results[0].path, "knowledge/autenticacao.md")
+
     def test_operator_words_do_not_become_required_terms(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

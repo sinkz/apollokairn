@@ -45,6 +45,10 @@ Em um checkout fonte sem instalar, configure `PYTHONPATH=src` e use
 
 - [Guia de uso em PT-BR](docs/guides/usage.pt-BR.md)
 - [English usage guide](docs/guides/usage.md)
+- [Roadmap](ROADMAP.md)
+- [Changelog](CHANGELOG.md)
+- [Vault de exemplo para engenharia](examples/engineering-vault)
+- [Pesquisa sobre otimização de busca](docs/search-optimization-research.md)
 - [PRD](docs/prd.md)
 - [Notas de design](docs/plans/2026-06-17-cairn-design.md)
 - [Pesquisa sobre OKF](docs/pesquisa.md)
@@ -70,8 +74,11 @@ Cairn atualmente inclui:
 - busca com filtros;
 - recuperação com orçamento de tokens;
 - leitura parcial de documentos;
+- criação de notas e atualização por append;
 - checagem de notas similares;
-- diagnóstico do vault e do índice.
+- geração de guias para agentes;
+- diagnóstico, estatísticas, exportação e importação de vault;
+- benchmark determinístico de busca.
 
 O runtime usa apenas a biblioteca padrão do Python.
 

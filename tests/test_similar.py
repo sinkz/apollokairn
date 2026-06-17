@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import json
 import subprocess
 import sys
 import tempfile
@@ -54,6 +55,34 @@ class SimilarTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertIn("knowledge/deploy-403.md", result.stdout)
             self.assertIn("possible duplicate", result.stdout)
+            self.assertIn("similarity=", result.stdout)
+
+    def test_cli_similar_json_includes_similarity_score(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="engineering")
+            (root / "knowledge" / "deploy-403.md").write_text(
+                "---\n"
+                "type: Runbook\n"
+                "title: Deploy 403 token\n"
+                "description: Fix deploy forbidden token errors.\n"
+                "tags: [bug, deploy]\n"
+                "timestamp: 2026-06-17T10:00:00Z\n"
+                "aliases: [deploy forbidden]\n"
+                "systems: [ci]\n"
+                "signals: [http 403]\n"
+                "---\n\n"
+                "# Context\n\nDeploy forbidden token 403.\n",
+                encoding="utf-8",
+            )
+            run_cairn(root, "index", "--rebuild")
+
+            result = run_cairn(root, "similar", "deploy forbidden token", "--limit", "1", "--json")
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            payload = json.loads(result.stdout)
+            self.assertEqual(payload[0]["path"], "knowledge/deploy-403.md")
+            self.assertGreaterEqual(payload[0]["similarity"], 0.2)
 
 
 if __name__ == "__main__":

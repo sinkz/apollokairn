@@ -11,6 +11,27 @@ class CairnConfig:
     exclude: tuple[str, ...] = ()
 
 
+def validate_config(root: Path) -> list[str]:
+    path = Path(root) / ".cairn" / "config.json"
+    if not path.exists():
+        return []
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return [f"config invalid JSON: {exc}"]
+    errors: list[str] = []
+    exclude = data.get("exclude", [])
+    if not isinstance(exclude, list) or any(not isinstance(item, str) for item in exclude):
+        errors.append("config exclude must be a list of strings")
+    guides = data.get("generated_guides", [])
+    if not isinstance(guides, list) or any(not isinstance(item, str) for item in guides):
+        errors.append("config generated_guides must be a list of strings")
+    search_limit = data.get("search_limit")
+    if search_limit is not None and (not isinstance(search_limit, int) or search_limit <= 0):
+        errors.append("config search_limit must be a positive integer")
+    return errors
+
+
 def load_config(root: Path) -> CairnConfig:
     path = Path(root) / ".cairn" / "config.json"
     if not path.exists():

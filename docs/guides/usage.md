@@ -166,6 +166,36 @@ cairn validate --path ~/brain
 Use it before indexing, before committing a vault, or when an agent created or
 edited notes.
 
+### `cairn add` and `cairn capture`
+
+Creates a reusable note with valid Cairn frontmatter.
+
+```bash
+cairn add --path ~/brain \
+  --title "Deploy 403 after token rotation" \
+  --description "Fixes stale CI authorization after token rotation." \
+  --type Runbook \
+  --tag bug \
+  --tag deploy \
+  --system ci \
+  --signal "HTTP 403" \
+  --body "# Context\n\nDeploy failed after token rotation."
+```
+
+`capture` is an alias with the same behavior. Use these after a task is solved
+and the knowledge is likely to be useful again.
+
+### `cairn update`
+
+Appends text to an existing note if the same text is not already present.
+
+```bash
+cairn update knowledge/deploy-403.md --path ~/brain --append "Add the new verification step."
+```
+
+Use it when `cairn similar` finds an existing note that should be expanded
+instead of duplicated.
+
 ### `cairn index`
 
 Builds or updates the local SQLite FTS index.
@@ -263,6 +293,49 @@ cairn similar "deploy forbidden token" --path ~/brain --limit 5
 Use this before adding a new note. If a result is close enough, update the
 existing note instead of creating another one.
 
+JSON output is available for agents:
+
+```bash
+cairn similar "deploy forbidden token" --path ~/brain --json
+```
+
+### `cairn stats`
+
+Shows vault size, type/tag distribution, and an approximate token count.
+
+```bash
+cairn stats --path ~/brain
+cairn stats --path ~/brain --json
+```
+
+Use this to understand whether a vault is growing in a healthy shape.
+
+### `cairn export` and `cairn import`
+
+Exports or imports a vault zip archive.
+
+```bash
+cairn export --path ~/brain --output cairn-vault.zip
+cairn import cairn-vault.zip --path ~/restored-brain
+```
+
+Generated index files are not included in exports. Re-run `cairn index` after
+importing.
+
+### `cairn setup-agent` and `cairn refresh-guides`
+
+Creates or refreshes agent-specific instructions inside the vault.
+
+```bash
+cairn setup-agent codex --path ~/brain
+cairn setup-agent claude --path ~/brain
+cairn setup-agent opencode --path ~/brain
+cairn refresh-guides --path ~/brain
+```
+
+Use these when a vault should be consumed by different agent harnesses. Cairn
+keeps Markdown as the source of truth; plugins can come later as thin adapters.
+
 ## Recommended Agent Workflow
 
 1. Run `cairn doctor --path <vault>`.
@@ -282,6 +355,12 @@ Run tests:
 
 ```bash
 python -m unittest discover -v
+```
+
+Run deterministic search evaluation:
+
+```bash
+python bench/run_eval.py
 ```
 
 The runtime uses only the Python standard library.

@@ -1,0 +1,5 @@
+{"id":"q1","query":"deploy 403 token rotation","budget":600}
+{"id":"q2","query":"jwt expired clock skew auth","budget":600}
+{"id":"q3","query":"support escalation sla blocked customer","budget":600}
+{"id":"q4","query":"sqlite fts local search embeddings optional","budget":600}
+{"id":"q5","query":"autenticacao renovacao sessao suporte","budget":600}

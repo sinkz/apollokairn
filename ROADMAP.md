@@ -1,0 +1,34 @@
+# Roadmap
+
+Cairn is built around one constraint: useful retrieval should cost less context
+than opening everything. The roadmap prioritizes measurable search quality,
+local-first workflows, and agent interoperability.
+
+## Current Focus
+
+- Deterministic search benchmarks with fixed fixtures, queries, qrels, and token metrics.
+- Better ranking experiments measured against those benchmarks.
+- More robust agent writeback flows for capturing solved problems and updating existing notes.
+- Public documentation, examples, and contribution workflow.
+
+## Next
+
+- Passage-level retrieval by heading or paragraph with stable line references.
+- Reciprocal Rank Fusion over multiple lexical query variants.
+- Duplicate detection beyond exact lexical overlap, starting with lightweight SimHash-style fingerprints.
+- Redaction and secret-safety checks before export or retrieval.
+- Optional package/plugin adapters for Codex, Claude, GitHub Copilot, and OpenCode.
+
+## Later
+
+- Optional embedding backend behind a strict integration boundary.
+- Team-oriented review workflows for shared vault changes.
+- UI or TUI for browsing and curating notes.
+- Importers from Obsidian-style vaults and existing Markdown knowledge bases.
+
+## Non-goals
+
+- Replacing Markdown as the source of truth.
+- Requiring cloud services for local search.
+- Making embeddings mandatory for the core workflow.
+- Storing credentials, private keys, tokens, or secrets.

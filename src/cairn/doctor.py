@@ -4,6 +4,7 @@ import sqlite3
 from dataclasses import dataclass
 from pathlib import Path
 
+from cairn.config import validate_config
 from cairn.indexer import _concept_files, _db_path, _file_signature
 from cairn.validate import validate_vault
 
@@ -52,6 +53,14 @@ def check_vault(root: Path) -> DoctorReport:
     root = Path(root)
     lines: list[str] = []
     ok = True
+
+    config_errors = validate_config(root)
+    if config_errors:
+        ok = False
+        for error in config_errors:
+            lines.append(f"ERROR config: {error}")
+    else:
+        lines.append("OK config")
 
     report = validate_vault(root)
     if report.errors:

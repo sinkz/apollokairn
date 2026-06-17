@@ -24,6 +24,41 @@ def build_parser() -> argparse.ArgumentParser:
         choices=list_profiles(),
     )
 
+    def add_note_parser(name: str, help_text: str) -> argparse.ArgumentParser:
+        cmd = sub.add_parser(name, help=help_text)
+        cmd.add_argument("--title", required=True)
+        cmd.add_argument("--description", required=True)
+        cmd.add_argument("--type", default="Note", dest="note_type")
+        cmd.add_argument("--tag", action="append", default=[])
+        cmd.add_argument("--folder", default="knowledge")
+        cmd.add_argument("--body", default="")
+        cmd.add_argument("--alias", action="append", default=[])
+        cmd.add_argument("--system", action="append", default=[])
+        cmd.add_argument("--signal", action="append", default=[])
+        cmd.add_argument("--timestamp")
+        _add_vault_path(cmd)
+        return cmd
+
+    add_note_parser("add", "Create a new Cairn note.")
+    add_note_parser("capture", "Capture reusable knowledge as a new note.")
+
+    update_cmd = sub.add_parser("update", help="Update an existing Cairn note.")
+    update_cmd.add_argument("document")
+    update_cmd.add_argument("--append", required=True, help="Text to append if it is not already present.")
+    _add_vault_path(update_cmd)
+
+    export_cmd = sub.add_parser("export", help="Export a vault to a zip archive.")
+    export_cmd.add_argument("--output", required=True)
+    _add_vault_path(export_cmd)
+
+    import_cmd = sub.add_parser("import", help="Import a vault zip archive.")
+    import_cmd.add_argument("archive")
+    _add_vault_path(import_cmd)
+
+    stats_cmd = sub.add_parser("stats", help="Show vault statistics.")
+    stats_cmd.add_argument("--json", action="store_true")
+    _add_vault_path(stats_cmd)
+
     search_cmd = sub.add_parser("search", help="Search the vault.")
     search_cmd.add_argument("query")
     search_cmd.add_argument("--limit", type=int, default=3)
@@ -48,6 +83,7 @@ def build_parser() -> argparse.ArgumentParser:
     similar_cmd.add_argument("--type", dest="type_filter", help="Filter results by document type.")
     similar_cmd.add_argument("--tag", action="append", default=[], help="Filter results by tag. Can be repeated.")
     similar_cmd.add_argument("--system", action="append", default=[], help="Filter results by system. Can be repeated.")
+    similar_cmd.add_argument("--json", action="store_true")
     _add_vault_path(similar_cmd)
 
     show_cmd = sub.add_parser("show", help="Show a selected concept.")
@@ -65,6 +101,13 @@ def build_parser() -> argparse.ArgumentParser:
     _add_vault_path(validate_cmd)
     doctor_cmd = sub.add_parser("doctor", help="Check vault and index health.")
     _add_vault_path(doctor_cmd)
+
+    setup_agent_cmd = sub.add_parser("setup-agent", help="Create an agent-specific Cairn guide.")
+    setup_agent_cmd.add_argument("agent", choices=["agents", "codex", "claude", "opencode"])
+    _add_vault_path(setup_agent_cmd)
+
+    refresh_guides_cmd = sub.add_parser("refresh-guides", help="Refresh configured agent guides.")
+    _add_vault_path(refresh_guides_cmd)
     return parser
 
 
@@ -80,6 +123,69 @@ def main(argv: list[str] | None = None) -> int:
             print(f"created {item}")
         for item in result.skipped:
             print(f"skipped {item}")
+        return 0
+    if args.command in {"add", "capture"}:
+        from cairn.notes import create_note
+
+        try:
+            result = create_note(
+                Path(args.path),
+                title=args.title,
+                description=args.description,
+                typ=args.note_type,
+                tags=args.tag,
+                folder=args.folder,
+                body=args.body,
+                aliases=args.alias,
+                systems=args.system,
+                signals=args.signal,
+                timestamp=args.timestamp,
+            )
+        except (FileExistsError, ValueError) as exc:
+            print(f"ERROR {exc}", file=sys.stderr)
+            return 1
+        print(f"created {result.path}")
+        return 0
+    if args.command == "update":
+        from cairn.notes import append_to_note
+
+        try:
+            result = append_to_note(Path(args.path), args.document, args.append)
+        except (FileNotFoundError, ValueError) as exc:
+            print(f"ERROR {exc}", file=sys.stderr)
+            return 1
+        print(("updated" if result.changed else "unchanged") + f" {result.path}")
+        return 0
+    if args.command == "export":
+        from cairn.archive import export_vault
+
+        try:
+            output = export_vault(Path(args.path), Path(args.output))
+        except (OSError, ValueError) as exc:
+            print(f"ERROR {exc}", file=sys.stderr)
+            return 1
+        print(f"exported {output}")
+        return 0
+    if args.command == "import":
+        from cairn.archive import import_vault
+
+        try:
+            root = import_vault(Path(args.archive), Path(args.path))
+        except (OSError, ValueError) as exc:
+            print(f"ERROR {exc}", file=sys.stderr)
+            return 1
+        print(f"imported {root}")
+        return 0
+    if args.command == "stats":
+        import json
+
+        from cairn.stats import collect_stats, render_stats
+
+        stats = collect_stats(Path(args.path))
+        if args.json:
+            print(json.dumps(stats.__dict__, indent=2))
+        else:
+            print(render_stats(stats), end="")
         return 0
     if args.command == "validate":
         from cairn.validate import validate_vault
@@ -97,6 +203,22 @@ def main(argv: list[str] | None = None) -> int:
         for line in report.lines:
             print(line)
         return 0 if report.ok else 1
+    if args.command == "setup-agent":
+        from cairn.guides import setup_agent
+
+        try:
+            result = setup_agent(Path(args.path), args.agent)
+        except ValueError as exc:
+            print(f"ERROR {exc}", file=sys.stderr)
+            return 1
+        print(f"updated {result.path}")
+        return 0
+    if args.command == "refresh-guides":
+        from cairn.guides import refresh_guides
+
+        for result in refresh_guides(Path(args.path)):
+            print(f"updated {result.path}")
+        return 0
     if args.command == "index":
         from cairn.indexer import CairnIndexError, rebuild_index, sync_index
 
@@ -167,6 +289,8 @@ def main(argv: list[str] | None = None) -> int:
             return 1
         return 0
     if args.command == "similar":
+        import json
+
         from cairn.indexer import CairnIndexError
         from cairn.similar import find_similar, render_similar
 
@@ -184,7 +308,10 @@ def main(argv: list[str] | None = None) -> int:
         except CairnIndexError as exc:
             print(f"ERROR {exc}", file=sys.stderr)
             return 1
-        print(render_similar(results), end="")
+        if args.json:
+            print(json.dumps([result.__dict__ for result in results], indent=2))
+        else:
+            print(render_similar(results), end="")
         return 0
     if args.command == "show":
         from cairn.indexer import show
