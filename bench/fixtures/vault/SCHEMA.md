@@ -22,3 +22,6 @@ Profile: `benchmark`
 - search
 - processo
 - suporte
+- database
+- mobile
+- duplicate

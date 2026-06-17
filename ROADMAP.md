@@ -11,6 +11,8 @@ local-first workflows, and agent interoperability.
 - More robust agent writeback flows for capturing solved problems and updating existing notes.
 - Public documentation, examples, and contribution workflow.
 
+Detailed execution plan: [Cairn Search Optimization Implementation Plan](docs/superpowers/plans/2026-06-17-cairn-search-optimization-roadmap.md)
+
 ## Next
 
 - Passage-level retrieval by heading or paragraph with stable line references.

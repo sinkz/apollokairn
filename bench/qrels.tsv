@@ -1,5 +1,14 @@
 q1	knowledge/deploy-403.md	3
+q1	knowledge/mobile-deploy-403.md	2
 q2	knowledge/jwt-clock-skew.md	3
 q3	processes/support-escalation.md	3
 q4	decisions/use-sqlite-fts.md	3
 q5	knowledge/ptbr-auth-session.md	3
+q6	knowledge/db-pool-exhausted.md	3
+q7	knowledge/session-cookie-rotation.md	3
+q8	knowledge/mobile-deploy-403.md	3
+q9	decisions/current-session-store.md	3
+q9	decisions/old-session-store.md	1
+q10	knowledge/deploy-403-consolidated.md	3
+q10	knowledge/deploy-403-daily-duplicate.md	1
+q11	processes/hotfix-rollback.md	3

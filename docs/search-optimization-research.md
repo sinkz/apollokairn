@@ -90,19 +90,38 @@ Consensus:
 - Added CI execution for the deterministic benchmark.
 - Added explicit FTS5 `unicode61 remove_diacritics 2` tokenizer configuration.
 - Added a PT-BR accent regression test.
+- Expanded the benchmark to harder fixtures for exact errors, filters, current
+  decisions, near duplicates, hotfix rollback, and synonym/alias retrieval.
+- Added `bench/golden.json` and CI comparison to catch ranking regressions on
+  stable critical queries.
 
 Current benchmark result:
 
 ```text
-topics: 5
+topics: 11
 limit: 3
 mean_recall_at_3: 1.0
 mean_mrr_at_3: 1.0
-mean_ndcg_at_3: 1.0
-full_context_tokens: 5800
-returned_tokens: 1127
-context_reduction: 0.8057
+mean_ndcg_at_3: 0.9849
+full_context_tokens: 25058
+returned_tokens: 2930
+context_reduction: 0.8831
 ```
+
+Regression gates:
+
+```text
+Recall@3 >= 0.90
+MRR@3 >= 0.80
+nDCG@3 >= 0.80
+all topics within token budget
+golden critical-query prefixes unchanged
+```
+
+The benchmark is intentionally no longer perfect. A generic deploy query now has
+multiple plausible matches, so aggregate metrics and golden checks are used
+together: metrics allow legitimate ranking improvements, while golden checks
+protect critical exact cases from silent regressions.
 
 ## Next Experiments
 

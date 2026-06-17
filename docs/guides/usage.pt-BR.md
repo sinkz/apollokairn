@@ -366,6 +366,7 @@ Rodar avaliação determinística de busca:
 
 ```bash
 python bench/run_eval.py
+python bench/run_eval.py --quiet --compare-golden bench/golden.json
 ```
 
 O runtime usa apenas a biblioteca padrão do Python.

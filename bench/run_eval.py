@@ -8,6 +8,7 @@ import sys
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Sequence
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -22,6 +23,19 @@ class Topic:
     id: str
     query: str
     budget: int
+    limit: int | None = None
+    type_filter: str | None = None
+    tag_filters: tuple[str, ...] = ()
+    system_filters: tuple[str, ...] = ()
+    mode: str = "documents"
+
+
+def _string_list(value: object) -> tuple[str, ...]:
+    if isinstance(value, str) and value:
+        return (value,)
+    if isinstance(value, list):
+        return tuple(item for item in value if isinstance(item, str) and item)
+    return ()
 
 
 def load_topics(path: Path) -> list[Topic]:
@@ -30,7 +44,18 @@ def load_topics(path: Path) -> list[Topic]:
         if not line.strip():
             continue
         row = json.loads(line)
-        topics.append(Topic(id=row["id"], query=row["query"], budget=int(row.get("budget", 600))))
+        topics.append(
+            Topic(
+                id=row["id"],
+                query=row["query"],
+                budget=int(row.get("budget", 600)),
+                limit=int(row["limit"]) if "limit" in row else None,
+                type_filter=row.get("type") if isinstance(row.get("type"), str) else None,
+                tag_filters=_string_list(row.get("tag")),
+                system_filters=_string_list(row.get("system")),
+                mode=row.get("mode", "documents") if isinstance(row.get("mode", "documents"), str) else "documents",
+            )
+        )
     return topics
 
 
@@ -51,8 +76,27 @@ def dcg(rels: list[int]) -> float:
     return total
 
 
-def evaluate_topic(root: Path, topic: Topic, relevant: dict[str, int], limit: int) -> dict[str, object]:
-    results = search(root, topic.query, limit=limit)
+def _filters(topic: Topic) -> dict[str, object]:
+    out: dict[str, object] = {}
+    if topic.type_filter:
+        out["type"] = topic.type_filter
+    if topic.tag_filters:
+        out["tag"] = list(topic.tag_filters)
+    if topic.system_filters:
+        out["system"] = list(topic.system_filters)
+    return out
+
+
+def evaluate_topic(root: Path, topic: Topic, relevant: dict[str, int], default_limit: int) -> dict[str, object]:
+    limit = topic.limit or default_limit
+    results = search(
+        root,
+        topic.query,
+        limit=limit,
+        type_filter=topic.type_filter,
+        tag_filters=topic.tag_filters,
+        system_filters=topic.system_filters,
+    )
     docs = [result.path for result in results]
     relevant_docs = {doc for doc, rel in relevant.items() if rel > 0}
     retrieved_relevant = [doc for doc in docs[:limit] if doc in relevant_docs]
@@ -60,11 +104,22 @@ def evaluate_topic(root: Path, topic: Topic, relevant: dict[str, int], limit: in
     gains = [relevant.get(doc, 0) for doc in docs[:limit]]
     ideal = sorted(relevant.values(), reverse=True)[:limit]
     ndcg = dcg(gains) / dcg(ideal) if ideal and dcg(ideal) else 0.0
-    packet = retrieve(root, topic.query, limit=limit, budget_tokens=topic.budget)
+    packet = retrieve(
+        root,
+        topic.query,
+        limit=limit,
+        budget_tokens=topic.budget,
+        type_filter=topic.type_filter,
+        tag_filters=topic.tag_filters,
+        system_filters=topic.system_filters,
+    )
     returned_tokens = approx_tokens(packet)
     return {
         "id": topic.id,
         "query": topic.query,
+        "mode": topic.mode,
+        "limit": limit,
+        "filters": _filters(topic),
         "docs": docs,
         "recall_at_k": len(retrieved_relevant) / len(relevant_docs) if relevant_docs else 1.0,
         "mrr_at_k": 1 / first_rank if first_rank else 0.0,
@@ -84,12 +139,40 @@ def corpus_tokens(root: Path) -> int:
     return total
 
 
+def run_map(per_topic: Sequence[dict[str, object]]) -> dict[str, list[str]]:
+    return {str(item["id"]): list(item["docs"]) for item in per_topic}
+
+
+def compare_golden(actual: dict[str, list[str]], golden_path: Path) -> list[str]:
+    expected = json.loads(golden_path.read_text(encoding="utf-8"))
+    failures: list[str] = []
+    if not isinstance(expected, dict):
+        return [f"golden regression: {golden_path} must contain an object"]
+    for qid, expected_docs in expected.items():
+        if not isinstance(expected_docs, list):
+            failures.append(f"golden regression: {qid} expected docs must be a list")
+            continue
+        actual_docs = actual.get(str(qid), [])
+        expected_prefix = [doc for doc in expected_docs if isinstance(doc, str)]
+        if actual_docs[: len(expected_prefix)] != expected_prefix:
+            failures.append(
+                "golden regression: "
+                f"{qid} expected prefix {expected_prefix}, got {actual_docs[:len(expected_prefix)]}"
+            )
+    return failures
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run deterministic Cairn search benchmarks.")
     parser.add_argument("--fixture", default=str(ROOT / "bench" / "fixtures" / "vault"))
     parser.add_argument("--topics", default=str(ROOT / "bench" / "topics.jsonl"))
     parser.add_argument("--qrels", default=str(ROOT / "bench" / "qrels.tsv"))
     parser.add_argument("--limit", type=int, default=3)
+    parser.add_argument("--min-recall", type=float, default=0.9)
+    parser.add_argument("--min-mrr", type=float, default=0.8)
+    parser.add_argument("--min-ndcg", type=float, default=0.8)
+    parser.add_argument("--write-golden")
+    parser.add_argument("--compare-golden")
     parser.add_argument("--quiet", action="store_true")
     args = parser.parse_args(argv)
 
@@ -100,7 +183,7 @@ def main(argv: list[str] | None = None) -> int:
         shutil.copytree(Path(args.fixture), root)
         rebuild_index(root)
         per_topic = [
-            evaluate_topic(root, topic, qrels.get(topic.id, {}), limit=args.limit)
+            evaluate_topic(root, topic, qrels.get(topic.id, {}), default_limit=args.limit)
             for topic in topics
         ]
         full_tokens = corpus_tokens(root)
@@ -122,6 +205,16 @@ def main(argv: list[str] | None = None) -> int:
             else 0,
             "per_topic": per_topic,
         }
+    actual_run = run_map(per_topic)
+    if args.write_golden:
+        golden_path = Path(args.write_golden)
+        golden_path.parent.mkdir(parents=True, exist_ok=True)
+        golden_path.write_text(json.dumps(actual_run, indent=2) + "\n", encoding="utf-8")
+    golden_failures: list[str] = []
+    if args.compare_golden:
+        golden_failures = compare_golden(actual_run, Path(args.compare_golden))
+        for failure in golden_failures:
+            print(failure, file=sys.stderr)
     if args.quiet:
         print(
             "bench ok "
@@ -132,7 +225,9 @@ def main(argv: list[str] | None = None) -> int:
         )
     else:
         print(json.dumps(output, indent=2))
-    if mean_recall < 1.0 or mean_mrr < 0.8 or mean_ndcg < 0.8:
+    if golden_failures:
+        return 1
+    if mean_recall < args.min_recall or mean_mrr < args.min_mrr or mean_ndcg < args.min_ndcg:
         return 1
     if any(not item["within_budget"] for item in per_topic):
         return 1

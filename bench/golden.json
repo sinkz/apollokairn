@@ -1,0 +1,32 @@
+{
+  "q2": [
+    "knowledge/jwt-clock-skew.md"
+  ],
+  "q3": [
+    "processes/support-escalation.md"
+  ],
+  "q4": [
+    "decisions/use-sqlite-fts.md"
+  ],
+  "q5": [
+    "knowledge/ptbr-auth-session.md"
+  ],
+  "q6": [
+    "knowledge/db-pool-exhausted.md"
+  ],
+  "q7": [
+    "knowledge/session-cookie-rotation.md"
+  ],
+  "q8": [
+    "knowledge/mobile-deploy-403.md"
+  ],
+  "q9": [
+    "decisions/current-session-store.md"
+  ],
+  "q10": [
+    "knowledge/deploy-403-consolidated.md"
+  ],
+  "q11": [
+    "processes/hotfix-rollback.md"
+  ]
+}

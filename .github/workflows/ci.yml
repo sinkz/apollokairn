@@ -22,4 +22,4 @@ jobs:
       - name: Run tests
         run: python -m unittest discover -v
       - name: Run deterministic search benchmark
-        run: python bench/run_eval.py --quiet
+        run: python bench/run_eval.py --quiet --compare-golden bench/golden.json
