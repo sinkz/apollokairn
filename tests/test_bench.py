@@ -56,6 +56,10 @@ class BenchTests(unittest.TestCase):
         self.assertIn("context_reduction", payload)
         self.assertGreaterEqual(payload["topics"], 10)
         self.assertTrue(any(item["mode"] == "passages" for item in payload["per_topic"]))
+        passage_topic = next(item for item in payload["per_topic"] if item["mode"] == "passages")
+        self.assertEqual(passage_topic["compare"]["mode"], "documents")
+        self.assertGreater(passage_topic["compare"]["returned_tokens"], passage_topic["returned_tokens"])
+        self.assertGreaterEqual(passage_topic["compare"]["token_reduction"], 0.2)
 
     def test_benchmark_applies_topic_filters(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

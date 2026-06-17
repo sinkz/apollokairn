@@ -96,6 +96,8 @@ Consensus:
   stable critical queries.
 - Added Markdown passage splitting, passage FTS indexing, and
   `cairn retrieve --mode passages`.
+- Added benchmark `compare_mode` support to compare token usage between
+  document and passage retrieval on the same topic.
 - Added an agent workflow test that captures, indexes, searches, retrieves,
   checks similarity, and updates a note through the CLI.
 
@@ -128,7 +130,9 @@ together: metrics allow legitimate ranking improvements, while golden checks
 protect critical exact cases from silent regressions.
 
 The first passage-mode benchmark topic returns the relevant deploy resolution in
-approximately 90 tokens against a 250-token budget.
+approximately 90 tokens against a 250-token budget. The same query in document
+mode returns approximately 240 tokens, so passage mode reduces that topic's
+retrieved context by 62.5%.
 
 ## Next Experiments
 

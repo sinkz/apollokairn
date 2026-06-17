@@ -28,6 +28,7 @@ class Topic:
     tag_filters: tuple[str, ...] = ()
     system_filters: tuple[str, ...] = ()
     mode: str = "documents"
+    compare_mode: str | None = None
 
 
 def _string_list(value: object) -> tuple[str, ...]:
@@ -54,6 +55,7 @@ def load_topics(path: Path) -> list[Topic]:
                 tag_filters=_string_list(row.get("tag")),
                 system_filters=_string_list(row.get("system")),
                 mode=row.get("mode", "documents") if isinstance(row.get("mode", "documents"), str) else "documents",
+                compare_mode=row.get("compare_mode") if isinstance(row.get("compare_mode"), str) else None,
             )
         )
     return topics
@@ -126,7 +128,7 @@ def evaluate_topic(root: Path, topic: Topic, relevant: dict[str, int], default_l
         system_filters=topic.system_filters,
     )
     returned_tokens = approx_tokens(packet)
-    return {
+    out: dict[str, object] = {
         "id": topic.id,
         "query": topic.query,
         "mode": topic.mode,
@@ -140,6 +142,25 @@ def evaluate_topic(root: Path, topic: Topic, relevant: dict[str, int], default_l
         "budget_tokens": topic.budget,
         "within_budget": returned_tokens <= topic.budget,
     }
+    if topic.compare_mode:
+        compare_packet = retrieve(
+            root,
+            topic.query,
+            limit=limit,
+            budget_tokens=topic.budget,
+            mode=topic.compare_mode,
+            type_filter=topic.type_filter,
+            tag_filters=topic.tag_filters,
+            system_filters=topic.system_filters,
+        )
+        compare_tokens = approx_tokens(compare_packet)
+        reduction = 0.0 if compare_tokens == 0 else 1 - (returned_tokens / compare_tokens)
+        out["compare"] = {
+            "mode": topic.compare_mode,
+            "returned_tokens": compare_tokens,
+            "token_reduction": round(reduction, 4),
+        }
+    return out
 
 
 def corpus_tokens(root: Path) -> int:
