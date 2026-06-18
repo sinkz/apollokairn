@@ -32,21 +32,21 @@ jobs:
       matrix:
         include:
           - os: ubuntu-24.04-arm
-            artifact_name: cairn-linux-arm64
-            archive_name: cairn-linux-arm64.tar.gz
-            binary_name: cairn
+            artifact_name: apollokairn-linux-arm64
+            archive_name: apollokairn-linux-arm64.tar.gz
+            binary_name: apollokairn
           - os: windows-latest
-            artifact_name: cairn-windows-x64
-            archive_name: cairn-windows-x64.zip
-            binary_name: cairn.exe
+            artifact_name: apollokairn-windows-x64
+            archive_name: apollokairn-windows-x64.zip
+            binary_name: apollokairn.exe
           - os: macos-15-intel
-            artifact_name: cairn-macos-x64
-            archive_name: cairn-macos-x64.tar.gz
-            binary_name: cairn
+            artifact_name: apollokairn-macos-x64
+            archive_name: apollokairn-macos-x64.tar.gz
+            binary_name: apollokairn
           - os: macos-15
-            artifact_name: cairn-macos-arm64
-            archive_name: cairn-macos-arm64.tar.gz
-            binary_name: cairn
+            artifact_name: apollokairn-macos-arm64
+            archive_name: apollokairn-macos-arm64.tar.gz
+            binary_name: apollokairn
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -59,16 +59,16 @@ jobs:
           python -m pip install pyinstaller
           python -m pip install -e .
       - name: Build standalone binary
-        run: pyinstaller --onefile --name cairn src/cairn/__main__.py
+        run: pyinstaller --onefile --name apollokairn src/cairn/__main__.py
       - name: Verify standalone binary
         shell: bash
         run: |
           if [ "${{ runner.os }}" = "Windows" ]; then
-            ./dist/cairn.exe --version
-            ./dist/cairn.exe --help
+            ./dist/apollokairn.exe --version
+            ./dist/apollokairn.exe --help
           else
-            ./dist/cairn --version
-            ./dist/cairn --help
+            ./dist/apollokairn --version
+            ./dist/apollokairn --help
           fi
       - name: Package Windows binary
         if: runner.os == 'Windows'
@@ -98,19 +98,19 @@ jobs:
             -v "$PWD:/work" \
             -w /work \
             python:3.12-slim-bullseye \
-            bash -lc "apt-get update && apt-get install -y --no-install-recommends binutils && rm -rf /var/lib/apt/lists/* && python -m pip install --upgrade pip && python -m pip install pyinstaller && python -m pip install -e . && pyinstaller --onefile --name cairn src/cairn/__main__.py && chown -R \"$(stat -c '%u:%g' /work)\" dist build cairn.spec"
+            bash -lc "apt-get update && apt-get install -y --no-install-recommends binutils && rm -rf /var/lib/apt/lists/* && python -m pip install --upgrade pip && python -m pip install pyinstaller && python -m pip install -e . && pyinstaller --onefile --name apollokairn src/cairn/__main__.py && chown -R \"$(stat -c '%u:%g' /work)\" dist build apollokairn.spec"
       - name: Verify Linux x64 standalone binary
         run: |
-          ./dist/cairn --version
-          ./dist/cairn --help
+          ./dist/apollokairn --version
+          ./dist/apollokairn --help
       - name: Package Linux x64 binary
         run: |
           mkdir -p release-assets
-          tar --mode='u+x,go+rx' -czf release-assets/cairn-linux-x64.tar.gz -C dist cairn
+          tar --mode='u+x,go+rx' -czf release-assets/apollokairn-linux-x64.tar.gz -C dist apollokairn
       - uses: actions/upload-artifact@v4
         with:
-          name: cairn-linux-x64
-          path: release-assets/cairn-linux-x64.tar.gz
+          name: apollokairn-linux-x64
+          path: release-assets/apollokairn-linux-x64.tar.gz
 
   publish:
     needs: [build, build-linux-x64]
@@ -123,7 +123,7 @@ jobs:
       - name: Generate checksums
         run: |
           cd release-assets
-          sha256sum cairn-* > checksums.txt
+          sha256sum apollokairn-* > checksums.txt
           cat checksums.txt
       - uses: softprops/action-gh-release@v2
         with:

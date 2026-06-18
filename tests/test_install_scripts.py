@@ -13,14 +13,17 @@ class InstallScriptTests(unittest.TestCase):
 
         self.assertIn("https://github.com/${REPO}/releases", script)
         self.assertIn("/latest/download", script)
-        self.assertIn("cairn-linux-x64.tar.gz", script)
-        self.assertIn("cairn-linux-arm64.tar.gz", script)
-        self.assertIn("cairn-macos-x64.tar.gz", script)
-        self.assertIn("cairn-macos-arm64.tar.gz", script)
+        self.assertIn("apollokairn-linux-x64.tar.gz", script)
+        self.assertIn("apollokairn-linux-arm64.tar.gz", script)
+        self.assertIn("apollokairn-macos-x64.tar.gz", script)
+        self.assertIn("apollokairn-macos-arm64.tar.gz", script)
         self.assertIn("checksums.txt", script)
         self.assertIn("sha256sum", script)
         self.assertIn("shasum -a 256", script)
+        self.assertIn("APOLLOKAIRN_INSTALL_DIR", script)
         self.assertIn("CAIRN_INSTALL_DIR", script)
+        self.assertIn("apollokairn", script)
+        self.assertIn("ak", script)
         self.assertIn("$HOME/.local/bin", script)
         self.assertNotIn("python -m pip", script)
         self.assertNotIn("pip install", script)
@@ -107,11 +110,11 @@ class InstallScriptTests(unittest.TestCase):
         self.assertIn("windows-latest", workflow)
         self.assertIn("macos-15-intel", workflow)
         self.assertIn("macos-15", workflow)
-        self.assertIn("cairn-linux-x64.tar.gz", workflow)
-        self.assertIn("cairn-linux-arm64.tar.gz", workflow)
-        self.assertIn("cairn-windows-x64.zip", workflow)
-        self.assertIn("cairn-macos-x64.tar.gz", workflow)
-        self.assertIn("cairn-macos-arm64.tar.gz", workflow)
+        self.assertIn("apollokairn-linux-x64.tar.gz", workflow)
+        self.assertIn("apollokairn-linux-arm64.tar.gz", workflow)
+        self.assertIn("apollokairn-windows-x64.zip", workflow)
+        self.assertIn("apollokairn-macos-x64.tar.gz", workflow)
+        self.assertIn("apollokairn-macos-arm64.tar.gz", workflow)
         self.assertIn("checksums.txt", workflow)
         self.assertIn("softprops/action-gh-release", workflow)
 
@@ -119,7 +122,10 @@ class InstallScriptTests(unittest.TestCase):
         workflow = (ROOT / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
 
         self.assertIn("tar --mode='u+x,go+rx'", workflow)
-        self.assertNotIn("chmod +x dist/cairn\n          tar -czf release-assets/cairn-linux-x64.tar.gz", workflow)
+        self.assertNotIn(
+            "chmod +x dist/apollokairn\n          tar -czf release-assets/apollokairn-linux-x64.tar.gz",
+            workflow,
+        )
 
     def test_ci_runs_writeback_benchmark(self) -> None:
         ci = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
@@ -134,11 +140,14 @@ class InstallScriptTests(unittest.TestCase):
 
         self.assertIn("https://github.com/$Repo/releases", script)
         self.assertIn("releases/latest/download", script)
-        self.assertIn("cairn-windows-x64.zip", script)
+        self.assertIn("apollokairn-windows-x64.zip", script)
         self.assertIn("checksums.txt", script)
         self.assertIn("Get-FileHash", script)
         self.assertIn("Expand-Archive", script)
+        self.assertIn("APOLLOKAIRN_INSTALL_DIR", script)
         self.assertIn("CAIRN_INSTALL_DIR", script)
+        self.assertIn("apollokairn.exe", script)
+        self.assertIn("ak.exe", script)
         self.assertIn("LOCALAPPDATA", script)
         self.assertNotIn("python -m pip", script)
         self.assertNotIn("pip install", script)

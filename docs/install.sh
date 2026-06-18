@@ -1,16 +1,19 @@
 #!/usr/bin/env sh
 set -eu
 
-REPO="${CAIRN_REPO:-sinkz/cairn}"
-VERSION="${CAIRN_VERSION:-latest}"
-INSTALL_DIR="${CAIRN_INSTALL_DIR:-$HOME/.local/bin}"
+REPO="${APOLLOKAIRN_REPO:-${CAIRN_REPO:-sinkz/apollokairn}}"
+VERSION="${APOLLOKAIRN_VERSION:-${CAIRN_VERSION:-latest}}"
+INSTALL_DIR="${APOLLOKAIRN_INSTALL_DIR:-${CAIRN_INSTALL_DIR:-$HOME/.local/bin}}"
 RELEASES_URL="https://github.com/${REPO}/releases"
+BINARY_NAME="apollokairn"
+LEGACY_BINARY_NAME="cairn"
+SHORT_ALIAS_NAME="ak"
 
 # Expected release assets:
-# - cairn-linux-x64.tar.gz
-# - cairn-linux-arm64.tar.gz
-# - cairn-macos-x64.tar.gz
-# - cairn-macos-arm64.tar.gz
+# - apollokairn-linux-x64.tar.gz
+# - apollokairn-linux-arm64.tar.gz
+# - apollokairn-macos-x64.tar.gz
+# - apollokairn-macos-arm64.tar.gz
 
 need() {
   if ! command -v "$1" >/dev/null 2>&1; then
@@ -49,7 +52,7 @@ detect_asset() {
       ;;
   esac
 
-  printf "cairn-%s-%s.tar.gz" "$platform" "$cpu"
+  printf "apollokairn-%s-%s.tar.gz" "$platform" "$cpu"
 }
 
 download_base() {
@@ -93,7 +96,7 @@ need tar
 
 ASSET="$(detect_asset)"
 BASE_URL="$(download_base)"
-TMP_DIR="${TMPDIR:-/tmp}/cairn-install-$$"
+TMP_DIR="${TMPDIR:-/tmp}/apollokairn-install-$$"
 ARCHIVE="$TMP_DIR/$ASSET"
 CHECKSUMS="$TMP_DIR/checksums.txt"
 
@@ -115,13 +118,16 @@ curl -fsSL "$BASE_URL/checksums.txt" -o "$CHECKSUMS"
   tar -xzf "$ARCHIVE"
 )
 
-if [ ! -f "$TMP_DIR/cairn" ]; then
-  echo "ERROR: release archive did not contain a cairn binary." >&2
+if [ ! -f "$TMP_DIR/$BINARY_NAME" ]; then
+  echo "ERROR: release archive did not contain an $BINARY_NAME binary." >&2
   exit 1
 fi
 
-cp "$TMP_DIR/cairn" "$INSTALL_DIR/cairn"
-chmod 755 "$INSTALL_DIR/cairn"
+cp "$TMP_DIR/$BINARY_NAME" "$INSTALL_DIR/$BINARY_NAME"
+chmod 755 "$INSTALL_DIR/$BINARY_NAME"
+cp "$INSTALL_DIR/$BINARY_NAME" "$INSTALL_DIR/$SHORT_ALIAS_NAME"
+cp "$INSTALL_DIR/$BINARY_NAME" "$INSTALL_DIR/$LEGACY_BINARY_NAME"
+chmod 755 "$INSTALL_DIR/$SHORT_ALIAS_NAME" "$INSTALL_DIR/$LEGACY_BINARY_NAME"
 
 case ":$PATH:" in
   *":$INSTALL_DIR:"*) ;;
@@ -132,5 +138,6 @@ case ":$PATH:" in
     ;;
 esac
 
-"$INSTALL_DIR/cairn" --version
-echo "Installed Cairn at $INSTALL_DIR/cairn"
+"$INSTALL_DIR/$BINARY_NAME" --version
+echo "Installed ApolloKairn at $INSTALL_DIR/$BINARY_NAME"
+echo "Aliases installed: $SHORT_ALIAS_NAME, $LEGACY_BINARY_NAME"
