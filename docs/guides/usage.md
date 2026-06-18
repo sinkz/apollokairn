@@ -301,7 +301,9 @@ agent only needs one section or nearby lines.
 
 ### `cairn similar`
 
-Finds existing notes before creating a duplicate.
+Finds existing notes before creating a duplicate. It combines indexed lexical
+search with a lightweight local fingerprint scan, so it can still catch near
+duplicates when the new note contains extra terms.
 
 ```bash
 cairn similar "deploy forbidden token" --path ~/brain --limit 5

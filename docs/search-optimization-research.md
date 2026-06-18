@@ -100,6 +100,8 @@ Consensus:
   compare token usage between document and passage retrieval on the same topic.
 - Added an opt-in document `rrf` ranker and benchmark `ranker` /
   `compare_ranker` support to measure it against the default `bm25` baseline.
+- Added lightweight SimHash-style fingerprint fallback for `cairn similar` so
+  duplicate checks can find near matches even when strict lexical search misses.
 - Added an agent workflow test that captures, indexes, searches, retrieves,
   checks similarity, and updates a note through the CLI.
 
@@ -202,6 +204,12 @@ Success criteria:
 
 - lower duplicate creation in fixture scenarios;
 - no dependency required in core runtime.
+
+Status: initial fingerprint-backed duplicate detection is implemented in
+`cairn similar`. It keeps indexed lexical search as the first source of
+candidates, then scans local Markdown notes with a lightweight SimHash-style
+fingerprint to catch near duplicates with extra terms. The implementation stays
+stdlib-only and respects type, tag, and system filters.
 
 ### Optional Embeddings
 

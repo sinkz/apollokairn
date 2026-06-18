@@ -23,7 +23,7 @@ Cairn keeps that reusable knowledge in a structured, searchable Markdown vault:
 - metadata filters and token-budgeted retrieval;
 - partial reads so agents open less context;
 - experimental RRF ranking for noisy queries;
-- duplicate checks before creating new notes.
+- fingerprint-backed duplicate checks before creating new notes.
 
 ## Quick Start
 
@@ -78,7 +78,7 @@ Cairn currently includes:
 - experimental RRF ranker;
 - partial document reads;
 - note creation and append updates;
-- similar-note checks;
+- fingerprint-backed similar-note checks;
 - agent guide generation;
 - vault/index doctor, stats, export, and import;
 - export blocking for vaults with common secret-like values;

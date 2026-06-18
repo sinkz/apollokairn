@@ -25,7 +25,7 @@ pesquisável:
 - filtros por metadados e recuperação com orçamento de tokens;
 - leitura parcial para agentes abrirem menos contexto;
 - ranking RRF experimental para buscas ruidosas;
-- checagem de notas similares antes de criar duplicatas.
+- checagem de duplicatas por fingerprint antes de criar novas notas.
 
 ## Começo Rápido
 
@@ -80,7 +80,7 @@ Cairn atualmente inclui:
 - ranker RRF experimental;
 - leitura parcial de documentos;
 - criação de notas e atualização por append;
-- checagem de notas similares;
+- checagem de notas similares por fingerprint;
 - geração de guias para agentes;
 - diagnóstico, estatísticas, exportação e importação de vault;
 - bloqueio de export para vaults com segredos comuns detectáveis;

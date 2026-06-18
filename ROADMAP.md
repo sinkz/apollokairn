@@ -10,6 +10,7 @@ local-first workflows, and agent interoperability.
 - Passage-based retrieval with measurable context reduction.
 - Experimental RRF ranking measured against BM25 without changing the default.
 - Secret-safety checks for validation, retrieval, and export.
+- Fingerprint-backed duplicate detection beyond exact lexical overlap.
 - More robust agent writeback flows for capturing solved problems and updating existing notes.
 - Public documentation, examples, and contribution workflow.
 
@@ -19,7 +20,6 @@ Detailed execution plan: [Cairn Search Optimization Implementation Plan](docs/su
 
 - Broader passage-vs-document benchmark coverage across recurring workflows.
 - Safer RRF variants, including prefix/inflection expansion and passage support.
-- Duplicate detection beyond exact lexical overlap, starting with lightweight SimHash-style fingerprints.
 - Optional package/plugin adapters for Codex, Claude, GitHub Copilot, and OpenCode.
 
 ## Later

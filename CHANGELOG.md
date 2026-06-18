@@ -19,6 +19,7 @@ Initial public release.
 - Experimental RRF ranker for noisy document queries.
 - Partial document reads by line range, section, and snippet.
 - Similar-note checks before creating duplicates.
+- Lightweight fingerprint fallback for near-duplicate checks with extra terms.
 - Note creation and idempotent append updates.
 - Agent guide generation for Codex, Claude, OpenCode, and generic agents.
 - Vault stats, doctor, export, and import commands.

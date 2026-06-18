@@ -84,6 +84,40 @@ class SimilarTests(unittest.TestCase):
             self.assertEqual(payload[0]["path"], "knowledge/deploy-403.md")
             self.assertGreaterEqual(payload[0]["similarity"], 0.2)
 
+    def test_cli_similar_finds_near_duplicate_with_extra_terms(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="engineering")
+            (root / "knowledge" / "deploy-token-rotation.md").write_text(
+                "---\n"
+                "type: Runbook\n"
+                "title: Deploy token rotation\n"
+                "description: Update the CI secret after rotating workspace access.\n"
+                "tags: [bug, deploy]\n"
+                "timestamp: 2026-06-17T10:00:00Z\n"
+                "aliases: [deploy forbidden]\n"
+                "systems: [ci]\n"
+                "signals: [http 403, token rotation]\n"
+                "---\n\n"
+                "# Context\n\n"
+                "Deployment failed after the workspace token rotation.\n\n"
+                "# Resolution\n\n"
+                "Update the CI secret and rerun the failed deployment job.\n",
+                encoding="utf-8",
+            )
+            run_cairn(root, "index", "--rebuild")
+            query = (
+                "After rotating workspace access, deployment fails until the CI "
+                "secret is updated and the failed job is rerun. kubernetes staging"
+            )
+
+            result = run_cairn(root, "similar", query, "--limit", "3", "--json")
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            payload = json.loads(result.stdout)
+            self.assertEqual(payload[0]["path"], "knowledge/deploy-token-rotation.md")
+            self.assertGreaterEqual(payload[0]["similarity"], 0.55)
+
 
 if __name__ == "__main__":
     unittest.main()
