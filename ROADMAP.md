@@ -26,6 +26,9 @@ implementation history.
   `related` labels.
 - Markdown writeback ergonomics through `--body-file`, `--body-stdin`,
   `--append-file`, and `--append-stdin`.
+- Pre-write policy validation for `capture`/`add` and `update`: new notes are
+  checked against `SCHEMA.md`, and new content is scanned for common
+  secret-like values before files are written.
 - Standalone GitHub Release binaries, checksums, and quick install scripts for
   Linux, macOS, and Windows.
 - Public documentation, example vault, changelog, contribution guide, and GitHub
@@ -41,10 +44,10 @@ implementation history.
   from the same model.
 - Harden writeback with dry-run output, no-op reasons, and conflict detection
   based on file signatures before agents update shared notes.
-- Add schema policy and pre-write validation so generated notes fail before
-  malformed frontmatter reaches the vault.
 - Complete ranking explanation output for search and retrieve, focused on
   debugging and benchmarks rather than confidence claims.
+- Discipline generated agent setup docs so each harness receives the same
+  search/retrieve/writeback policy and glossary guidance.
 
 ## Next
 

@@ -56,7 +56,7 @@ Depois de criar ou editar notas, rode `cairn index`. Busca e recuperação usam 
 ## Criando Um Vault
 
 ```bash
-cairn init --path ~/brain --profile personal
+cairn init --path ~/brain --profile engineering
 cairn validate --path ~/brain
 cairn index --path ~/brain --rebuild
 cairn doctor --path ~/brain
@@ -240,6 +240,12 @@ cairn add --path ~/brain \
 `capture` é um alias com o mesmo comportamento. Use depois que uma tarefa foi
 resolvida e o conhecimento provavelmente será útil de novo.
 
+Antes de escrever, Cairn valida a nota renderizada contra o `SCHEMA.md` e
+escaneia o conteúdo novo por valores comuns com aparência de segredo.
+Combinações inválidas de type/tag ou segredos detectados falham antes da criação
+do arquivo Markdown. Com `--json`, falhas de policy retornam `ok`, `path`,
+`error_count` e `errors`.
+
 O argumento `--body` da CLI é melhor para textos curtos. Para notas com várias
 seções, crie o corpo em um arquivo Markdown e passe com `--body-file`:
 
@@ -299,6 +305,9 @@ cairn update knowledge/deploy-403.md --path ~/brain --append-file ./deploy-403-u
 
 O JSON inclui `changed`, `would_change`, `dry_run`, `reason`, `sha256_before` e
 `sha256_after`. Quando o texto já existe na nota, `reason` é `already_present`.
+O texto anexado é escaneado por valores comuns com aparência de segredo antes da
+escrita. Com `--json`, falhas de policy usam o mesmo formato `ok`, `path`,
+`error_count` e `errors` do `capture`.
 
 ### `cairn index`
 

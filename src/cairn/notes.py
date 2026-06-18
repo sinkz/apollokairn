@@ -2,13 +2,25 @@ from __future__ import annotations
 
 import re
 import hashlib
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Sequence
 
+from cairn.frontmatter import parse_document
+from cairn.schema import SchemaIssue, parse_schema, validate_frontmatter_policy
+from cairn.secret_scan import scan_text
+
 
 _SLUG_CHARS = re.compile(r"[^a-z0-9]+")
+
+
+class NotePolicyError(ValueError):
+    def __init__(self, path: str, issues: Sequence[SchemaIssue]) -> None:
+        self.path = path
+        self.issues = list(issues)
+        message = "; ".join(issue.message for issue in self.issues) or "schema policy failed"
+        super().__init__(message)
 
 
 @dataclass(frozen=True)
@@ -20,6 +32,14 @@ class NoteWriteResult:
     reason: str = "updated"
     sha256_before: str | None = None
     sha256_after: str | None = None
+
+
+@dataclass(frozen=True)
+class NotePolicyResult:
+    ok: bool
+    path: str
+    error_count: int
+    errors: list[SchemaIssue] = field(default_factory=list)
 
 
 def slugify(title: str) -> str:
@@ -42,6 +62,36 @@ def _render_body(body: str) -> str:
 
 def _sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def _secret_issues(path: str, text: str) -> list[SchemaIssue]:
+    return [
+        SchemaIssue(path, f"potential secret detected: {finding.kind} on line {finding.line}")
+        for finding in scan_text(text)
+    ]
+
+
+def _validate_new_note(root: Path, rel: Path, content: str) -> None:
+    rel_path = rel.as_posix()
+    schema_path = root / "SCHEMA.md"
+    if not schema_path.exists():
+        raise NotePolicyError(rel_path, [SchemaIssue("SCHEMA.md", "missing schema file")])
+    schema = parse_schema(schema_path.read_text(encoding="utf-8"))
+    parsed = parse_document(content)
+    issues = validate_frontmatter_policy(rel_path, parsed.frontmatter, schema)
+    issues.extend(_secret_issues(rel_path, content))
+    if issues:
+        raise NotePolicyError(rel_path, issues)
+
+
+def _validate_append(display_path: str, snippet: str) -> None:
+    issues = _secret_issues(display_path, snippet)
+    if issues:
+        raise NotePolicyError(display_path, issues)
+
+
+def note_policy_payload(exc: NotePolicyError) -> NotePolicyResult:
+    return NotePolicyResult(ok=False, path=exc.path, error_count=len(exc.issues), errors=exc.issues)
 
 
 def create_note(
@@ -83,6 +133,7 @@ def create_note(
         "---\n\n"
         f"{_render_body(body)}"
     )
+    _validate_new_note(root, rel, content)
     if dry_run:
         return NoteWriteResult(
             path=rel.as_posix(),
@@ -161,6 +212,7 @@ def append_to_note(
     snippet = text.strip()
     if not snippet:
         raise ValueError("--append must not be empty")
+    _validate_append(display_path, snippet)
     if snippet in current:
         return NoteWriteResult(
             path=display_path,

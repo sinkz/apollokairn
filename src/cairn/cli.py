@@ -191,7 +191,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"skipped {item}")
         return 0
     if args.command in {"add", "capture"}:
-        from cairn.notes import create_note
+        from cairn.notes import NotePolicyError, create_note, note_policy_payload
 
         try:
             body = _read_text_input(args.body, args.body_file, args.body_stdin)
@@ -209,6 +209,13 @@ def main(argv: list[str] | None = None) -> int:
                 timestamp=args.timestamp,
                 dry_run=args.dry_run,
             )
+        except NotePolicyError as exc:
+            if args.json:
+                _print_json(note_policy_payload(exc))
+            else:
+                for issue in exc.issues:
+                    print(f"ERROR {issue.path}: {issue.message}", file=sys.stderr)
+            return 1
         except (FileExistsError, OSError, ValueError) as exc:
             print(f"ERROR {exc}", file=sys.stderr)
             return 1
@@ -218,7 +225,7 @@ def main(argv: list[str] | None = None) -> int:
             print(("would create" if args.dry_run else "created") + f" {result.path}")
         return 0
     if args.command == "update":
-        from cairn.notes import append_to_note
+        from cairn.notes import NotePolicyError, append_to_note, note_policy_payload
 
         try:
             append_text = _read_text_input(args.append, args.append_file, args.append_stdin)
@@ -229,6 +236,13 @@ def main(argv: list[str] | None = None) -> int:
                 dry_run=args.dry_run,
                 expected_sha256=args.expect_sha256,
             )
+        except NotePolicyError as exc:
+            if args.json:
+                _print_json(note_policy_payload(exc))
+            else:
+                for issue in exc.issues:
+                    print(f"ERROR {issue.path}: {issue.message}", file=sys.stderr)
+            return 1
         except (FileNotFoundError, OSError, ValueError) as exc:
             print(f"ERROR {exc}", file=sys.stderr)
             return 1

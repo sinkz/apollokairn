@@ -12,7 +12,7 @@
   <p>
     <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white">
     <img alt="Dependências de runtime: zero" src="https://img.shields.io/badge/dependencias_runtime-0-2f6f4e">
-    <img alt="Testes de regressão: 145" src="https://img.shields.io/badge/testes-145-3b6ea8">
+    <img alt="Testes de regressão: 149" src="https://img.shields.io/badge/testes-149-3b6ea8">
     <img alt="Recall at 3: 1.00" src="https://img.shields.io/badge/Recall%403-1.00-2f6f4e">
     <img alt="Redução de contexto: 92.15%" src="https://img.shields.io/badge/reducao_contexto-92.15%25-8a5a44">
     <img alt="Acurácia de decisão de escrita: 100%" src="https://img.shields.io/badge/escrita_decisoes-100%25-285da8">
@@ -53,7 +53,7 @@ atualizar vs criar.
 | Redução em comparativos | `53.73%` | Redução medida nas rodadas comparativas configuradas. |
 | Acurácia de decisão de escrita | `100%` | Decisões corretas de criar, atualizar, no-op e conflito no conjunto de fixtures. |
 | Prevenção de duplicatas | `100%` | Notas reutilizáveis existentes são atualizadas ou preservadas em vez de duplicadas. |
-| Testes de regressão | `145` | Testes unitários e de workflow rodados antes da publicação atual. |
+| Testes de regressão | `149` | Testes unitários e de workflow rodados antes da publicação atual. |
 
 Os dados do benchmark também são publicados no site por
 [`docs/data/benchmarks.json`](docs/data/benchmarks.json).
@@ -93,7 +93,7 @@ fallback manual.
 ## Criar Um Vault
 
 ```bash
-cairn init --path CAMINHO_DO_VAULT --profile personal
+cairn init --path CAMINHO_DO_VAULT --profile engineering
 cairn validate --path CAMINHO_DO_VAULT
 cairn index --path CAMINHO_DO_VAULT --rebuild
 cairn doctor --path CAMINHO_DO_VAULT
@@ -163,6 +163,9 @@ cairn capture --path CAMINHO_DO_VAULT \
   --body-file CAMINHO_DO_CORPO_DA_NOTA.md
 ```
 
+`capture` e `add` validam o schema alvo e escaneiam o conteúdo novo por valores
+com aparência de segredo antes de escrever o arquivo.
+
 ### 2. Buscar antes de abrir arquivos
 
 ```bash
@@ -204,7 +207,8 @@ Para atualizações maiores, use `--append-file CAMINHO_DO_TEXTO.md` ou envie o
 conteúdo por pipe com `--append-stdin`.
 Agentes podem adicionar `--json`, prever escritas com `--dry-run` e passar
 `--expect-sha256 SHA256_ATUAL` para evitar atualizar um arquivo que mudou desde
-a última inspeção.
+a última inspeção. O conteúdo novo anexado é escaneado por valores com aparência
+de segredo antes da escrita.
 
 ## Comandos
 

@@ -204,6 +204,94 @@ class NotesTests(unittest.TestCase):
             self.assertIn("Body read from stdin.", text)
             self.assertEqual(text.count("# Context"), 1)
 
+    def test_cli_capture_rejects_schema_policy_before_writing(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="personal")
+
+            result = run_cairn(
+                root,
+                "capture",
+                "--title",
+                "Invalid policy note",
+                "--description",
+                "Should not be written.",
+                "--type",
+                "Runbook",
+                "--tag",
+                "deploy",
+                "--body",
+                "This type and tag are not part of the personal schema.",
+            )
+
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("type 'Runbook' is not declared in SCHEMA.md", result.stderr)
+            self.assertIn("tag 'deploy' is not declared in SCHEMA.md", result.stderr)
+            self.assertFalse((root / "knowledge" / "invalid-policy-note.md").exists())
+
+    def test_cli_capture_dry_run_json_reports_schema_policy_errors(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="personal")
+
+            result = run_cairn(
+                root,
+                "capture",
+                "--title",
+                "Invalid policy preview",
+                "--description",
+                "Should not be written.",
+                "--type",
+                "Runbook",
+                "--tag",
+                "deploy",
+                "--body",
+                "Preview invalid policy output.",
+                "--dry-run",
+                "--json",
+            )
+
+            self.assertEqual(result.returncode, 1)
+            payload = json.loads(result.stdout)
+            self.assertFalse(payload["ok"])
+            self.assertEqual(payload["error_count"], 2)
+            self.assertEqual(payload["path"], "knowledge/invalid-policy-preview.md")
+            messages = "\n".join(issue["message"] for issue in payload["errors"])
+            self.assertIn("type 'Runbook'", messages)
+            self.assertIn("tag 'deploy'", messages)
+            self.assertFalse((root / "knowledge" / "invalid-policy-preview.md").exists())
+
+    def test_cli_capture_rejects_secret_like_value_before_writing(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="engineering")
+            secret_value = "AKIAIOSFODNN7EXAMPLE"
+
+            result = run_cairn(
+                root,
+                "capture",
+                "--title",
+                "Secret capture",
+                "--description",
+                "Should be blocked before writing.",
+                "--type",
+                "Runbook",
+                "--tag",
+                "bug",
+                "--body",
+                f"Do not store AWS access key {secret_value} in notes.",
+                "--json",
+            )
+
+            self.assertEqual(result.returncode, 1)
+            payload = json.loads(result.stdout)
+            self.assertFalse(payload["ok"])
+            messages = "\n".join(issue["message"] for issue in payload["errors"])
+            self.assertIn("potential secret", messages)
+            self.assertIn("AWS access key", messages)
+            self.assertNotIn(secret_value, messages)
+            self.assertFalse((root / "knowledge" / "secret-capture.md").exists())
+
     def test_cli_add_rejects_folder_path_traversal(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp) / "vault"
@@ -355,6 +443,46 @@ class NotesTests(unittest.TestCase):
             self.assertEqual(result.returncode, 1)
             self.assertIn("modified since expected sha256", result.stderr)
             self.assertNotIn("Should not write.", note.read_text(encoding="utf-8"))
+
+    def test_cli_update_rejects_secret_like_value_before_writing(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="engineering")
+            run_cairn(
+                root,
+                "add",
+                "--title",
+                "Deploy runbook",
+                "--description",
+                "Reusable deploy runbook.",
+                "--type",
+                "Runbook",
+                "--tag",
+                "deploy",
+                "--body",
+                "Initial note.",
+            )
+            secret_value = "AKIAIOSFODNN7EXAMPLE"
+
+            result = run_cairn(
+                root,
+                "update",
+                "knowledge/deploy-runbook.md",
+                "--append",
+                f"Do not store AWS access key {secret_value} in notes.",
+                "--json",
+            )
+
+            self.assertEqual(result.returncode, 1)
+            payload = json.loads(result.stdout)
+            self.assertFalse(payload["ok"])
+            self.assertEqual(payload["path"], "knowledge/deploy-runbook.md")
+            messages = "\n".join(issue["message"] for issue in payload["errors"])
+            self.assertIn("potential secret", messages)
+            self.assertIn("AWS access key", messages)
+            self.assertNotIn(secret_value, messages)
+            text = (root / "knowledge" / "deploy-runbook.md").read_text(encoding="utf-8")
+            self.assertNotIn(secret_value, text)
 
     def test_cli_update_appends_file_accepts_absolute_path_and_touches_timestamp(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

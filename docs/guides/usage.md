@@ -55,7 +55,7 @@ local index; if it is missing or stale, `cairn doctor` will tell you.
 ## Creating a Vault
 
 ```bash
-cairn init --path ~/brain --profile personal
+cairn init --path ~/brain --profile engineering
 cairn validate --path ~/brain
 cairn index --path ~/brain --rebuild
 cairn doctor --path ~/brain
@@ -237,6 +237,11 @@ cairn add --path ~/brain \
 `capture` is an alias with the same behavior. Use these after a task is solved
 and the knowledge is likely to be useful again.
 
+Before writing, Cairn validates the rendered note against `SCHEMA.md` and scans
+the new content for common secret-like values. Invalid type/tag combinations or
+detected secrets fail before a Markdown file is created. With `--json`, policy
+failures return `ok`, `path`, `error_count`, and `errors`.
+
 The CLI body argument is best for short text. For multi-section notes, create
 the body in a Markdown file and pass it with `--body-file`:
 
@@ -297,6 +302,9 @@ cairn update knowledge/deploy-403.md --path ~/brain --append-file ./deploy-403-u
 The JSON result includes `changed`, `would_change`, `dry_run`, `reason`,
 `sha256_before`, and `sha256_after`. When the appended text is already present,
 `reason` is `already_present`.
+The appended text is scanned for common secret-like values before it is written.
+With `--json`, policy failures use the same `ok`, `path`, `error_count`, and
+`errors` shape as `capture`.
 
 ### `cairn index`
 
