@@ -12,9 +12,10 @@
   <p>
     <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white">
     <img alt="Dependências de runtime: zero" src="https://img.shields.io/badge/dependencias_runtime-0-2f6f4e">
-    <img alt="Testes de regressão: 130" src="https://img.shields.io/badge/testes-130-3b6ea8">
+    <img alt="Testes de regressão: 137" src="https://img.shields.io/badge/testes-137-3b6ea8">
     <img alt="Recall at 3: 1.00" src="https://img.shields.io/badge/Recall%403-1.00-2f6f4e">
     <img alt="Redução de contexto: 92.16%" src="https://img.shields.io/badge/reducao_contexto-92.16%25-8a5a44">
+    <img alt="Acurácia de decisão de escrita: 100%" src="https://img.shields.io/badge/escrita_decisoes-100%25-285da8">
     <img alt="Licença: MIT" src="https://img.shields.io/badge/licenca-MIT-15130f">
   </p>
 </div>
@@ -38,9 +39,10 @@ mas não depende de um produto específico.
 
 ## Snapshot Atual Do Benchmark
 
-O benchmark determinístico roda localmente sem chamadas a modelos. Ele mede
-qualidade de ranking, orçamento de tokens e redução de contexto em passagens
-contra documentos completos.
+Os benchmarks determinísticos rodam localmente sem chamadas a modelos. Eles
+medem qualidade de recuperação, orçamento de tokens, redução de contexto em
+passagens contra documentos completos e decisões de escrita em fluxos de
+atualizar vs criar.
 
 | Métrica | Atual | Significado |
 | --- | ---: | --- |
@@ -49,13 +51,16 @@ contra documentos completos.
 | nDCG@3 | `0.9931` | Qualidade de ranking contra rótulos determinísticos de relevância. |
 | Redução de contexto | `92.16%` | Recuperação por passagens retorna muito menos texto que abrir documentos completos. |
 | Redução em comparativos | `53.73%` | Redução medida nas rodadas comparativas configuradas. |
-| Testes de regressão | `130` | Testes unitários e de workflow rodados antes da publicação atual. |
+| Acurácia de decisão de escrita | `100%` | Decisões corretas de criar, atualizar, no-op e conflito no conjunto de fixtures. |
+| Prevenção de duplicatas | `100%` | Notas reutilizáveis existentes são atualizadas ou preservadas em vez de duplicadas. |
+| Testes de regressão | `137` | Testes unitários e de workflow rodados antes da publicação atual. |
 
 Os dados do benchmark também são publicados no site por
 [`docs/data/benchmarks.json`](docs/data/benchmarks.json).
 
 ```bash
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
+python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
 ```
 
 ## Instalação Rápida
@@ -246,14 +251,17 @@ Rode a suíte de testes:
 python -m unittest discover -v
 ```
 
-Rode o benchmark determinístico de busca:
+Rode os benchmarks determinísticos:
 
 ```bash
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
+python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
 ```
 
-O benchmark verifica qualidade de ranking, prefixos golden, orçamentos de tokens
-e redução de contexto em passagens contra documentos completos.
+Os benchmarks verificam qualidade de ranking, prefixos golden, orçamentos de
+tokens, redução de contexto em passagens contra documentos completos, decisões
+de atualizar vs criar, idempotência de no-op, prevenção de duplicatas e detecção
+de conflito por escrita obsoleta.
 
 ## Referência OKF
 

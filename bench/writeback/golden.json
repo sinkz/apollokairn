@@ -1,0 +1,49 @@
+{
+  "cases": {
+    "deploy_403_update": {
+      "actual_action": "update",
+      "target_path": "knowledge/deploy-403-token-rotation.md",
+      "reason": "updated"
+    },
+    "deploy_403_noop": {
+      "actual_action": "noop",
+      "target_path": "knowledge/deploy-403-token-rotation.md",
+      "reason": "already_present"
+    },
+    "mobile_release_create": {
+      "actual_action": "create",
+      "target_path": "knowledge/testflight-upload-rejected-by-expired-provisioning-profile.md",
+      "reason": "created"
+    },
+    "production_access_update": {
+      "actual_action": "update",
+      "target_path": "processes/production-access-request.md",
+      "reason": "updated"
+    },
+    "production_access_conflict": {
+      "actual_action": "conflict",
+      "target_path": "processes/production-access-request.md",
+      "reason": "conflict"
+    },
+    "sqlite_fts_update": {
+      "actual_action": "update",
+      "target_path": "decisions/use-sqlite-fts.md",
+      "reason": "updated"
+    },
+    "ptbr_auth_update": {
+      "actual_action": "update",
+      "target_path": "knowledge/ptbr-auth-session.md",
+      "reason": "updated"
+    },
+    "payment_timeout_create": {
+      "actual_action": "create",
+      "target_path": "knowledge/refund-webhook-timeout-during-reconciliation.md",
+      "reason": "created"
+    },
+    "weekly_dashboard_create": {
+      "actual_action": "create",
+      "target_path": "notes/weekly-planning-dashboard-idea.md",
+      "reason": "created"
+    }
+  }
+}

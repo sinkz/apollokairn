@@ -148,6 +148,7 @@ def append_to_note(
     text: str,
     dry_run: bool = False,
     expected_sha256: str | None = None,
+    timestamp: str | None = None,
 ) -> NoteWriteResult:
     path, display_path = _resolve_note_path(Path(root), rel_path)
     if not path.is_file():
@@ -171,7 +172,7 @@ def append_to_note(
             sha256_after=current_hash,
         )
     separator = "\n" if current.endswith("\n") else "\n\n"
-    touched = _replace_timestamp(current, datetime.now(timezone.utc).isoformat())
+    touched = _replace_timestamp(current, timestamp or datetime.now(timezone.utc).isoformat())
     updated = touched + separator + snippet + "\n"
     if dry_run:
         return NoteWriteResult(

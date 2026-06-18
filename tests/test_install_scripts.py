@@ -54,6 +54,8 @@ class InstallScriptTests(unittest.TestCase):
         page = (ROOT / "docs" / "index.html").read_text(encoding="utf-8")
 
         self.assertIn("id=\"install\"", page)
+        self.assertIn("id=\"benchmark-suites\"", page)
+        self.assertIn("id=\"benchmark-history\"", page)
         self.assertIn("curl -fsSL https://sinkz.github.io/cairn/install.sh | sh", page)
         self.assertIn("irm https://sinkz.github.io/cairn/install.ps1 | iex", page)
         self.assertIn("guides/quick-install.md", page)
@@ -82,6 +84,14 @@ class InstallScriptTests(unittest.TestCase):
         self.assertIn("cairn-macos-arm64.tar.gz", workflow)
         self.assertIn("checksums.txt", workflow)
         self.assertIn("softprops/action-gh-release", workflow)
+
+    def test_ci_runs_writeback_benchmark(self) -> None:
+        ci = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
+        release = (ROOT / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
+
+        command = "python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json"
+        self.assertIn(command, ci)
+        self.assertIn(command, release)
 
     def test_windows_installer_downloads_release_binary_and_verifies_checksum(self) -> None:
         script = (ROOT / "docs" / "install.ps1").read_text(encoding="utf-8")

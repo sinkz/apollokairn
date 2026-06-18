@@ -462,17 +462,19 @@
         <div class="section-heading">
           <p class="eyebrow" data-lang-content="en">Benchmark methodology</p>
           <p class="eyebrow" data-lang-content="pt">Metodologia de benchmark</p>
-          <h2 data-lang-content="en">The benchmark measures retrieval quality before a model gets involved.</h2>
-          <h2 data-lang-content="pt">O benchmark mede qualidade de recuperação antes de envolver um modelo.</h2>
+          <h2 data-lang-content="en">The benchmarks measure retrieval and writeback before a model gets involved.</h2>
+          <h2 data-lang-content="pt">Os benchmarks medem recuperação e escrita antes de envolver um modelo.</h2>
           <p data-lang-content="en">
             Fixtures define vault notes, queries, expected relevance labels, golden
-            result prefixes, retrieval mode, and comparison mode. The goal is to
-            catch regressions in search and token usage deterministically.
+            result prefixes, retrieval mode, comparison mode, and writeback
+            decisions. The goal is to catch regressions in search, token usage,
+            and update-vs-create behavior deterministically.
           </p>
           <p data-lang-content="pt">
             Fixtures definem notas do vault, queries, rótulos esperados de relevância,
-            prefixos golden, modo de recuperação e modo comparativo. O objetivo é
-            capturar regressões em busca e uso de tokens de forma determinística.
+            prefixos golden, modo de recuperação, modo comparativo e decisões de
+            escrita. O objetivo é capturar regressões em busca, uso de tokens e
+            comportamento de atualizar vs criar de forma determinística.
           </p>
         </div>
 
@@ -510,6 +512,16 @@
             <strong>context_reduction</strong>
             <p data-lang-content="en">Measures how much less text passage retrieval returns compared with full documents.</p>
             <p data-lang-content="pt">Mede quanto texto a recuperação por passagens economiza contra documentos completos.</p>
+          </article>
+          <article>
+            <strong>decision_accuracy</strong>
+            <p data-lang-content="en">Checks whether a writeback case correctly creates, updates, no-ops, or blocks a conflict.</p>
+            <p data-lang-content="pt">Verifica se um caso de escrita cria, atualiza, faz no-op ou bloqueia conflito corretamente.</p>
+          </article>
+          <article>
+            <strong>duplicate_avoidance</strong>
+            <p data-lang-content="en">Checks whether existing reusable notes are reused instead of creating duplicates.</p>
+            <p data-lang-content="pt">Verifica se notas reutilizáveis existentes são reaproveitadas em vez de duplicadas.</p>
           </article>
         </div>
       </section>

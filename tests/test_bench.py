@@ -26,6 +26,20 @@ def run_bench(*args: str) -> subprocess.CompletedProcess[str]:
     )
 
 
+def run_writeback_bench(*args: str) -> subprocess.CompletedProcess[str]:
+    env = dict(os.environ)
+    env["PYTHONPATH"] = str(ROOT / "src")
+    return subprocess.run(
+        [sys.executable, "bench/run_writeback_eval.py", *args],
+        cwd=ROOT,
+        env=env,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+
+
 def write_doc(root: Path, rel: str, title: str, systems: str) -> None:
     path = root / rel
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -44,6 +58,47 @@ def write_doc(root: Path, rel: str, title: str, systems: str) -> None:
 
 
 class BenchTests(unittest.TestCase):
+    def test_public_benchmark_data_exposes_retrieval_and_writeback_suites(self) -> None:
+        data = json.loads((ROOT / "docs" / "data" / "benchmarks.json").read_text(encoding="utf-8"))
+
+        suites = {suite["id"]: suite for suite in data["suites"]}
+        self.assertIn("retrieval", suites)
+        self.assertIn("writeback", suites)
+        self.assertEqual(
+            suites["writeback"]["suite"]["command"],
+            "python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json",
+        )
+        writeback_metric_ids = {metric["id"] for metric in suites["writeback"]["current"]["metrics"]}
+        self.assertTrue(
+            {
+                "decision_accuracy",
+                "target_path_accuracy",
+                "noop_accuracy",
+                "conflict_detection_rate",
+                "duplicate_avoidance_rate",
+                "writeback_cases",
+            }.issubset(writeback_metric_ids),
+            writeback_metric_ids,
+        )
+        self.assertGreaterEqual(len(suites["writeback"]["history"]), 1)
+        self.assertIn("decision_accuracy", suites["writeback"]["history"][0])
+
+    def test_public_writeback_metrics_match_current_benchmark_output(self) -> None:
+        result = run_writeback_bench()
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        payload = json.loads(result.stdout)
+        data = json.loads((ROOT / "docs" / "data" / "benchmarks.json").read_text(encoding="utf-8"))
+        writeback = next(suite for suite in data["suites"] if suite["id"] == "writeback")
+        public_metrics = {metric["id"]: metric["value"] for metric in writeback["current"]["metrics"]}
+
+        self.assertEqual(public_metrics["decision_accuracy"], payload["decision_accuracy"])
+        self.assertEqual(public_metrics["target_path_accuracy"], payload["target_path_accuracy"])
+        self.assertEqual(public_metrics["noop_accuracy"], payload["noop_accuracy"])
+        self.assertEqual(public_metrics["conflict_detection_rate"], payload["conflict_detection_rate"])
+        self.assertEqual(public_metrics["duplicate_avoidance_rate"], payload["duplicate_avoidance_rate"])
+        self.assertEqual(public_metrics["writeback_cases"], payload["cases"])
+
     def test_benchmark_outputs_quality_and_token_metrics_for_harder_suite(self) -> None:
         result = run_bench()
 

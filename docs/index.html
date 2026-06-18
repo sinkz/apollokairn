@@ -145,21 +145,23 @@
 
       <section class="section" id="benchmarks">
         <div class="section-heading">
-          <p class="eyebrow" data-lang-content="en">Measured retrieval</p>
-          <p class="eyebrow" data-lang-content="pt">Recuperação medida</p>
-          <h2 data-lang-content="en">Benchmark data is stored separately from the page.</h2>
-          <h2 data-lang-content="pt">Dados de benchmark ficam separados da página.</h2>
+          <p class="eyebrow" data-lang-content="en">Measured behavior</p>
+          <p class="eyebrow" data-lang-content="pt">Comportamento medido</p>
+          <h2 data-lang-content="en">Retrieval and writeback benchmarks are tracked from JSON.</h2>
+          <h2 data-lang-content="pt">Benchmarks de recuperação e escrita são acompanhados via JSON.</h2>
           <p data-lang-content="en">
             The public page reads benchmark data from JSON so new comparisons can
-            be added without redesigning the page.
+            be added without redesigning the page. Current metrics and history are
+            rendered from the same data source.
           </p>
           <p data-lang-content="pt">
             A página pública lê os dados de benchmark via JSON para permitir novos
-            comparativos sem redesenhar a interface.
+            comparativos sem redesenhar a interface. Métricas atuais e histórico
+            são renderizados a partir da mesma fonte de dados.
           </p>
         </div>
 
-        <div class="benchmark-panel">
+        <div class="benchmark-panel" id="benchmark-summary">
           <div>
             <p class="panel-label" id="benchmark-suite">Deterministic search benchmark</p>
             <h3 id="benchmark-current-label">Cairn lexical retrieval suite</h3>
@@ -172,16 +174,26 @@
           <p class="updated" id="benchmark-updated">Updated 2026-06-18</p>
         </div>
 
-        <div class="metric-grid" id="benchmark-cards" aria-live="polite">
+        <div class="suite-stack" id="benchmark-suites" aria-live="polite">
+          <div class="metric-grid" id="benchmark-cards">
+            <article class="metric-card">
+              <span>Recall@3</span>
+              <strong>1.00</strong>
+              <p>Expected notes appear in the top three results.</p>
+            </article>
+            <article class="metric-card">
+              <span>Context reduction</span>
+              <strong>92.16%</strong>
+              <p>Passage retrieval returns far less text than opening full documents.</p>
+            </article>
+          </div>
+        </div>
+
+        <div class="history-panel" id="benchmark-history">
           <article class="metric-card">
-            <span>Recall@3</span>
-            <strong>1.00</strong>
-            <p>Expected notes appear in the top three results.</p>
-          </article>
-          <article class="metric-card">
-            <span>Context reduction</span>
-            <strong>92.16%</strong>
-            <p>Passage retrieval returns far less text than opening full documents.</p>
+            <span>History</span>
+            <strong>JSON</strong>
+            <p>Benchmark history is loaded from docs/data/benchmarks.json.</p>
           </article>
         </div>
 
@@ -273,22 +285,22 @@
         <div class="section-heading compact">
           <p class="eyebrow" data-lang-content="en">Roadmap</p>
           <p class="eyebrow" data-lang-content="pt">Roadmap</p>
-          <h2 data-lang-content="en">Current roadmap focus: writeback evaluation.</h2>
-          <h2 data-lang-content="pt">Foco atual do roadmap: avaliação de escrita.</h2>
+          <h2 data-lang-content="en">Current roadmap focus: agent contracts.</h2>
+          <h2 data-lang-content="pt">Foco atual do roadmap: contratos para agentes.</h2>
           <p data-lang-content="en">
-            The next measurement work is about proving that agents can search,
-            update, and avoid duplicate notes without regressions.
+            The next implementation work is about stable JSON, structured context
+            packets, and clearer ranking or writeback evidence for agents.
           </p>
           <p data-lang-content="pt">
-            A próxima medição é provar que agentes conseguem buscar, atualizar e
-            evitar notas duplicadas sem regressões.
+            A próxima implementação é estabilizar JSON, pacotes de contexto
+            estruturados e evidências mais claras de ranking ou escrita para agentes.
           </p>
         </div>
         <div class="roadmap-columns">
           <article>
             <span>Now</span>
-            <p data-lang-content="en">Deterministic writeback suite, benchmark history, and update-vs-create thresholds.</p>
-            <p data-lang-content="pt">Suite determinística de escrita, histórico de benchmarks e limiares de atualizar vs criar.</p>
+            <p data-lang-content="en">JSON output, context packet provenance, dry-run writeback evidence, and ranking explanations.</p>
+            <p data-lang-content="pt">Saída JSON, proveniência dos pacotes de contexto, dry-run de escrita e explicação de ranking.</p>
           </article>
           <article>
             <span>Next</span>

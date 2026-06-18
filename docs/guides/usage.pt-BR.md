@@ -462,11 +462,12 @@ Rodar testes:
 python -m unittest discover -v
 ```
 
-Rodar avaliação determinística de busca:
+Rodar avaliações determinísticas:
 
 ```bash
 python bench/run_eval.py
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
+python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
 ```
 
 Tópicos do benchmark podem incluir `category`, `mode`, `compare_mode`, `ranker`
@@ -474,5 +475,9 @@ e `compare_ranker`. Isso permite medir se `passages` reduz tokens contra
 `documents`, se rankers experimentais melhoram qualidade contra a linha de base
 `bm25`, e qual classe de workflow cada tópico protege. A saída do benchmark
 inclui um resumo `comparison` para comparações de redução de tokens.
+
+O benchmark de escrita usa casos determinísticos para criar, atualizar, no-op,
+conflito, prevenção de duplicatas e acurácia do caminho alvo. Ele não chama
+modelo; exercita os primitivos locais de similaridade e escrita do Cairn.
 
 O runtime usa apenas a biblioteca padrão do Python.

@@ -12,9 +12,10 @@
   <p>
     <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white">
     <img alt="Runtime dependencies: zero" src="https://img.shields.io/badge/runtime_dependencies-0-2f6f4e">
-    <img alt="Regression tests: 130" src="https://img.shields.io/badge/tests-130-3b6ea8">
+    <img alt="Regression tests: 137" src="https://img.shields.io/badge/tests-137-3b6ea8">
     <img alt="Recall at 3: 1.00" src="https://img.shields.io/badge/Recall%403-1.00-2f6f4e">
     <img alt="Context reduction: 92.16%" src="https://img.shields.io/badge/context_reduction-92.16%25-8a5a44">
+    <img alt="Writeback decision accuracy: 100%" src="https://img.shields.io/badge/writeback_decisions-100%25-285da8">
     <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-15130f">
   </p>
 </div>
@@ -38,8 +39,9 @@ does not depend on a specific agent product.
 
 ## Current Benchmark Snapshot
 
-The deterministic benchmark runs locally without model calls. It measures
-ranking quality, token budgets, and passage-vs-document context reduction.
+The deterministic benchmarks run locally without model calls. They measure
+retrieval quality, token budgets, passage-vs-document context reduction, and
+writeback decisions for update-vs-create workflows.
 
 | Metric | Current | Meaning |
 | --- | ---: | --- |
@@ -48,13 +50,16 @@ ranking quality, token budgets, and passage-vs-document context reduction.
 | nDCG@3 | `0.9931` | Ranking quality against deterministic relevance labels. |
 | Context reduction | `92.16%` | Passage retrieval returns far less text than opening full documents. |
 | Comparison reduction | `53.73%` | Reduction measured in configured comparison runs. |
-| Regression tests | `130` | Unit and workflow tests run before publishing the current page. |
+| Writeback decision accuracy | `100%` | Correct create, update, no-op, and conflict decisions in the fixture set. |
+| Duplicate avoidance | `100%` | Existing reusable notes are updated or preserved instead of duplicated. |
+| Regression tests | `137` | Unit and workflow tests run before publishing the current page. |
 
 Benchmark data is also published on the website through
 [`docs/data/benchmarks.json`](docs/data/benchmarks.json).
 
 ```bash
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
+python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
 ```
 
 ## Quick Install
@@ -244,14 +249,16 @@ Run the test suite:
 python -m unittest discover -v
 ```
 
-Run the deterministic search benchmark:
+Run the deterministic benchmarks:
 
 ```bash
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
+python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
 ```
 
-The benchmark checks ranking quality, golden result prefixes, token budgets, and
-passage-vs-document context reduction.
+The benchmarks check ranking quality, golden result prefixes, token budgets,
+passage-vs-document context reduction, update-vs-create decisions, no-op
+idempotency, duplicate avoidance, and stale-write conflict detection.
 
 ## OKF Reference
 

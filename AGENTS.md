@@ -23,7 +23,7 @@ Follow `ROADMAP.md`. The current focus is:
 - stable JSON output for agent workflows;
 - structured retrieval packets with source provenance and budget metadata;
 - safer writeback through dry-run, no-op reasons, and conflict detection;
-- deterministic writeback benchmarks for update-vs-create behavior.
+- richer ranking/writeback explanations and benchmark slices.
 
 Do not treat ranking scores as confidence. Do not add persistent query cache
 before benchmarks show SQLite FTS latency is a real bottleneck.
@@ -59,6 +59,7 @@ work is done:
 ```bash
 python -m unittest discover
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
+python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
 git diff --check
 ```
 
@@ -89,16 +90,20 @@ foreach ($path in @('/', '/learn.html', '/install.sh', '/install.ps1', '/data/be
 
 ## Benchmarks
 
-The deterministic benchmark is the source of truth for retrieval regressions:
+The deterministic benchmarks are the source of truth for retrieval and
+writeback regressions:
 
 ```bash
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
+python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
 ```
 
 When benchmark numbers change intentionally, update:
 
 - `bench/golden.json` only when expected result prefixes change for a good
   reason;
+- `bench/writeback/golden.json` only when expected writeback decisions change
+  for a good reason;
 - `docs/data/benchmarks.json` when public metrics change;
 - README badges/tables if public counts or metrics are shown there.
 

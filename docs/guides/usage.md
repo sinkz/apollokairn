@@ -459,11 +459,12 @@ Run tests:
 python -m unittest discover -v
 ```
 
-Run deterministic search evaluation:
+Run deterministic evaluations:
 
 ```bash
 python bench/run_eval.py
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
+python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
 ```
 
 Benchmark topics may include `category`, `mode`, `compare_mode`, `ranker`, and
@@ -472,5 +473,9 @@ returned tokens against `documents`, whether experimental rankers improve
 quality against the default `bm25` baseline, and which workflow class each topic
 protects. The benchmark output includes a `comparison` summary for
 token-reduction comparisons.
+
+The writeback benchmark uses deterministic cases for create, update, no-op,
+conflict, duplicate avoidance, and target-path accuracy. It does not call a
+model; it exercises Cairn's local similarity and writeback primitives.
 
 The runtime uses only the Python standard library.

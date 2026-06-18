@@ -14,6 +14,10 @@ implementation history.
   for smaller prompts.
 - Deterministic search benchmark with qrels, golden checks, ranking metrics,
   token budgets, and passage-vs-document context reduction.
+- Deterministic writeback benchmark with update-vs-create, no-op, conflict,
+  duplicate-avoidance, and golden decision checks.
+- Public benchmark JSON and GitHub Pages cards for retrieval and writeback
+  metrics, including current values and history.
 - BM25 default ranking plus opt-in RRF and `retrieve --ranker auto` fallback.
 - Secret-safety checks for validation, retrieval, and export.
 - Similar-note detection with fingerprint fallback and `duplicate_candidate` /
@@ -37,11 +41,6 @@ implementation history.
   based on file signatures before agents update shared notes.
 - Normalize human-facing selectors such as `show --section` and snippets so
   Portuguese headings with accents remain discoverable from ASCII queries.
-- Build a deterministic writeback suite that exercises duplicate prevention,
-  note updates, recurring bugs, process notes, access notes, library references,
-  and update-vs-create decisions.
-- Add benchmark history and comparison data to the public site so regressions in
-  retrieval and writeback behavior are visible over time.
 - Harden standalone release portability, especially Linux binary compatibility
   across older glibc distributions, or document the minimum supported baseline.
 
@@ -59,7 +58,7 @@ implementation history.
 - Team workflows for reviewing shared vault changes before they become common
   knowledge.
 - Better benchmark slices by role and domain, such as engineering, support,
-  product, and personal notes.
+  product, personal notes, and multi-agent writeback behavior.
 - More import paths from existing Markdown or Obsidian-style knowledge bases.
 
 ## Later
