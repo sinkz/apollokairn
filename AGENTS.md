@@ -20,11 +20,11 @@ verified, and aligned with the project constraints.
 
 Follow `ROADMAP.md`. The current focus is:
 
-- structured retrieval packets with source provenance and budget metadata;
-- safer writeback through dry-run, no-op reasons, and conflict detection;
-- deterministic glossary aliases through top-level `glossary.md` and
-  `cairn vocab`;
-- richer writeback explanations, adapter boundaries, and benchmark slices.
+- explanation-quality and multi-role benchmark slices;
+- optional plugin or MCP adapter boundaries outside the dependency-free core;
+- read-only suggestion workflows based on measured similar-note thresholds;
+- note freshness and provenance metadata that does not mutate Markdown during
+  reads.
 
 Do not treat ranking scores as confidence. Keep glossary behavior explicit and
 reviewable; do not hard-code domain synonyms in Python. Do not add persistent

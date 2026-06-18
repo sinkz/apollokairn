@@ -15,6 +15,9 @@ implementation history.
   retrieval, and glossary management.
 - Budgeted retrieval for LLM context packets, including passage-level retrieval
   for smaller prompts.
+- Structured retrieval packets with source provenance, budget accounting,
+  ranker metadata, score metadata, and text rendering derived from the same
+  model.
 - Deterministic search benchmark with qrels, golden checks, ranking metrics,
   token budgets, and passage-vs-document context reduction.
 - Deterministic writeback benchmark with update-vs-create, no-op, conflict,
@@ -34,6 +37,8 @@ implementation history.
 - Pre-write policy validation for `capture`/`add` and `update`: new notes are
   checked against `SCHEMA.md`, and new content is scanned for common
   secret-like values before files are written.
+- Writeback dry-run output, no-op reasons, and stale-write conflict detection
+  based on file signatures before agents update shared notes.
 - Disciplined generated agent guides for `AGENTS.md`, `CODEX.md`, `CLAUDE.md`,
   `OPENCODE.md`, `HERMES.md`, and GitHub Copilot instructions, including JSON
   search, passage retrieval, glossary guidance, schema-compatible writes,
@@ -45,19 +50,15 @@ implementation history.
 
 ## Now
 
-- Refactor retrieval around a structured context packet with source provenance,
-  budget accounting, ranker metadata, score metadata, and text rendering derived
-  from the same model.
-- Harden writeback with dry-run output, no-op reasons, and conflict detection
-  based on file signatures before agents update shared notes.
 - Add more benchmark slices for explanation quality and multi-role vaults.
-- Prepare optional plugin or MCP adapter packages outside the dependency-free
+- Prototype optional plugin or MCP adapter packages outside the dependency-free
   core.
+- Design read-only suggestion workflows after similar-note thresholds are
+  measured, so agents can propose update-existing vs create-new actions with
+  evidence.
 
 ## Next
 
-- Add read-only suggestion workflows after similar-note thresholds are measured,
-  so agents can propose update-existing vs create-new actions with evidence.
 - Surface note freshness and provenance metadata in results without mutating
   Markdown files during read operations.
 - Build richer optional plugin packages for Codex, Claude, GitHub Copilot,
