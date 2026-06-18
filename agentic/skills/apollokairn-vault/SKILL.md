@@ -24,8 +24,7 @@ the whole vault unless targeted retrieval is not enough.
 ## Writeback
 
 - Before creating, run `apollokairn similar "<summary>" --vault NAME --json`.
-- Update a related note with `apollokairn update PATH --append-file FILE --vault NAME`.
-- Create only reusable knowledge with `apollokairn capture ... --body-file FILE --vault NAME`.
+- Update with `--append-file FILE` or `--append-stdin`; create with `--body-file FILE` or `--body-stdin`.
 - After writes, run `apollokairn validate --vault NAME` and `apollokairn index --vault NAME`.
 
 Never store secrets, credentials, tokens, private keys, or passwords.

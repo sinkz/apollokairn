@@ -35,8 +35,7 @@ the whole vault unless targeted retrieval is not enough.
 ## Writeback
 
 - Before creating, run `apollokairn similar "<summary>" --vault NAME --json`.
-- Update a related note with `apollokairn update PATH --append-file FILE --vault NAME`.
-- Create only reusable knowledge with `apollokairn capture ... --body-file FILE --vault NAME`.
+- Update with `--append-file FILE` or `--append-stdin`; create with `--body-file FILE` or `--body-stdin`.
 - After writes, run `apollokairn validate --vault NAME` and `apollokairn index --vault NAME`.
 
 Never store secrets, credentials, tokens, private keys, or passwords.
@@ -58,7 +57,9 @@ apollokairn retrieve "deploy 403 token" --vault work --mode passages --ranker au
 apollokairn similar "deploy fails after token rotation" --vault work --json
 
 apollokairn update knowledge/deploy-403.md --append-file note.md --vault work
+cat note.md | apollokairn update knowledge/deploy-403.md --append-stdin --vault work
 apollokairn capture --title "Deploy 403 after token rotation" --description "Fix for CI deploy failures." --type Runbook --tag deploy --body-file note.md --vault work
+cat note.md | apollokairn capture --title "Deploy 403 after token rotation" --description "Fix for CI deploy failures." --type Runbook --tag deploy --body-stdin --vault work
 apollokairn validate --vault work
 apollokairn index --vault work
 ```

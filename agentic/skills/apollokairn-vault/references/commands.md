@@ -13,7 +13,9 @@ apollokairn retrieve "deploy 403 token" --vault work --mode passages --ranker au
 apollokairn similar "deploy fails after token rotation" --vault work --json
 
 apollokairn update knowledge/deploy-403.md --append-file note.md --vault work
+cat note.md | apollokairn update knowledge/deploy-403.md --append-stdin --vault work
 apollokairn capture --title "Deploy 403 after token rotation" --description "Fix for CI deploy failures." --type Runbook --tag deploy --body-file note.md --vault work
+cat note.md | apollokairn capture --title "Deploy 403 after token rotation" --description "Fix for CI deploy failures." --type Runbook --tag deploy --body-stdin --vault work
 apollokairn validate --vault work
 apollokairn index --vault work
 ```
