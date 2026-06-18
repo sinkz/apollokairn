@@ -4,6 +4,13 @@ All notable ApolloKairn changes are tracked here.
 
 ## Unreleased
 
+## 0.1.4 - 2026-06-18
+
+### Added
+
+- Added opt-in local usage metrics through `apollokairn usage`, with redacted
+  JSONL events and static HTML/JSON vault reports under `.cairn/`.
+
 ## 0.1.3 - 2026-06-18
 
 ### Changed

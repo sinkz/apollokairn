@@ -45,6 +45,8 @@ implementation history.
   multi-line body handling, and post-write validation/indexing.
 - Standalone GitHub Release binaries, checksums, and quick install scripts for
   Linux, macOS, and Windows.
+- Opt-in local usage metrics with redacted JSONL events and static vault reports
+  for pilot evaluation.
 - Public documentation, example vault, changelog, contribution guide, and GitHub
   Pages overview.
 
@@ -78,7 +80,8 @@ implementation history.
 - Optional watch or notification workflows if real vault usage shows a need for
   long-running change detection.
 - UI or TUI for browsing, reviewing, and curating notes.
-- Richer analytics for vault health, duplication, stale notes, and coverage gaps.
+- Deeper analytics for vault health, duplication, stale notes, explicit
+  relevance feedback, and coverage gaps.
 
 ## Non-goals
 

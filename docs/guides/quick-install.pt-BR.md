@@ -93,13 +93,13 @@ código fonte.
 Linux e macOS:
 
 ```bash
-curl -fsSL https://sinkz.github.io/apollokairn/install.sh | APOLLOKAIRN_VERSION=v0.1.3 sh
+curl -fsSL https://sinkz.github.io/apollokairn/install.sh | APOLLOKAIRN_VERSION=v0.1.4 sh
 ```
 
 Windows PowerShell:
 
 ```powershell
-$env:APOLLOKAIRN_VERSION = "v0.1.3"
+$env:APOLLOKAIRN_VERSION = "v0.1.4"
 irm https://sinkz.github.io/apollokairn/install.ps1 | iex
 ```
 

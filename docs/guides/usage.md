@@ -97,7 +97,8 @@ Example:
   "exclude": ["inbox"],
   "generated_guides": ["AGENTS.md"],
   "profile": "engineering",
-  "search_limit": 3
+  "search_limit": 3,
+  "usage_tracking": false
 }
 ```
 
@@ -109,6 +110,7 @@ Important fields:
 | `search_limit` | Suggested default result limit for agents |
 | `exclude` | Folders or patterns ignored by validation and indexing |
 | `generated_guides` | Agent guide files managed by ApolloKairn |
+| `usage_tracking` | Opt-in local usage metrics under `.cairn/usage/` |
 
 Use `exclude` for scratch areas, private inboxes, generated files, and anything
 that should not be indexed.
@@ -483,6 +485,29 @@ apollokairn stats --path ~/brain --json
 
 Use this to understand whether a vault is growing in a healthy shape.
 
+### `apollokairn usage`
+
+Controls opt-in local usage metrics and generates a static vault report.
+
+```bash
+apollokairn usage status --path ~/brain
+apollokairn usage enable --path ~/brain
+apollokairn usage report --path ~/brain
+apollokairn usage report --path ~/brain --html
+apollokairn usage report --path ~/brain --json
+apollokairn usage disable --path ~/brain
+```
+
+When enabled, ApolloKairn writes redacted command events to
+`.cairn/usage/events.jsonl`. `usage report --html` writes a local static page to
+`.cairn/reports/usage.html` and a JSON summary to
+`.cairn/reports/usage-summary.json`.
+
+Usage metrics are local and disabled by default. Events include command names,
+redacted queries, paths returned or touched, elapsed time, result counts, and
+estimated token usage. They do not store note bodies or snippets. `usage enable`
+also adds `.cairn/usage/` and `.cairn/reports/` to the vault `.gitignore`.
+
 ### `apollokairn export` and `apollokairn import`
 
 Exports or imports a vault zip archive.
@@ -551,7 +576,7 @@ Run deterministic evaluations:
 python bench/run_eval.py
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
 python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
-python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 178
+python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 183
 ```
 
 Benchmark topics may include `category`, `mode`, `compare_mode`, `ranker`, and

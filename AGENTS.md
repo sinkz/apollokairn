@@ -15,6 +15,8 @@ verified, and aligned with the project constraints.
   adapters into the dependency-free core. They belong behind optional boundaries.
 - Never store secrets, private keys, tokens, credentials, or passwords in
   fixtures, docs, vaults, examples, or tests.
+- Usage metrics are opt-in, local, and redacted. Do not log note bodies or
+  snippets. Keep `.cairn/usage/` and `.cairn/reports/` out of version control.
 
 ## Current Priority
 
@@ -24,11 +26,15 @@ Follow `ROADMAP.md`. The current focus is:
 - optional plugin or MCP adapter boundaries outside the dependency-free core;
 - read-only suggestion workflows based on measured similar-note thresholds;
 - note freshness and provenance metadata that does not mutate Markdown during
-  reads.
+  reads;
+- pilot usage metrics that help evaluate real vault behavior without network
+  telemetry or hidden data capture.
 
 Do not treat ranking scores as confidence. Keep glossary behavior explicit and
 reviewable; do not hard-code domain synonyms in Python. Do not add persistent
-query cache before benchmarks show SQLite FTS latency is a real bottleneck.
+query cache before benchmarks show SQLite FTS latency is a real bottleneck. Do
+not infer precision or success from usage logs unless explicit user feedback is
+recorded.
 
 ## Development Setup
 
@@ -62,7 +68,7 @@ work is done:
 python -m unittest discover
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
 python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
-python bench/publish_metrics.py --output docs/data/benchmarks.json --tests CURRENT_TEST_COUNT
+python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 183
 git diff --check
 ```
 
@@ -99,7 +105,7 @@ writeback regressions:
 ```bash
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
 python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
-python bench/publish_metrics.py --output docs/data/benchmarks.json --tests CURRENT_TEST_COUNT
+python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 183
 ```
 
 When benchmark numbers change intentionally, update:
@@ -111,6 +117,7 @@ When benchmark numbers change intentionally, update:
 - `docs/data/benchmarks.json` through `bench/publish_metrics.py` when public
   metrics change;
 - README badges/tables if public counts or metrics are shown there.
+- AGENTS.md when the documented regression-test count changes.
 
 Keep RRF/noisy-query topics separate from glossary topics. If a new glossary
 alias makes a BM25 comparison pass, change the noisy term rather than weakening
@@ -149,3 +156,5 @@ finishes, verify at least one asset download and `apollokairn --version`.
   the GitHub Pages files when behavior changes.
 - If changing public CLI behavior, add or update tests in `tests/` and document
   the command in the relevant guide.
+- If changing usage metrics, keep tracking opt-in, update `tests/test_usage.py`,
+  and verify events omit note bodies, snippets, and secret-like values.

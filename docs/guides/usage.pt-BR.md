@@ -98,7 +98,8 @@ Exemplo:
   "exclude": ["inbox"],
   "generated_guides": ["AGENTS.md"],
   "profile": "engineering",
-  "search_limit": 3
+  "search_limit": 3,
+  "usage_tracking": false
 }
 ```
 
@@ -110,6 +111,7 @@ Campos importantes:
 | `search_limit` | Limite padrão sugerido para agentes |
 | `exclude` | Pastas ou padrões ignorados pela validação e indexação |
 | `generated_guides` | Arquivos de guia de agente gerenciados pelo ApolloKairn |
+| `usage_tracking` | Métricas locais opt-in em `.cairn/usage/` |
 
 Use `exclude` para áreas de rascunho, inbox privada, arquivos gerados e qualquer
 conteúdo que não deve ser indexado.
@@ -491,6 +493,30 @@ apollokairn stats --path ~/brain --json
 
 Use para entender se o vault está crescendo em uma forma saudável.
 
+### `apollokairn usage`
+
+Controla métricas locais opt-in e gera um relatório estático do vault.
+
+```bash
+apollokairn usage status --path ~/brain
+apollokairn usage enable --path ~/brain
+apollokairn usage report --path ~/brain
+apollokairn usage report --path ~/brain --html
+apollokairn usage report --path ~/brain --json
+apollokairn usage disable --path ~/brain
+```
+
+Quando ativado, ApolloKairn grava eventos redigidos em
+`.cairn/usage/events.jsonl`. `usage report --html` grava uma página estática
+local em `.cairn/reports/usage.html` e um resumo JSON em
+`.cairn/reports/usage-summary.json`.
+
+As métricas são locais e vêm desativadas por padrão. Eventos incluem nome do
+comando, queries redigidas, paths retornados ou alterados, tempo de execução,
+contagens de resultado e uso estimado de tokens. Eles não guardam corpos de
+notas nem snippets. `usage enable` também adiciona `.cairn/usage/` e
+`.cairn/reports/` ao `.gitignore` do vault.
+
 ### `apollokairn export` e `apollokairn import`
 
 Exporta ou importa um arquivo zip do vault.
@@ -561,7 +587,7 @@ Rodar avaliações determinísticas:
 python bench/run_eval.py
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
 python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
-python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 178
+python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 183
 ```
 
 Tópicos do benchmark podem incluir `category`, `mode`, `compare_mode`, `ranker`

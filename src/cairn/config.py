@@ -9,6 +9,7 @@ from pathlib import Path
 @dataclass(frozen=True)
 class CairnConfig:
     exclude: tuple[str, ...] = ()
+    usage_tracking: bool = False
 
 
 def validate_config(root: Path) -> list[str]:
@@ -29,6 +30,9 @@ def validate_config(root: Path) -> list[str]:
     search_limit = data.get("search_limit")
     if search_limit is not None and (not isinstance(search_limit, int) or search_limit <= 0):
         errors.append("config search_limit must be a positive integer")
+    usage_tracking = data.get("usage_tracking")
+    if usage_tracking is not None and not isinstance(usage_tracking, bool):
+        errors.append("config usage_tracking must be a boolean")
     return errors
 
 
@@ -44,7 +48,8 @@ def load_config(root: Path) -> CairnConfig:
     if not isinstance(exclude, list):
         return CairnConfig()
     return CairnConfig(
-        exclude=tuple(item for item in exclude if isinstance(item, str) and item.strip())
+        exclude=tuple(item for item in exclude if isinstance(item, str) and item.strip()),
+        usage_tracking=data.get("usage_tracking") is True,
     )
 
 

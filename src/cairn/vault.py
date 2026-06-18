@@ -34,6 +34,7 @@ def init_vault(root: Path, profile_name: str = "personal") -> InitResult:
     config = {
         "profile": profile.name,
         "search_limit": 3,
+        "usage_tracking": False,
         "exclude": ["inbox"],
         "generated_guides": ["AGENTS.md"],
     }
@@ -42,7 +43,7 @@ def init_vault(root: Path, profile_name: str = "personal") -> InitResult:
     _write_if_missing(root / "SCHEMA.md", render_schema_md(profile), result)
     _write_if_missing(root / "index.md", "# ApolloKairn Vault\n\n", result)
     _write_if_missing(root / "log.md", "# ApolloKairn Update Log\n\n", result)
-    _write_if_missing(root / ".gitignore", ".cairn/index.db\n", result)
+    _write_if_missing(root / ".gitignore", ".cairn/index.db\n.cairn/usage/\n.cairn/reports/\n", result)
     _write_if_missing(
         root / ".cairn" / "config.json",
         json.dumps(config, indent=2, sort_keys=True) + "\n",

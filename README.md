@@ -12,7 +12,7 @@
   <p>
     <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white">
     <img alt="Runtime dependencies: zero" src="https://img.shields.io/badge/runtime_dependencies-0-2f6f4e">
-    <img alt="Regression tests: 178" src="https://img.shields.io/badge/tests-178-3b6ea8">
+    <img alt="Regression tests: 183" src="https://img.shields.io/badge/tests-183-3b6ea8">
     <img alt="Recall at 3: 1.00" src="https://img.shields.io/badge/Recall%403-1.00-2f6f4e">
     <img alt="Context reduction: 91.83%" src="https://img.shields.io/badge/context_reduction-91.83%25-8a5a44">
     <img alt="Writeback decision accuracy: 100%" src="https://img.shields.io/badge/writeback_decisions-100%25-285da8">
@@ -52,7 +52,7 @@ writeback decisions for update-vs-create workflows.
 | Comparison reduction | `53.73%` | Reduction measured in configured comparison runs. |
 | Writeback decision accuracy | `100%` | Correct create, update, no-op, and conflict decisions in the fixture set. |
 | Duplicate avoidance | `100%` | Existing reusable notes are updated or preserved instead of duplicated. |
-| Regression tests | `178` | Unit and workflow tests run before publishing the current page. |
+| Regression tests | `183` | Unit and workflow tests run before publishing the current page. |
 
 Benchmark data is also published on the website through
 [`docs/data/benchmarks.json`](docs/data/benchmarks.json).
@@ -60,7 +60,7 @@ Benchmark data is also published on the website through
 ```bash
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
 python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
-python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 178
+python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 183
 ```
 
 ## Quick Install
@@ -231,6 +231,7 @@ before it is written.
 | `apollokairn setup-agent` | Create tool-specific instructions such as `CODEX.md`, `HERMES.md`, or Copilot instructions |
 | `apollokairn refresh-guides` | Refresh generated agent guides |
 | `apollokairn stats` | Show vault counts and approximate token size |
+| `apollokairn usage` | Enable local usage metrics and generate a vault report |
 | `apollokairn export` / `apollokairn import` | Move a vault as a zip archive |
 
 All operational commands support `--json` for agent workflows; see the
@@ -275,7 +276,7 @@ Run the deterministic benchmarks:
 ```bash
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
 python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
-python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 178
+python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 183
 ```
 
 The benchmarks check ranking quality, golden result prefixes, token budgets,
