@@ -1,32 +1,54 @@
 # Roadmap
 
 Cairn is built around one constraint: useful retrieval should cost less context
-than opening everything. The roadmap prioritizes measurable search quality,
-local-first workflows, and agent interoperability.
+than opening everything. The roadmap is organized by product maturity, not by
+implementation history.
 
-## Current Focus
+## Shipped
 
-- Categorized deterministic search benchmarks with fixed fixtures, queries, qrels, golden checks, and token metrics.
-- Passage-based retrieval with measurable context reduction.
-- Experimental RRF ranking for documents and passages measured against BM25 without changing the default.
+- Local Markdown vault with frontmatter schema, profiles, validation, and
+  rebuildable SQLite FTS index.
+- Agent-agnostic CLI workflow: search, retrieve, show partial context, capture,
+  update, validate, doctor, stats, export, and import.
+- Budgeted retrieval for LLM context packets, including passage-level retrieval
+  for smaller prompts.
+- Deterministic search benchmark with qrels, golden checks, ranking metrics,
+  token budgets, and passage-vs-document context reduction.
+- BM25 default ranking plus opt-in RRF and `retrieve --ranker auto` fallback.
 - Secret-safety checks for validation, retrieval, and export.
-- Fingerprint-backed duplicate detection beyond exact lexical overlap.
-- More robust agent writeback flows for capturing solved problems and updating existing notes.
-- Capture/update ergonomics for Markdown from file/stdin and safer path handling.
-- Retrieve auto-ranker fallback that tries BM25 first and RRF only when needed.
-- Public documentation, examples, and contribution workflow.
+- Similar-note detection with fingerprint fallback and `duplicate_candidate` /
+  `related` labels.
+- Markdown writeback ergonomics through `--body-file`, `--body-stdin`,
+  `--append-file`, and `--append-stdin`.
+- Public documentation, example vault, changelog, contribution guide, and GitHub
+  Pages overview.
+
+## Now
+
+- Build a deterministic writeback suite that exercises agent-style vault
+  behavior: duplicate prevention, note updates, recurring bugs, process notes,
+  access notes, library references, and token cost.
+- Add benchmark history and comparison data to the public site so regressions are
+  visible over time.
+- Tighten evaluation around `similar` thresholds and update-vs-create decisions.
+- Keep README, usage guides, examples, and the public page aligned with actual
+  commands.
 
 ## Next
 
-- Optional package/plugin adapters for Codex, Claude, GitHub Copilot, and OpenCode.
-- Team-oriented review workflows for shared vault changes.
-- Deterministic writeback scenarios that measure duplicate prevention, note updates, and token cost over multi-agent vault activity.
+- Optional adapters or plugin packages for Codex, Claude, GitHub Copilot,
+  OpenCode, and other agent harnesses.
+- Team workflows for reviewing shared vault changes before they become common
+  knowledge.
+- Better benchmark slices by role and domain, such as engineering, support,
+  product, and personal notes.
+- More import paths from existing Markdown or Obsidian-style knowledge bases.
 
 ## Later
 
 - Optional embedding backend behind a strict integration boundary.
-- UI or TUI for browsing and curating notes.
-- Importers from Obsidian-style vaults and existing Markdown knowledge bases.
+- UI or TUI for browsing, reviewing, and curating notes.
+- Richer analytics for vault health, duplication, stale notes, and coverage gaps.
 
 ## Non-goals
 

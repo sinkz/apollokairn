@@ -12,6 +12,8 @@ Markdown puro com um índice SQLite local.
 
 English version: [README.md](README.md)
 
+Site do projeto: [sinkz.github.io/cairn](https://sinkz.github.io/cairn/)
+
 ## Para Que Serve
 
 Cairn é útil para lembrar coisas como:
@@ -176,6 +178,7 @@ Veja [examples/README.md](examples/README.md) para mais walkthroughs.
 
 - [Guia de uso](docs/guides/usage.pt-BR.md)
 - [Usage guide in English](docs/guides/usage.md)
+- [Site do projeto](https://sinkz.github.io/cairn/)
 - [Vaults de exemplo](examples/README.md)
 - [Roadmap](ROADMAP.md)
 - [Changelog](CHANGELOG.md)

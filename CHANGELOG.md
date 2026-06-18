@@ -10,6 +10,7 @@ All notable Cairn changes are tracked here.
 - `cairn update` can append from `--append-file` or `--append-stdin`.
 - `cairn retrieve --ranker auto` tries BM25 first and falls back to RRF only when no context is returned.
 - `cairn similar` results include `kind` labels: `duplicate_candidate` or `related`.
+- GitHub Pages overview with EN/PT-BR copy and benchmark data loaded from JSON.
 
 ### Changed
 
@@ -17,6 +18,7 @@ All notable Cairn changes are tracked here.
 - `cairn update` accepts absolute document paths inside the vault, reports the normalized vault-relative path, and refreshes the note timestamp only when new text is appended.
 - Internal research, plans, and reports are excluded from the public documentation tree.
 - Public docs now position Cairn as agent-optimized and agent-agnostic, with Markdown and SQLite as the product-independent core.
+- Roadmap now separates shipped capabilities from active priorities, next work, and later bets.
 
 ## 0.1.0 - 2026-06-17
 

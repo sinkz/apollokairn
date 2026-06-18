@@ -1,0 +1,137 @@
+{
+  "updated_at": "2026-06-18",
+  "suite": {
+    "name": "Deterministic search benchmark",
+    "command": "python bench/run_eval.py --quiet --compare-golden bench/golden.json",
+    "notes": {
+      "en": "Runs locally without model calls. Measures ranking quality, token budgets, and passage-vs-document context reduction.",
+      "pt": "Roda localmente sem chamadas a modelos. Mede qualidade de ranking, orçamento de tokens e redução de contexto em passagens contra documentos."
+    }
+  },
+  "current": {
+    "label": {
+      "en": "Cairn lexical retrieval suite",
+      "pt": "Suíte lexical de recuperação do Cairn"
+    },
+    "metrics": [
+      {
+        "id": "recall_at_3",
+        "label": {
+          "en": "Recall@3",
+          "pt": "Recall@3"
+        },
+        "value": 1.0,
+        "format": "decimal",
+        "precision": 2,
+        "description": {
+          "en": "Expected notes appear in the top three results.",
+          "pt": "Notas esperadas aparecem nos três primeiros resultados."
+        }
+      },
+      {
+        "id": "mrr_at_3",
+        "label": {
+          "en": "MRR@3",
+          "pt": "MRR@3"
+        },
+        "value": 1.0,
+        "format": "decimal",
+        "precision": 2,
+        "description": {
+          "en": "Relevant results are ranked first in the current fixture set.",
+          "pt": "Resultados relevantes aparecem primeiro no conjunto atual."
+        }
+      },
+      {
+        "id": "ndcg_at_3",
+        "label": {
+          "en": "nDCG@3",
+          "pt": "nDCG@3"
+        },
+        "value": 0.9931,
+        "format": "decimal",
+        "precision": 4,
+        "description": {
+          "en": "Ranking quality against deterministic relevance labels.",
+          "pt": "Qualidade de ranking contra rótulos determinísticos de relevância."
+        }
+      },
+      {
+        "id": "context_reduction",
+        "label": {
+          "en": "Context reduction",
+          "pt": "Redução de contexto"
+        },
+        "value": 0.9216,
+        "format": "percent",
+        "precision": 2,
+        "description": {
+          "en": "Passage retrieval returns far less text than opening full documents.",
+          "pt": "Recuperação por passagens retorna muito menos texto que abrir documentos completos."
+        }
+      },
+      {
+        "id": "comparison_reduction",
+        "label": {
+          "en": "Comparison reduction",
+          "pt": "Redução em comparativos"
+        },
+        "value": 0.5373,
+        "format": "percent",
+        "precision": 2,
+        "description": {
+          "en": "Measured reduction in configured comparison runs.",
+          "pt": "Redução medida nas rodadas comparativas configuradas."
+        }
+      },
+      {
+        "id": "tests",
+        "label": {
+          "en": "Regression tests",
+          "pt": "Testes de regressão"
+        },
+        "value": 111,
+        "format": "integer",
+        "precision": 0,
+        "description": {
+          "en": "Unit and workflow tests run before publishing this page.",
+          "pt": "Testes unitários e de workflow rodados antes desta publicação."
+        }
+      }
+    ]
+  },
+  "history": [
+    {
+      "date": "2026-06-18",
+      "label": "BM25 + passages + RRF fallback",
+      "recall_at_3": 1.0,
+      "mrr_at_3": 1.0,
+      "ndcg_at_3": 0.9931,
+      "context_reduction": 0.9216,
+      "comparison_reduction": 0.5373
+    }
+  ],
+  "planned_comparisons": [
+    {
+      "id": "writeback_suite",
+      "label": {
+        "en": "Agent writeback suite",
+        "pt": "Suíte de escrita por agentes"
+      }
+    },
+    {
+      "id": "adapter_comparison",
+      "label": {
+        "en": "Harness adapter comparison",
+        "pt": "Comparativo de adapters por harness"
+      }
+    },
+    {
+      "id": "embedding_optional_backend",
+      "label": {
+        "en": "Optional embedding backend",
+        "pt": "Backend opcional de embeddings"
+      }
+    }
+  ]
+}

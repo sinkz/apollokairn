@@ -11,6 +11,8 @@ source of truth remains plain Markdown plus a local SQLite index.
 
 Portuguese version: [README.pt-BR.md](README.pt-BR.md)
 
+Project website: [sinkz.github.io/cairn](https://sinkz.github.io/cairn/)
+
 ## What It Does
 
 Cairn is useful when you want to remember things like:
@@ -175,6 +177,7 @@ See [examples/README.md](examples/README.md) for more example walkthroughs.
 
 - [Usage guide](docs/guides/usage.md)
 - [Guia de uso em PT-BR](docs/guides/usage.pt-BR.md)
+- [Project website](https://sinkz.github.io/cairn/)
 - [Example vaults](examples/README.md)
 - [Roadmap](ROADMAP.md)
 - [Changelog](CHANGELOG.md)

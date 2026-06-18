@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cairn - Agent-optimized Markdown memory</title>
+    <meta
+      name="description"
+      content="Cairn is a local, agent-agnostic Markdown knowledge vault for low-token search, retrieval, and writeback workflows."
+    />
+    <meta name="theme-color" content="#f7f3e8" />
+    <meta property="og:title" content="Cairn - Agent-optimized Markdown memory" />
+    <meta
+      property="og:description"
+      content="Search, retrieve, solve, and write back reusable knowledge without locking it into an agent product."
+    />
+    <link
+      rel="icon"
+      href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="%2315130f"/><path d="M18 18h28v7H26v7h15v7H26v7h21v7H18z" fill="%23f7f3e8"/></svg>'
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body data-lang="en">
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header" aria-label="Primary navigation">
+      <a class="brand" href="#top" aria-label="Cairn home">
+        <span class="brand-mark">CA</span>
+        <span>Cairn</span>
+      </a>
+      <nav class="nav-links" aria-label="Page sections">
+        <a href="#benchmarks">Benchmarks</a>
+        <a href="#workflow">Workflow</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="https://github.com/sinkz/cairn">GitHub</a>
+      </nav>
+      <div class="language-switch" aria-label="Language">
+        <button class="language-button" type="button" data-set-lang="en" aria-pressed="true">EN</button>
+        <button class="language-button" type="button" data-set-lang="pt" aria-pressed="false">PT-BR</button>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top">
+        <div class="hero-scene" aria-hidden="true">
+          <div class="scene-line line-one"></div>
+          <div class="scene-line line-two"></div>
+          <div class="scene-line line-three"></div>
+          <div class="scene-block block-a">search</div>
+          <div class="scene-block block-b">retrieve</div>
+          <div class="scene-block block-c">writeback</div>
+          <div class="scene-terminal">
+            <span>$ cairn retrieve "deploy 403 token" --mode passages --budget 400</span>
+            <span>path: knowledge/deploy-403.md</span>
+            <span>heading: Resolution</span>
+            <span>context: 92.16% smaller</span>
+          </div>
+        </div>
+        <div class="hero-content">
+          <p class="eyebrow" data-lang-content="en">Agent-optimized. Product-agnostic. Markdown-native.</p>
+          <p class="eyebrow" data-lang-content="pt">Otimizado para agentes. Agnóstico de produto. Nativo em Markdown.</p>
+
+          <h1 data-lang-content="en">Agent memory that stays yours.</h1>
+          <h1 data-lang-content="pt">Memória de agentes que continua sua.</h1>
+
+          <p class="hero-copy" data-lang-content="en">
+            Cairn gives AI agents a local second brain: search first, retrieve only
+            useful context, solve the task, then write the lesson back to Markdown.
+          </p>
+          <p class="hero-copy" data-lang-content="pt">
+            Cairn dá aos agentes de IA um segundo cérebro local: buscar primeiro,
+            recuperar só o contexto útil, resolver a tarefa e registrar o aprendizado
+            em Markdown.
+          </p>
+
+          <div class="hero-actions" aria-label="Primary actions">
+            <a class="button primary" href="https://github.com/sinkz/cairn">GitHub</a>
+            <a class="button secondary" href="#benchmarks" data-lang-content="en">See benchmarks</a>
+            <a class="button secondary" href="#benchmarks" data-lang-content="pt">Ver benchmarks</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="proof-band" aria-label="Project facts">
+        <div class="proof-item">
+          <strong>Markdown</strong>
+          <span data-lang-content="en">Plain files are the source of truth.</span>
+          <span data-lang-content="pt">Arquivos simples são a fonte da verdade.</span>
+        </div>
+        <div class="proof-item">
+          <strong>SQLite FTS</strong>
+          <span data-lang-content="en">Local, rebuildable, dependency-light search.</span>
+          <span data-lang-content="pt">Busca local, reconstruível e leve.</span>
+        </div>
+        <div class="proof-item">
+          <strong>Any agent</strong>
+          <span data-lang-content="en">Codex, Claude, OpenCode, Copilot, or shell-capable harnesses.</span>
+          <span data-lang-content="pt">Codex, Claude, OpenCode, Copilot ou harnesses com shell.</span>
+        </div>
+      </section>
+
+      <section class="section" id="benchmarks">
+        <div class="section-heading">
+          <p class="eyebrow" data-lang-content="en">Measured retrieval</p>
+          <p class="eyebrow" data-lang-content="pt">Recuperação medida</p>
+          <h2 data-lang-content="en">Benchmarks are part of the product.</h2>
+          <h2 data-lang-content="pt">Benchmarks fazem parte do produto.</h2>
+          <p data-lang-content="en">
+            The public page reads benchmark data from JSON so new comparisons can
+            be added without redesigning the page.
+          </p>
+          <p data-lang-content="pt">
+            A página pública lê os dados de benchmark via JSON para permitir novos
+            comparativos sem redesenhar a interface.
+          </p>
+        </div>
+
+        <div class="benchmark-panel">
+          <div>
+            <p class="panel-label" id="benchmark-suite">Deterministic search benchmark</p>
+            <h3 id="benchmark-current-label">Cairn lexical retrieval suite</h3>
+            <p class="panel-note" id="benchmark-note">
+              Runs locally without model calls. Measures ranking quality, token budgets,
+              and passage-vs-document context reduction.
+            </p>
+          </div>
+          <code id="benchmark-command">python bench/run_eval.py --quiet --compare-golden bench/golden.json</code>
+          <p class="updated" id="benchmark-updated">Updated 2026-06-18</p>
+        </div>
+
+        <div class="metric-grid" id="benchmark-cards" aria-live="polite">
+          <article class="metric-card">
+            <span>Recall@3</span>
+            <strong>1.00</strong>
+            <p>Expected notes appear in the top three results.</p>
+          </article>
+          <article class="metric-card">
+            <span>Context reduction</span>
+            <strong>92.16%</strong>
+            <p>Passage retrieval returns far less text than opening full documents.</p>
+          </article>
+        </div>
+
+        <noscript>
+          <p class="noscript-note">Benchmark cards use JavaScript to load docs/data/benchmarks.json.</p>
+        </noscript>
+      </section>
+
+      <section class="section split-section" id="workflow">
+        <div class="section-heading compact">
+          <p class="eyebrow" data-lang-content="en">Why Cairn exists</p>
+          <p class="eyebrow" data-lang-content="pt">Por que o Cairn existe</p>
+          <h2 data-lang-content="en">Stop solving the same hard problem twice.</h2>
+          <h2 data-lang-content="pt">Pare de resolver o mesmo problema difícil duas vezes.</h2>
+          <p data-lang-content="en">
+            Cairn turns solved incidents, access processes, support procedures,
+            library notes, and product decisions into reusable agent context.
+          </p>
+          <p data-lang-content="pt">
+            Cairn transforma incidentes resolvidos, processos de acesso,
+            procedimentos de suporte, notas de bibliotecas e decisões de produto
+            em contexto reutilizável para agentes.
+          </p>
+        </div>
+
+        <div class="workflow-grid">
+          <article class="workflow-card accent-green">
+            <span>01</span>
+            <h3 data-lang-content="en">Search</h3>
+            <h3 data-lang-content="pt">Buscar</h3>
+            <p data-lang-content="en">Find likely notes before opening full files.</p>
+            <p data-lang-content="pt">Encontre notas prováveis antes de abrir arquivos completos.</p>
+          </article>
+          <article class="workflow-card accent-blue">
+            <span>02</span>
+            <h3 data-lang-content="en">Retrieve</h3>
+            <h3 data-lang-content="pt">Recuperar</h3>
+            <p data-lang-content="en">Return a budgeted packet or only the matching section.</p>
+            <p data-lang-content="pt">Retorne um pacote com orçamento ou só a seção relevante.</p>
+          </article>
+          <article class="workflow-card accent-coral">
+            <span>03</span>
+            <h3 data-lang-content="en">Solve</h3>
+            <h3 data-lang-content="pt">Resolver</h3>
+            <p data-lang-content="en">Use old decisions and fixes as live working context.</p>
+            <p data-lang-content="pt">Use decisões e correções antigas como contexto de trabalho.</p>
+          </article>
+          <article class="workflow-card accent-yellow">
+            <span>04</span>
+            <h3 data-lang-content="en">Write back</h3>
+            <h3 data-lang-content="pt">Registrar</h3>
+            <p data-lang-content="en">Update the closest note or capture new reusable knowledge.</p>
+            <p data-lang-content="pt">Atualize a nota mais próxima ou registre novo conhecimento.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section use-cases">
+        <div class="section-heading">
+          <p class="eyebrow" data-lang-content="en">Built for real vaults</p>
+          <p class="eyebrow" data-lang-content="pt">Feito para vaults reais</p>
+          <h2 data-lang-content="en">Individual notes and team memory use the same core.</h2>
+          <h2 data-lang-content="pt">Notas individuais e memória de time usam o mesmo core.</h2>
+        </div>
+        <div class="use-case-grid">
+          <article>
+            <h3 data-lang-content="en">Personal second brain</h3>
+            <h3 data-lang-content="pt">Segundo cérebro pessoal</h3>
+            <p data-lang-content="en">Keep recurring problems, learning notes, references, and procedures searchable.</p>
+            <p data-lang-content="pt">Mantenha problemas recorrentes, aprendizados, referências e processos pesquisáveis.</p>
+          </article>
+          <article>
+            <h3 data-lang-content="en">Engineering teams</h3>
+            <h3 data-lang-content="pt">Times de engenharia</h3>
+            <p data-lang-content="en">Capture bug fixes, incidents, runbooks, architecture decisions, and library gotchas.</p>
+            <p data-lang-content="pt">Registre bugs, incidentes, runbooks, decisões de arquitetura e detalhes de bibliotecas.</p>
+          </article>
+          <article>
+            <h3 data-lang-content="en">Support and product</h3>
+            <h3 data-lang-content="pt">Suporte e produto</h3>
+            <p data-lang-content="en">Document access flows, escalation paths, product rules, and customer-facing procedures.</p>
+            <p data-lang-content="pt">Documente acessos, escalonamentos, regras de produto e procedimentos de atendimento.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section roadmap-preview" id="roadmap">
+        <div class="section-heading compact">
+          <p class="eyebrow" data-lang-content="en">Roadmap</p>
+          <p class="eyebrow" data-lang-content="pt">Roadmap</p>
+          <h2 data-lang-content="en">The next priority is reliable writeback evaluation.</h2>
+          <h2 data-lang-content="pt">A próxima prioridade é avaliar escrita de forma confiável.</h2>
+          <p data-lang-content="en">
+            Adapters are useful, but the core has to prove that agents can search,
+            update, and avoid duplicates without regressions.
+          </p>
+          <p data-lang-content="pt">
+            Adapters são úteis, mas o core precisa provar que agentes conseguem
+            buscar, atualizar e evitar duplicatas sem regressões.
+          </p>
+        </div>
+        <div class="roadmap-columns">
+          <article>
+            <span>Now</span>
+            <p data-lang-content="en">Deterministic writeback suite, benchmark history, and update-vs-create thresholds.</p>
+            <p data-lang-content="pt">Suite determinística de escrita, histórico de benchmarks e limiares de atualizar vs criar.</p>
+          </article>
+          <article>
+            <span>Next</span>
+            <p data-lang-content="en">Agent adapters, shared-vault review flows, and role-specific benchmark slices.</p>
+            <p data-lang-content="pt">Adapters para agentes, revisão de vaults compartilhados e benchmarks por perfil.</p>
+          </article>
+          <article>
+            <span>Later</span>
+            <p data-lang-content="en">Optional embeddings, UI/TUI, and richer vault health analytics.</p>
+            <p data-lang-content="pt">Embeddings opcionais, UI/TUI e análises mais ricas de saúde do vault.</p>
+          </article>
+        </div>
+        <a class="text-link" href="https://github.com/sinkz/cairn/blob/main/ROADMAP.md" data-lang-content="en">Read the full roadmap</a>
+        <a class="text-link" href="https://github.com/sinkz/cairn/blob/main/ROADMAP.md" data-lang-content="pt">Ler o roadmap completo</a>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div>
+        <strong>Cairn</strong>
+        <p data-lang-content="en">Local-first knowledge for agents that should remember.</p>
+        <p data-lang-content="pt">Conhecimento local-first para agentes que devem lembrar.</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/sinkz/cairn">GitHub</a>
+        <a href="https://github.com/sinkz/cairn/blob/main/docs/guides/usage.md">Usage</a>
+        <a href="https://github.com/sinkz/cairn/blob/main/docs/guides/usage.pt-BR.md">PT-BR</a>
+      </div>
+    </footer>
+
+    <script src="assets/site.js"></script>
+  </body>
+</html>
