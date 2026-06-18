@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import hashlib
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -14,6 +15,11 @@ _SLUG_CHARS = re.compile(r"[^a-z0-9]+")
 class NoteWriteResult:
     path: str
     changed: bool
+    would_change: bool = True
+    dry_run: bool = False
+    reason: str = "updated"
+    sha256_before: str | None = None
+    sha256_after: str | None = None
 
 
 def slugify(title: str) -> str:
@@ -34,6 +40,10 @@ def _render_body(body: str) -> str:
     return f"# Context\n\n{stripped}\n"
 
 
+def _sha256_bytes(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
 def create_note(
     root: Path,
     title: str,
@@ -46,6 +56,7 @@ def create_note(
     systems: Sequence[str] = (),
     signals: Sequence[str] = (),
     timestamp: str | None = None,
+    dry_run: bool = False,
 ) -> NoteWriteResult:
     root = Path(root)
     if not title.strip():
@@ -59,7 +70,6 @@ def create_note(
         raise ValueError("path must stay inside vault")
     if path.exists():
         raise FileExistsError(rel.as_posix())
-    path.parent.mkdir(parents=True, exist_ok=True)
     content = (
         "---\n"
         f"type: {typ}\n"
@@ -73,8 +83,25 @@ def create_note(
         "---\n\n"
         f"{_render_body(body)}"
     )
+    if dry_run:
+        return NoteWriteResult(
+            path=rel.as_posix(),
+            changed=False,
+            would_change=True,
+            dry_run=True,
+            reason="dry_run",
+            sha256_after=None,
+        )
+    path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(content, encoding="utf-8")
-    return NoteWriteResult(path=rel.as_posix(), changed=True)
+    return NoteWriteResult(
+        path=rel.as_posix(),
+        changed=True,
+        would_change=True,
+        dry_run=False,
+        reason="created",
+        sha256_after=_sha256_bytes(content.encode("utf-8")),
+    )
 
 
 def _resolve_note_path(root: Path, rel_path: str) -> tuple[Path, str]:
@@ -115,17 +142,54 @@ def _replace_timestamp(text: str, timestamp: str) -> str:
     return "".join(lines)
 
 
-def append_to_note(root: Path, rel_path: str, text: str) -> NoteWriteResult:
+def append_to_note(
+    root: Path,
+    rel_path: str,
+    text: str,
+    dry_run: bool = False,
+    expected_sha256: str | None = None,
+) -> NoteWriteResult:
     path, display_path = _resolve_note_path(Path(root), rel_path)
     if not path.is_file():
         raise FileNotFoundError(rel_path)
-    current = path.read_text(encoding="utf-8")
+    current_bytes = path.read_bytes()
+    current_hash = _sha256_bytes(current_bytes)
+    if expected_sha256 and expected_sha256 != current_hash:
+        raise ValueError("document modified since expected sha256")
+    current = current_bytes.decode("utf-8")
     snippet = text.strip()
     if not snippet:
         raise ValueError("--append must not be empty")
     if snippet in current:
-        return NoteWriteResult(path=display_path, changed=False)
+        return NoteWriteResult(
+            path=display_path,
+            changed=False,
+            would_change=False,
+            dry_run=dry_run,
+            reason="already_present",
+            sha256_before=current_hash,
+            sha256_after=current_hash,
+        )
     separator = "\n" if current.endswith("\n") else "\n\n"
     touched = _replace_timestamp(current, datetime.now(timezone.utc).isoformat())
-    path.write_text(touched + separator + snippet + "\n", encoding="utf-8")
-    return NoteWriteResult(path=display_path, changed=True)
+    updated = touched + separator + snippet + "\n"
+    if dry_run:
+        return NoteWriteResult(
+            path=display_path,
+            changed=False,
+            would_change=True,
+            dry_run=True,
+            reason="dry_run",
+            sha256_before=current_hash,
+            sha256_after=current_hash,
+        )
+    path.write_text(updated, encoding="utf-8")
+    return NoteWriteResult(
+        path=display_path,
+        changed=True,
+        would_change=True,
+        dry_run=False,
+        reason="updated",
+        sha256_before=current_hash,
+        sha256_after=_sha256_bytes(updated.encode("utf-8")),
+    )

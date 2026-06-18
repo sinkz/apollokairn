@@ -35,11 +35,15 @@ implementation history.
   from the same model.
 - Harden writeback with dry-run output, no-op reasons, and conflict detection
   based on file signatures before agents update shared notes.
+- Normalize human-facing selectors such as `show --section` and snippets so
+  Portuguese headings with accents remain discoverable from ASCII queries.
 - Build a deterministic writeback suite that exercises duplicate prevention,
   note updates, recurring bugs, process notes, access notes, library references,
   and update-vs-create decisions.
 - Add benchmark history and comparison data to the public site so regressions in
   retrieval and writeback behavior are visible over time.
+- Harden standalone release portability, especially Linux binary compatibility
+  across older glibc distributions, or document the minimum supported baseline.
 
 ## Next
 

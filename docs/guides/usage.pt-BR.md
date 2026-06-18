@@ -177,6 +177,7 @@ tokens de provedores e blocos de chave privada, sem imprimir o valor detectado.
 
 ```bash
 cairn validate --path ~/brain
+cairn validate --path ~/brain --json
 ```
 
 Use antes de indexar, antes de commitar um vault ou quando um agente criou ou
@@ -228,6 +229,13 @@ cat ./webhook-400-body.md | cairn capture --path ~/brain \
 Se o corpo começa com um heading Markdown, Cairn preserva como está. Se for
 texto simples, Cairn envolve em uma seção `# Context`.
 
+Para fluxos com agentes, use `--json` para receber o resultado da escrita e
+`--dry-run` para prever o caminho de destino sem criar o arquivo:
+
+```bash
+cairn capture --path ~/brain --title "Nota rascunho" --description "Preview." --tag workflow --body "..." --dry-run --json
+```
+
 ### `cairn update`
 
 Adiciona texto a uma nota existente se o mesmo texto ainda não estiver lá.
@@ -243,6 +251,17 @@ em vez de duplicada. O documento pode ser um caminho relativo ao vault ou um
 caminho absoluto dentro dele. Updates são idempotentes e atualizam o timestamp
 da nota só quando texto novo é realmente adicionado.
 
+Agentes podem pedir resultados estruturados, prever escritas e proteger contra
+arquivos desatualizados:
+
+```bash
+cairn update knowledge/deploy-403.md --path ~/brain --append-file ./deploy-403-update.md --dry-run --json
+cairn update knowledge/deploy-403.md --path ~/brain --append-file ./deploy-403-update.md --expect-sha256 <SHA256_ATUAL> --json
+```
+
+O JSON inclui `changed`, `would_change`, `dry_run`, `reason`, `sha256_before` e
+`sha256_after`. Quando o texto já existe na nota, `reason` é `already_present`.
+
 ### `cairn index`
 
 Cria ou atualiza o índice local SQLite FTS.
@@ -250,6 +269,7 @@ Cria ou atualiza o índice local SQLite FTS.
 ```bash
 cairn index --path ~/brain --rebuild
 cairn index --path ~/brain
+cairn index --path ~/brain --json
 ```
 
 Use `--rebuild` na primeira configuração ou se o índice estiver corrompido. Sem
@@ -262,6 +282,7 @@ Verifica a saúde do vault e se o índice está atualizado.
 
 ```bash
 cairn doctor --path ~/brain
+cairn doctor --path ~/brain --json
 ```
 
 Use quando a busca parecer estranha, depois de edições manuais ou antes de uma
@@ -307,6 +328,7 @@ cairn retrieve "deploy token rotation kubernetes secret" --path ~/brain --ranker
 cairn retrieve "deploy token rotation kubernetes secret" --path ~/brain --ranker auto --budget 800
 cairn retrieve "reconnecting cache workers" --path ~/brain --mode passages --ranker rrf --budget 500
 cairn retrieve "reconnecting cache workers" --path ~/brain --mode passages --ranker auto --budget 500
+cairn retrieve "deploy 403" --path ~/brain --mode passages --budget 500 --json
 ```
 
 Use quando um agente precisa de contexto útil imediatamente sem rodar `search` e
@@ -321,6 +343,10 @@ linhas para o agente reabrir o contexto exato se precisar.
 Use `--ranker auto` quando quiser um fallback seguro: Cairn tenta o `bm25`
 estrito primeiro e só gasta o trabalho extra do RRF quando nenhum contexto é
 retornado. Use `--ranker rrf` quando quiser ranking lexical fundido sempre.
+
+A saída JSON retorna o mesmo pacote de contexto com metadados: query, modo,
+ranker pedido, ranker realmente usado, orçamento de tokens, tokens estimados
+usados, quantidade de fontes, contexto renderizado e metadados por fonte.
 
 Filtros funcionam como em `search`:
 
@@ -342,10 +368,13 @@ Use leituras parciais para reduzir contexto:
 cairn show knowledge/deploy-403.md --path ~/brain --section Diagnosis
 cairn show knowledge/deploy-403.md --path ~/brain --snippet "workspace access" --context 2
 cairn show knowledge/deploy-403.md --path ~/brain --lines 20:40
+cairn show knowledge/deploy-403.md --path ~/brain --section Diagnostico --json
 ```
 
 Leituras parciais são úteis depois que `search` encontrou o documento certo, mas
 o agente só precisa de uma seção ou de algumas linhas próximas.
+Seletores de seção e snippet ignoram acentos, então consultas ASCII encontram
+headings em português como `Solução` ou `Diagnóstico`.
 
 ### `cairn similar`
 

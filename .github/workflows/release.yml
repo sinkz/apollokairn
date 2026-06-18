@@ -29,10 +29,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-24.04
-            artifact_name: cairn-linux-x64
-            archive_name: cairn-linux-x64.tar.gz
-            binary_name: cairn
           - os: ubuntu-24.04-arm
             artifact_name: cairn-linux-arm64
             archive_name: cairn-linux-arm64.tar.gz
@@ -89,8 +85,34 @@ jobs:
           name: ${{ matrix.artifact_name }}
           path: release-assets/${{ matrix.archive_name }}
 
+  build-linux-x64:
+    needs: test
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Linux x64 standalone binary in Debian 11 container
+        run: |
+          docker run --rm \
+            -v "$PWD:/work" \
+            -w /work \
+            python:3.12-slim-bullseye \
+            bash -lc "apt-get update && apt-get install -y --no-install-recommends binutils && rm -rf /var/lib/apt/lists/* && python -m pip install --upgrade pip && python -m pip install pyinstaller && python -m pip install -e . && pyinstaller --onefile --name cairn src/cairn/__main__.py && chown -R \"$(stat -c '%u:%g' /work)\" dist build cairn.spec"
+      - name: Verify Linux x64 standalone binary
+        run: |
+          ./dist/cairn --version
+          ./dist/cairn --help
+      - name: Package Linux x64 binary
+        run: |
+          mkdir -p release-assets
+          chmod +x dist/cairn
+          tar -czf release-assets/cairn-linux-x64.tar.gz -C dist cairn
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cairn-linux-x64
+          path: release-assets/cairn-linux-x64.tar.gz
+
   publish:
-    needs: build
+    needs: [build, build-linux-x64]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import os
 import sqlite3
 import subprocess
@@ -68,6 +69,22 @@ class DoctorTests(unittest.TestCase):
 
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             self.assertIn("OK index fresh", result.stdout)
+
+    def test_cli_doctor_json_returns_health_payload(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="personal")
+            write_note(root)
+            run_cairn(root, "index", "--rebuild")
+
+            result = run_cairn(root, "doctor", "--json")
+
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            payload = json.loads(result.stdout)
+            self.assertTrue(payload["ok"])
+            self.assertIn("OK config", payload["lines"])
+            self.assertIn("OK validation", payload["lines"])
+            self.assertIn("OK index fresh", payload["lines"])
 
     def test_cli_doctor_reports_stale_index_after_file_change(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import argparse
+import json
 import sys
+from dataclasses import asdict, is_dataclass
 from pathlib import Path
 
 from cairn import __version__
@@ -19,6 +21,22 @@ def _read_text_input(value: str | None, file_path: str | None, use_stdin: bool) 
     if use_stdin:
         return sys.stdin.read()
     return value or ""
+
+
+def _json_ready(value: object) -> object:
+    if is_dataclass(value):
+        return asdict(value)
+    if isinstance(value, list):
+        return [_json_ready(item) for item in value]
+    if isinstance(value, tuple):
+        return [_json_ready(item) for item in value]
+    if isinstance(value, dict):
+        return {str(key): _json_ready(item) for key, item in value.items()}
+    return value
+
+
+def _print_json(value: object) -> None:
+    print(json.dumps(_json_ready(value), ensure_ascii=False, indent=2))
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -49,6 +67,8 @@ def build_parser() -> argparse.ArgumentParser:
         cmd.add_argument("--system", action="append", default=[])
         cmd.add_argument("--signal", action="append", default=[])
         cmd.add_argument("--timestamp")
+        cmd.add_argument("--dry-run", action="store_true", help="Preview the write without changing files.")
+        cmd.add_argument("--json", action="store_true")
         _add_vault_path(cmd)
         return cmd
 
@@ -61,6 +81,9 @@ def build_parser() -> argparse.ArgumentParser:
     append.add_argument("--append", help="Inline text to append if it is not already present.")
     append.add_argument("--append-file", help="Read text to append from a UTF-8 file.")
     append.add_argument("--append-stdin", action="store_true", help="Read text to append from stdin.")
+    update_cmd.add_argument("--dry-run", action="store_true", help="Preview the write without changing files.")
+    update_cmd.add_argument("--expect-sha256", help="Only update if the current file hash matches this value.")
+    update_cmd.add_argument("--json", action="store_true")
     _add_vault_path(update_cmd)
 
     export_cmd = sub.add_parser("export", help="Export a vault to a zip archive.")
@@ -94,6 +117,7 @@ def build_parser() -> argparse.ArgumentParser:
     retrieve_cmd.add_argument("--type", dest="type_filter", help="Filter results by document type.")
     retrieve_cmd.add_argument("--tag", action="append", default=[], help="Filter results by tag. Can be repeated.")
     retrieve_cmd.add_argument("--system", action="append", default=[], help="Filter results by system. Can be repeated.")
+    retrieve_cmd.add_argument("--json", action="store_true")
     _add_vault_path(retrieve_cmd)
 
     similar_cmd = sub.add_parser("similar", help="Find existing notes before creating a duplicate.")
@@ -111,14 +135,18 @@ def build_parser() -> argparse.ArgumentParser:
     show_cmd.add_argument("--section", help="Show one Markdown section by heading text.")
     show_cmd.add_argument("--snippet", help="Show lines around the first matching text.")
     show_cmd.add_argument("--context", type=int, default=2, help="Snippet context lines.")
+    show_cmd.add_argument("--json", action="store_true")
     _add_vault_path(show_cmd)
 
     index_cmd = sub.add_parser("index", help="Build or rebuild the search index.")
     index_cmd.add_argument("--rebuild", action="store_true")
+    index_cmd.add_argument("--json", action="store_true")
     _add_vault_path(index_cmd)
     validate_cmd = sub.add_parser("validate", help="Validate the vault.")
+    validate_cmd.add_argument("--json", action="store_true")
     _add_vault_path(validate_cmd)
     doctor_cmd = sub.add_parser("doctor", help="Check vault and index health.")
+    doctor_cmd.add_argument("--json", action="store_true")
     _add_vault_path(doctor_cmd)
 
     setup_agent_cmd = sub.add_parser("setup-agent", help="Create an agent-specific Cairn guide.")
@@ -160,22 +188,37 @@ def main(argv: list[str] | None = None) -> int:
                 systems=args.system,
                 signals=args.signal,
                 timestamp=args.timestamp,
+                dry_run=args.dry_run,
             )
         except (FileExistsError, OSError, ValueError) as exc:
             print(f"ERROR {exc}", file=sys.stderr)
             return 1
-        print(f"created {result.path}")
+        if args.json:
+            _print_json(result)
+        else:
+            print(("would create" if args.dry_run else "created") + f" {result.path}")
         return 0
     if args.command == "update":
         from cairn.notes import append_to_note
 
         try:
             append_text = _read_text_input(args.append, args.append_file, args.append_stdin)
-            result = append_to_note(Path(args.path), args.document, append_text)
+            result = append_to_note(
+                Path(args.path),
+                args.document,
+                append_text,
+                dry_run=args.dry_run,
+                expected_sha256=args.expect_sha256,
+            )
         except (FileNotFoundError, OSError, ValueError) as exc:
             print(f"ERROR {exc}", file=sys.stderr)
             return 1
-        print(("updated" if result.changed else "unchanged") + f" {result.path}")
+        if args.json:
+            _print_json(result)
+        elif result.dry_run and result.would_change:
+            print(f"would update {result.path}")
+        else:
+            print(("updated" if result.changed else "unchanged") + f" {result.path}")
         return 0
     if args.command == "export":
         from cairn.archive import export_vault
@@ -198,13 +241,11 @@ def main(argv: list[str] | None = None) -> int:
         print(f"imported {root}")
         return 0
     if args.command == "stats":
-        import json
-
         from cairn.stats import collect_stats, render_stats
 
         stats = collect_stats(Path(args.path))
         if args.json:
-            print(json.dumps(stats.__dict__, indent=2))
+            _print_json(stats)
         else:
             print(render_stats(stats), end="")
         return 0
@@ -212,6 +253,17 @@ def main(argv: list[str] | None = None) -> int:
         from cairn.validate import validate_vault
 
         report = validate_vault(Path(args.path))
+        if args.json:
+            _print_json(
+                {
+                    "ok": not report.errors,
+                    "error_count": len(report.errors),
+                    "warning_count": len(report.warnings),
+                    "errors": report.errors,
+                    "warnings": report.warnings,
+                }
+            )
+            return 1 if report.errors else 0
         for issue in report.errors:
             print(f"ERROR {issue.path}: {issue.message}")
         for issue in report.warnings:
@@ -221,6 +273,9 @@ def main(argv: list[str] | None = None) -> int:
         from cairn.doctor import check_vault
 
         report = check_vault(Path(args.path))
+        if args.json:
+            _print_json(report)
+            return 0 if report.ok else 1
         for line in report.lines:
             print(line)
         return 0 if report.ok else 1
@@ -241,17 +296,28 @@ def main(argv: list[str] | None = None) -> int:
             print(f"updated {result.path}")
         return 0
     if args.command == "index":
-        from cairn.indexer import CairnIndexError, rebuild_index, sync_index
+        from cairn.indexer import CairnIndexError, sync_index
 
         root = Path(args.path)
+        index_path = root / ".cairn" / "index.db"
         try:
-            if args.rebuild:
-                rebuild_index(root)
-                print(f"rebuilt {root / '.cairn' / 'index.db'}")
+            stats = sync_index(root, rebuild=args.rebuild)
+            if args.json:
+                _print_json(
+                    {
+                        "ok": True,
+                        "index_path": str(index_path),
+                        "rebuild": args.rebuild,
+                        "updated": stats.updated,
+                        "removed": stats.removed,
+                        "skipped": stats.skipped,
+                    }
+                )
+            elif args.rebuild:
+                print(f"rebuilt {index_path}")
             else:
-                stats = sync_index(root)
                 print(
-                    f"indexed {root / '.cairn' / 'index.db'} "
+                    f"indexed {index_path} "
                     f"(updated {stats.updated}, removed {stats.removed}, skipped {stats.skipped})"
                 )
         except CairnIndexError as exc:
@@ -259,8 +325,6 @@ def main(argv: list[str] | None = None) -> int:
             return 1
         return 0
     if args.command == "search":
-        import json
-
         from cairn.indexer import CairnIndexError, search
 
         if args.limit <= 0:
@@ -279,7 +343,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"ERROR {exc}", file=sys.stderr)
             return 1
         if args.json:
-            print(json.dumps([result.__dict__ for result in results], indent=2))
+            _print_json(results)
         else:
             for result in results:
                 print(f"{result.path} :: {result.title}")
@@ -287,34 +351,33 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if args.command == "retrieve":
         from cairn.indexer import CairnIndexError
-        from cairn.retriever import retrieve
+        from cairn.retriever import retrieve_packet
 
         if args.limit <= 0:
             parser.error("--limit must be positive")
         if args.budget <= 0:
             parser.error("--budget must be positive")
         try:
-            print(
-                retrieve(
-                    Path(args.path),
-                    args.query,
-                    limit=args.limit,
-                    budget_tokens=args.budget,
-                    mode=args.mode,
-                    type_filter=args.type_filter,
-                    tag_filters=args.tag,
-                    system_filters=args.system,
-                    ranker=args.ranker,
-                ),
-                end="",
+            packet = retrieve_packet(
+                Path(args.path),
+                args.query,
+                limit=args.limit,
+                budget_tokens=args.budget,
+                mode=args.mode,
+                type_filter=args.type_filter,
+                tag_filters=args.tag,
+                system_filters=args.system,
+                ranker=args.ranker,
             )
         except (CairnIndexError, FileNotFoundError, ValueError) as exc:
             print(f"ERROR {exc}", file=sys.stderr)
             return 1
+        if args.json:
+            _print_json(packet)
+        else:
+            print(packet.context, end="")
         return 0
     if args.command == "similar":
-        import json
-
         from cairn.indexer import CairnIndexError
         from cairn.similar import find_similar, render_similar
 
@@ -333,7 +396,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"ERROR {exc}", file=sys.stderr)
             return 1
         if args.json:
-            print(json.dumps([result.__dict__ for result in results], indent=2))
+            _print_json(results)
         else:
             print(render_similar(results), end="")
         return 0
@@ -352,11 +415,33 @@ def main(argv: list[str] | None = None) -> int:
             text = show(Path(args.path), args.document)
             if args.lines:
                 text = extract_lines(text, args.lines)
+                mode = "lines"
+                selector = args.lines
             elif args.section:
                 text = extract_section(text, args.section)
+                mode = "section"
+                selector = args.section
             elif args.snippet:
                 text = extract_snippet(text, args.snippet, context=args.context)
-            print(text, end="")
+                mode = "snippet"
+                selector = args.snippet
+            else:
+                mode = "document"
+                selector = None
+            if args.json:
+                from cairn.retriever import approx_tokens
+
+                _print_json(
+                    {
+                        "path": args.document,
+                        "mode": mode,
+                        "selector": selector,
+                        "tokens": approx_tokens(text),
+                        "content": text,
+                    }
+                )
+            else:
+                print(text, end="")
         except (FileNotFoundError, ValueError) as exc:
             print(f"ERROR {exc}", file=sys.stderr)
             return 1

@@ -450,6 +450,34 @@ class IndexerTests(unittest.TestCase):
             self.assertTrue((root / ".cairn" / "index.db").is_file())
             self.assertIn(str(root / ".cairn" / "index.db"), result.stdout)
 
+    def test_cli_index_json_returns_incremental_stats(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="personal")
+            write_concept(
+                root,
+                "note.md",
+                (
+                    "type: Note",
+                    "title: Note",
+                    "description: A note.",
+                    "tags: [personal]",
+                    "timestamp: 2026-06-17T10:00:00Z",
+                ),
+                "# Context\n\nBody.\n",
+            )
+
+            result = run_cairn(root, "index", "--json")
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            payload = json.loads(result.stdout)
+            self.assertTrue(payload["ok"])
+            self.assertFalse(payload["rebuild"])
+            self.assertEqual(payload["updated"], 1)
+            self.assertEqual(payload["removed"], 0)
+            self.assertEqual(payload["skipped"], 0)
+            self.assertTrue(payload["index_path"].endswith(".cairn/index.db") or payload["index_path"].endswith(".cairn\\index.db"))
+
     def test_cli_index_without_rebuild_updates_changed_document(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -885,6 +913,30 @@ class IndexerTests(unittest.TestCase):
             self.assertNotIn("Ignore this.", result.stdout)
             self.assertNotIn("Ignore that.", result.stdout)
 
+    def test_cli_show_section_matches_heading_without_accents(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="support")
+            write_concept(
+                root,
+                "atendimento.md",
+                (
+                    "type: Procedure",
+                    "title: Atendimento",
+                    "description: A note.",
+                    "tags: [suporte]",
+                    "timestamp: 2026-06-17T10:00:00Z",
+                ),
+                "# Contexto\n\nIgnore.\n\n# Solução\n\nManter este trecho.\n\n# Pós-validação\n\nIgnore.\n",
+            )
+
+            result = run_cairn(root, "show", "knowledge/atendimento.md", "--section", "Solucao")
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("# Solução", result.stdout)
+            self.assertIn("Manter este trecho.", result.stdout)
+            self.assertNotIn("Ignore.", result.stdout)
+
     def test_cli_show_snippet_returns_nearby_matching_lines(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -910,6 +962,56 @@ class IndexerTests(unittest.TestCase):
             self.assertIn("after", result.stdout)
             self.assertNotIn("alpha", result.stdout)
             self.assertNotIn("omega", result.stdout)
+
+    def test_cli_show_json_returns_selected_content_metadata(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="personal")
+            write_concept(
+                root,
+                "note.md",
+                (
+                    "type: Note",
+                    "title: Note",
+                    "description: A note.",
+                    "tags: [personal]",
+                    "timestamp: 2026-06-17T10:00:00Z",
+                ),
+                "# Context\n\nIgnore this.\n\n# Resolution\n\nKeep this.\n",
+            )
+
+            result = run_cairn(root, "show", "knowledge/note.md", "--section", "Resolution", "--json")
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            payload = json.loads(result.stdout)
+            self.assertEqual(payload["path"], "knowledge/note.md")
+            self.assertEqual(payload["mode"], "section")
+            self.assertEqual(payload["selector"], "Resolution")
+            self.assertGreater(payload["tokens"], 0)
+            self.assertIn("# Resolution", payload["content"])
+            self.assertNotIn("Ignore this.", payload["content"])
+
+    def test_cli_show_snippet_matches_text_without_accents(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="support")
+            write_concept(
+                root,
+                "sessao.md",
+                (
+                    "type: Procedure",
+                    "title: Sessão",
+                    "description: A note.",
+                    "tags: [suporte]",
+                    "timestamp: 2026-06-17T10:00:00Z",
+                ),
+                "antes\nrenovação de sessão concluída\ndepois\n",
+            )
+
+            result = run_cairn(root, "show", "knowledge/sessao.md", "--snippet", "renovacao sessao", "--context", "0")
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(result.stdout, "renovação de sessão concluída\n")
 
 
 if __name__ == "__main__":

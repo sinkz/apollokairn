@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import os
 import subprocess
 import sys
@@ -243,6 +244,32 @@ class ValidateTests(unittest.TestCase):
             self.assertEqual(result.returncode, 1)
             self.assertIn("ERROR knowledge/bad.md:", result.stdout)
             self.assertIn("type", result.stdout)
+
+    def test_cli_validate_json_returns_issue_lists(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="personal")
+            write_concept(
+                root,
+                "bad.md",
+                (
+                    "type: Unknown",
+                    "title: Bad",
+                    "description: Bad note.",
+                    "tags: [personal]",
+                    "timestamp: 2026-06-17T10:00:00Z",
+                ),
+            )
+
+            result = run_cairn(root, "validate", "--json")
+
+            self.assertEqual(result.returncode, 1)
+            payload = json.loads(result.stdout)
+            self.assertFalse(payload["ok"])
+            self.assertEqual(payload["error_count"], 1)
+            self.assertEqual(payload["warning_count"], 0)
+            self.assertEqual(payload["errors"][0]["path"], "knowledge/bad.md")
+            self.assertIn("type", payload["errors"][0]["message"])
 
     def test_cli_validate_returns_zero_for_valid_vault(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

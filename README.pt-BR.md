@@ -12,7 +12,7 @@
   <p>
     <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white">
     <img alt="Dependências de runtime: zero" src="https://img.shields.io/badge/dependencias_runtime-0-2f6f4e">
-    <img alt="Testes de regressão: 118" src="https://img.shields.io/badge/testes-118-3b6ea8">
+    <img alt="Testes de regressão: 130" src="https://img.shields.io/badge/testes-130-3b6ea8">
     <img alt="Recall at 3: 1.00" src="https://img.shields.io/badge/Recall%403-1.00-2f6f4e">
     <img alt="Redução de contexto: 92.16%" src="https://img.shields.io/badge/reducao_contexto-92.16%25-8a5a44">
     <img alt="Licença: MIT" src="https://img.shields.io/badge/licenca-MIT-15130f">
@@ -49,7 +49,7 @@ contra documentos completos.
 | nDCG@3 | `0.9931` | Qualidade de ranking contra rótulos determinísticos de relevância. |
 | Redução de contexto | `92.16%` | Recuperação por passagens retorna muito menos texto que abrir documentos completos. |
 | Redução em comparativos | `53.73%` | Redução medida nas rodadas comparativas configuradas. |
-| Testes de regressão | `118` | Testes unitários e de workflow rodados antes da publicação atual. |
+| Testes de regressão | `130` | Testes unitários e de workflow rodados antes da publicação atual. |
 
 Os dados do benchmark também são publicados no site por
 [`docs/data/benchmarks.json`](docs/data/benchmarks.json).
@@ -172,6 +172,7 @@ cairn search "deploy token rotation kubernetes secret" --path CAMINHO_DO_VAULT -
 cairn retrieve "deploy 403 token" --path CAMINHO_DO_VAULT --budget 800
 cairn retrieve "deploy 403 token" --path CAMINHO_DO_VAULT --mode passages --budget 400
 cairn retrieve "deploy token rotation kubernetes secret" --path CAMINHO_DO_VAULT --ranker auto --budget 800
+cairn retrieve "deploy 403 token" --path CAMINHO_DO_VAULT --mode passages --budget 400 --json
 ```
 
 ### 4. Atualizar em vez de duplicar
@@ -186,6 +187,9 @@ cairn update knowledge/deploy-403-after-token-rotation.md \
 
 Para atualizações maiores, use `--append-file CAMINHO_DO_TEXTO.md` ou envie o
 conteúdo por pipe com `--append-stdin`.
+Agentes podem adicionar `--json`, prever escritas com `--dry-run` e passar
+`--expect-sha256 SHA256_ATUAL` para evitar atualizar um arquivo que mudou desde
+a última inspeção.
 
 ## Comandos
 
@@ -205,6 +209,9 @@ conteúdo por pipe com `--append-stdin`.
 | `cairn refresh-guides` | Atualiza guias de agente gerados |
 | `cairn stats` | Mostra contagens e tamanho aproximado em tokens |
 | `cairn export` / `cairn import` | Move um vault como arquivo zip |
+
+A maioria dos comandos usados por agentes suporta `--json`; veja o
+[guia de uso](docs/guides/usage.pt-BR.md) para o contrato completo.
 
 ## Vault De Exemplo
 

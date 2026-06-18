@@ -12,7 +12,7 @@
   <p>
     <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white">
     <img alt="Runtime dependencies: zero" src="https://img.shields.io/badge/runtime_dependencies-0-2f6f4e">
-    <img alt="Regression tests: 118" src="https://img.shields.io/badge/tests-118-3b6ea8">
+    <img alt="Regression tests: 130" src="https://img.shields.io/badge/tests-130-3b6ea8">
     <img alt="Recall at 3: 1.00" src="https://img.shields.io/badge/Recall%403-1.00-2f6f4e">
     <img alt="Context reduction: 92.16%" src="https://img.shields.io/badge/context_reduction-92.16%25-8a5a44">
     <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-15130f">
@@ -48,7 +48,7 @@ ranking quality, token budgets, and passage-vs-document context reduction.
 | nDCG@3 | `0.9931` | Ranking quality against deterministic relevance labels. |
 | Context reduction | `92.16%` | Passage retrieval returns far less text than opening full documents. |
 | Comparison reduction | `53.73%` | Reduction measured in configured comparison runs. |
-| Regression tests | `118` | Unit and workflow tests run before publishing the current page. |
+| Regression tests | `130` | Unit and workflow tests run before publishing the current page. |
 
 Benchmark data is also published on the website through
 [`docs/data/benchmarks.json`](docs/data/benchmarks.json).
@@ -170,6 +170,7 @@ cairn search "deploy token rotation kubernetes secret" --path PATH_TO_VAULT --ra
 cairn retrieve "deploy 403 token" --path PATH_TO_VAULT --budget 800
 cairn retrieve "deploy 403 token" --path PATH_TO_VAULT --mode passages --budget 400
 cairn retrieve "deploy token rotation kubernetes secret" --path PATH_TO_VAULT --ranker auto --budget 800
+cairn retrieve "deploy 403 token" --path PATH_TO_VAULT --mode passages --budget 400 --json
 ```
 
 ### 4. Update instead of duplicating
@@ -184,6 +185,9 @@ cairn update knowledge/deploy-403-after-token-rotation.md \
 
 For longer updates, use `--append-file PATH_TO_APPEND.md` or pipe content with
 `--append-stdin`.
+Agents can add `--json`, preview writes with `--dry-run`, and pass
+`--expect-sha256 CURRENT_SHA256` to avoid updating a file that changed since it
+was inspected.
 
 ## Commands
 
@@ -203,6 +207,9 @@ For longer updates, use `--append-file PATH_TO_APPEND.md` or pipe content with
 | `cairn refresh-guides` | Refresh generated agent guides |
 | `cairn stats` | Show vault counts and approximate token size |
 | `cairn export` / `cairn import` | Move a vault as a zip archive |
+
+Most agent-facing commands support `--json`; see the
+[usage guide](docs/guides/usage.md) for the full contract.
 
 ## Example Vault
 

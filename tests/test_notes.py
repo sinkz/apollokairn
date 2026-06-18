@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import hashlib
+import json
 import os
 import subprocess
 import sys
@@ -87,6 +89,63 @@ class NotesTests(unittest.TestCase):
 
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertTrue((root / "knowledge" / "weekly-workflow.md").is_file())
+
+    def test_cli_capture_json_reports_created_note(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="personal")
+
+            result = run_cairn(
+                root,
+                "capture",
+                "--title",
+                "JSON capture",
+                "--description",
+                "Personal workflow note.",
+                "--tag",
+                "workflow",
+                "--body",
+                "Review open loops every Friday.",
+                "--json",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            payload = json.loads(result.stdout)
+            self.assertEqual(payload["path"], "knowledge/json-capture.md")
+            self.assertTrue(payload["changed"])
+            self.assertTrue(payload["would_change"])
+            self.assertFalse(payload["dry_run"])
+            self.assertEqual(payload["reason"], "created")
+            self.assertTrue(payload["sha256_after"])
+
+    def test_cli_capture_dry_run_json_does_not_write_note(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="personal")
+
+            result = run_cairn(
+                root,
+                "capture",
+                "--title",
+                "Dry run capture",
+                "--description",
+                "Personal workflow note.",
+                "--tag",
+                "workflow",
+                "--body",
+                "Do not persist this.",
+                "--dry-run",
+                "--json",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            payload = json.loads(result.stdout)
+            self.assertEqual(payload["path"], "knowledge/dry-run-capture.md")
+            self.assertFalse(payload["changed"])
+            self.assertTrue(payload["would_change"])
+            self.assertTrue(payload["dry_run"])
+            self.assertEqual(payload["reason"], "dry_run")
+            self.assertFalse((root / "knowledge" / "dry-run-capture.md").exists())
 
     def test_cli_capture_reads_body_file_and_preserves_markdown_sections(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -192,6 +251,110 @@ class NotesTests(unittest.TestCase):
             text = (root / "knowledge" / "support-handoff.md").read_text(encoding="utf-8")
             self.assertEqual(text.count("Add reproduction steps."), 1)
             self.assertIn("unchanged", second.stdout)
+
+    def test_cli_update_json_reports_noop_reason(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="personal")
+            run_cairn(
+                root,
+                "add",
+                "--title",
+                "Support handoff",
+                "--description",
+                "Workflow note.",
+                "--tag",
+                "workflow",
+                "--body",
+                "Initial note.",
+            )
+
+            run_cairn(root, "update", "knowledge/support-handoff.md", "--append", "Already documented.")
+            result = run_cairn(
+                root,
+                "update",
+                "knowledge/support-handoff.md",
+                "--append",
+                "Already documented.",
+                "--json",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            payload = json.loads(result.stdout)
+            self.assertEqual(payload["path"], "knowledge/support-handoff.md")
+            self.assertFalse(payload["changed"])
+            self.assertFalse(payload["would_change"])
+            self.assertEqual(payload["reason"], "already_present")
+
+    def test_cli_update_dry_run_json_does_not_write_note(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="personal")
+            run_cairn(
+                root,
+                "add",
+                "--title",
+                "Incident checklist",
+                "--description",
+                "Reusable incident checklist.",
+                "--tag",
+                "workflow",
+                "--body",
+                "Initial note.",
+            )
+
+            result = run_cairn(
+                root,
+                "update",
+                "knowledge/incident-checklist.md",
+                "--append",
+                "Confirm customer impact before escalation.",
+                "--dry-run",
+                "--json",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            payload = json.loads(result.stdout)
+            self.assertFalse(payload["changed"])
+            self.assertTrue(payload["would_change"])
+            self.assertTrue(payload["dry_run"])
+            self.assertEqual(payload["reason"], "dry_run")
+            text = (root / "knowledge" / "incident-checklist.md").read_text(encoding="utf-8")
+            self.assertNotIn("Confirm customer impact before escalation.", text)
+
+    def test_cli_update_rejects_stale_expected_sha256(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="personal")
+            run_cairn(
+                root,
+                "add",
+                "--title",
+                "Access approval",
+                "--description",
+                "How to request approval.",
+                "--tag",
+                "workflow",
+                "--body",
+                "Initial note.",
+            )
+            note = root / "knowledge" / "access-approval.md"
+            current_hash = hashlib.sha256(note.read_bytes()).hexdigest()
+            note.write_text(note.read_text(encoding="utf-8") + "\nConcurrent edit.\n", encoding="utf-8")
+
+            result = run_cairn(
+                root,
+                "update",
+                "knowledge/access-approval.md",
+                "--append",
+                "Should not write.",
+                "--expect-sha256",
+                current_hash,
+            )
+
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("modified since expected sha256", result.stderr)
+            self.assertNotIn("Should not write.", note.read_text(encoding="utf-8"))
 
     def test_cli_update_appends_file_accepts_absolute_path_and_touches_timestamp(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

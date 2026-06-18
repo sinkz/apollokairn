@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import math
 import os
 import subprocess
@@ -126,6 +127,47 @@ class RetrieverTests(unittest.TestCase):
             self.assertIn("heading: Resolution", passage.stdout)
             self.assertIn("rotate token needle", passage.stdout)
             self.assertLess(len(passage.stdout), len(doc.stdout))
+
+    def test_cli_retrieve_json_returns_structured_context_packet(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="engineering")
+            write_concept(
+                root,
+                "deploy-403.md",
+                (
+                    "type: Runbook",
+                    "title: Deploy 403",
+                    "description: Fix deploy authorization failures.",
+                    "tags: [deploy, bug]",
+                    "timestamp: 2026-06-17T10:00:00Z",
+                ),
+                "# Context\n\nDeploy fails.\n\n# Resolution\n\nRotate the CI token.\n",
+            )
+            run_cairn(root, "index", "--rebuild")
+
+            result = run_cairn(
+                root,
+                "retrieve",
+                "rotate ci token",
+                "--mode",
+                "passages",
+                "--budget",
+                "300",
+                "--json",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            packet = json.loads(result.stdout)
+            self.assertEqual(packet["query"], "rotate ci token")
+            self.assertEqual(packet["mode"], "passages")
+            self.assertEqual(packet["budget_tokens"], 300)
+            self.assertGreater(packet["used_tokens"], 0)
+            self.assertEqual(packet["source_count"], 1)
+            self.assertIn("Rotate the CI token.", packet["context"])
+            self.assertEqual(packet["sources"][0]["path"], "knowledge/deploy-403.md")
+            self.assertEqual(packet["sources"][0]["heading"], "Resolution")
+            self.assertIn("score", packet["sources"][0])
 
     def test_cli_retrieve_accepts_rrf_ranker(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

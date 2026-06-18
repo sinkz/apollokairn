@@ -78,6 +78,11 @@ Artefatos publicados em release:
 | macOS arm64 | `cairn-macos-arm64.tar.gz` |
 | Windows x64 | `cairn-windows-x64.zip` |
 
+O release Linux x64 é gerado em um container Debian 11 com glibc 2.31 para
+manter o binário compatível com distribuições mais antigas. Se o seu sistema
+for mais antigo que isso ou usar uma libc diferente de glibc, instale pelo
+código fonte.
+
 ## Instalar Uma Versão Específica
 
 Linux e macOS:

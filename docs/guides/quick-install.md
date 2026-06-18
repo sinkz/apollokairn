@@ -78,6 +78,10 @@ Published release assets:
 | macOS arm64 | `cairn-macos-arm64.tar.gz` |
 | Windows x64 | `cairn-windows-x64.zip` |
 
+The Linux x64 release is built in a Debian 11 container with glibc 2.31 to keep
+the binary usable on older distributions. If your system is older than that or
+uses a non-glibc libc, install from source instead.
+
 ## Install A Specific Version
 
 Linux and macOS:

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Sequence
 
@@ -10,6 +11,35 @@ from cairn.secret_scan import redact_text
 
 CHARS_PER_TOKEN = 4
 _RANKERS = {"bm25", "rrf", "auto"}
+
+
+@dataclass(frozen=True)
+class RetrievedSource:
+    path: str
+    title: str
+    type: str
+    tags: list[str]
+    score: float
+    snippet: str
+    content: str
+    heading: str | None = None
+    start_line: int | None = None
+    end_line: int | None = None
+    truncated: bool = False
+
+
+@dataclass(frozen=True)
+class RetrievalPacket:
+    query: str
+    mode: str
+    requested_ranker: str
+    ranker: str
+    limit: int
+    budget_tokens: int
+    used_tokens: int
+    source_count: int
+    context: str
+    sources: list[RetrievedSource]
 
 
 def approx_tokens(text: str) -> int:
@@ -40,8 +70,9 @@ def _retrieve_passages(
     tag_filters: Sequence[str],
     system_filters: Sequence[str],
     ranker: str,
-) -> str:
+) -> tuple[str, list[RetrievedSource]]:
     parts: list[str] = []
+    sources: list[RetrievedSource] = []
     used_chars = 0
     for result in search_passages(
         root,
@@ -67,13 +98,29 @@ def _retrieve_passages(
         if remaining <= 0:
             break
         content = _fit(result.text, remaining)
+        redacted_content = redact_text(content)
         block = redact_text(separator + prefix + content)
         parts.append(block)
+        sources.append(
+            RetrievedSource(
+                path=result.path,
+                title=result.title,
+                type=result.type,
+                tags=result.tags,
+                score=result.score,
+                snippet=redact_text(result.snippet),
+                heading=result.heading,
+                start_line=result.start_line,
+                end_line=result.end_line,
+                content=redacted_content,
+                truncated=content != result.text,
+            )
+        )
         used_chars += len(block)
         if used_chars >= max_chars or len(content) < remaining:
             continue
         break
-    return "".join(parts)
+    return "".join(parts), sources
 
 
 def _retrieve_documents(
@@ -85,8 +132,9 @@ def _retrieve_documents(
     tag_filters: Sequence[str],
     system_filters: Sequence[str],
     ranker: str,
-) -> str:
+) -> tuple[str, list[RetrievedSource]]:
     parts: list[str] = []
+    sources: list[RetrievedSource] = []
     used_chars = 0
     for result in search(
         root,
@@ -109,17 +157,31 @@ def _retrieve_documents(
         remaining = max_chars - used_chars - len(separator) - len(prefix)
         if remaining <= 0:
             break
-        content = _fit(show(root, result.path), remaining)
+        full_text = show(root, result.path)
+        content = _fit(full_text, remaining)
+        redacted_content = redact_text(content)
         block = redact_text(separator + prefix + content)
         parts.append(block)
+        sources.append(
+            RetrievedSource(
+                path=result.path,
+                title=result.title,
+                type=result.type,
+                tags=result.tags,
+                score=result.score,
+                snippet=redact_text(result.snippet),
+                content=redacted_content,
+                truncated=content != full_text,
+            )
+        )
         used_chars += len(block)
         if used_chars >= max_chars or len(content) < remaining:
             continue
         break
-    return "".join(parts)
+    return "".join(parts), sources
 
 
-def retrieve(
+def retrieve_packet(
     root: Path,
     query: str,
     limit: int = 3,
@@ -143,7 +205,7 @@ def retrieve(
 
     if mode == "passages":
         for attempt in _ranker_attempts(ranker):
-            packet = _retrieve_passages(
+            context, sources = _retrieve_passages(
                 root,
                 query,
                 limit,
@@ -153,12 +215,23 @@ def retrieve(
                 system_filters,
                 attempt,
             )
-            if packet:
-                return packet
-        return ""
+            if context:
+                return RetrievalPacket(
+                    query=query,
+                    mode=mode,
+                    requested_ranker=ranker,
+                    ranker=attempt,
+                    limit=limit,
+                    budget_tokens=budget_tokens,
+                    used_tokens=approx_tokens(context),
+                    source_count=len(sources),
+                    context=context,
+                    sources=sources,
+                )
+        return RetrievalPacket(query, mode, ranker, _ranker_attempts(ranker)[-1], limit, budget_tokens, 0, 0, "", [])
 
     for attempt in _ranker_attempts(ranker):
-        packet = _retrieve_documents(
+        context, sources = _retrieve_documents(
             root,
             query,
             limit,
@@ -168,6 +241,41 @@ def retrieve(
             system_filters,
             attempt,
         )
-        if packet:
-            return packet
-    return ""
+        if context:
+            return RetrievalPacket(
+                query=query,
+                mode=mode,
+                requested_ranker=ranker,
+                ranker=attempt,
+                limit=limit,
+                budget_tokens=budget_tokens,
+                used_tokens=approx_tokens(context),
+                source_count=len(sources),
+                context=context,
+                sources=sources,
+            )
+    return RetrievalPacket(query, mode, ranker, _ranker_attempts(ranker)[-1], limit, budget_tokens, 0, 0, "", [])
+
+
+def retrieve(
+    root: Path,
+    query: str,
+    limit: int = 3,
+    budget_tokens: int = 1000,
+    mode: str = "documents",
+    type_filter: str | None = None,
+    tag_filters: Sequence[str] = (),
+    system_filters: Sequence[str] = (),
+    ranker: str = "bm25",
+) -> str:
+    return retrieve_packet(
+        root,
+        query,
+        limit=limit,
+        budget_tokens=budget_tokens,
+        mode=mode,
+        type_filter=type_filter,
+        tag_filters=tag_filters,
+        system_filters=system_filters,
+        ranker=ranker,
+    ).context
