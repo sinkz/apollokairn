@@ -499,6 +499,10 @@ cairn refresh-guides --path ~/brain
 Use these when a vault should be consumed by different agent harnesses. Cairn is
 agent-agnostic by design: generated guides and future plugins are adapters over
 the same local Markdown vault, not separate knowledge stores.
+Generated guides tell agents to use JSON search, passage retrieval with
+`--ranker auto`, `cairn vocab suggest` for vocabulary gaps, schema-compatible
+types/tags, `--body-file` or `--body-stdin` for multi-line Markdown, and
+`validate` plus `index` after every successful write.
 
 ## Recommended Agent Workflow
 

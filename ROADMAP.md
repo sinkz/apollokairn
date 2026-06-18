@@ -29,6 +29,10 @@ implementation history.
 - Pre-write policy validation for `capture`/`add` and `update`: new notes are
   checked against `SCHEMA.md`, and new content is scanned for common
   secret-like values before files are written.
+- Disciplined generated agent guides for `AGENTS.md`, `CODEX.md`, `CLAUDE.md`,
+  and `OPENCODE.md`, including JSON search, passage retrieval, glossary
+  guidance, schema-compatible writes, multi-line body handling, and post-write
+  validation/indexing.
 - Standalone GitHub Release binaries, checksums, and quick install scripts for
   Linux, macOS, and Windows.
 - Public documentation, example vault, changelog, contribution guide, and GitHub
@@ -46,8 +50,6 @@ implementation history.
   based on file signatures before agents update shared notes.
 - Complete ranking explanation output for search and retrieve, focused on
   debugging and benchmarks rather than confidence claims.
-- Discipline generated agent setup docs so each harness receives the same
-  search/retrieve/writeback policy and glossary guidance.
 
 ## Next
 

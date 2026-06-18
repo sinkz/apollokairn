@@ -21,11 +21,18 @@ def render_agents_md(profile: Profile) -> str:
     return (
         "# Cairn Agent Guide\n\n"
         f"Active profile: `{profile.name}`\n\n"
-        "Before answering questions that may rely on saved knowledge, run "
-        '`cairn search "<query>" --json`.\n\n'
-        "Open at most the top 3 relevant documents with `cairn show <path>`.\n\n"
-        "When reusable knowledge is learned, prefer updating an existing concept "
-        "before creating a new one.\n\n"
+        "## Before Answering\n\n"
+        "1. Run `cairn doctor --path <vault>` when vault health is unknown.\n"
+        "2. Run `cairn search \"<query>\" --path <vault> --json` for saved knowledge.\n"
+        "3. Open at most the top 3 relevant documents.\n"
+        "4. Prefer `cairn retrieve \"<query>\" --path <vault> --mode passages --ranker auto --budget 800 --json` or partial `cairn show` before reading full files.\n\n"
+        "## After Solving\n\n"
+        "1. Run `cairn similar \"<new knowledge>\" --path <vault>`.\n"
+        "2. Prefer `cairn update <path> --append \"<note>\" --path <vault>` when a related note exists.\n"
+        "3. Use `cairn add` or `cairn capture` only for reusable knowledge that is not already represented.\n"
+        "4. Use only types and tags declared in `SCHEMA.md`; Cairn rejects invalid writes before creating files.\n"
+        "5. Use `--body-file` or `--body-stdin` for multi-line Markdown instead of shell-escaped `\\n` text.\n"
+        "6. Run `cairn validate --path <vault>` and `cairn index --path <vault>` after every successful write.\n\n"
         "Never store secrets, credentials, tokens, private keys, or passwords.\n"
     )
 

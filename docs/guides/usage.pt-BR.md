@@ -506,6 +506,10 @@ Use quando o mesmo vault deve ser consumido por diferentes harnesses de agentes.
 Cairn é agnóstico de agentes por design: guias gerados e plugins futuros são
 adaptadores sobre o mesmo vault local em Markdown, não bases de conhecimento
 separadas.
+Guias gerados orientam agentes a usar busca JSON, recuperação por passagens com
+`--ranker auto`, `cairn vocab suggest` para gaps de vocabulário, types/tags
+compatíveis com o schema, `--body-file` ou `--body-stdin` para Markdown
+multi-linha, e `validate` mais `index` depois de toda escrita bem-sucedida.
 
 ## Fluxo Recomendado Para Agentes
 

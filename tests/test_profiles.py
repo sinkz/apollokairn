@@ -42,6 +42,9 @@ class ProfileTests(unittest.TestCase):
 
         self.assertIn("cairn search", text)
         self.assertIn("Open at most the top 3", text)
+        self.assertIn("SCHEMA.md", text)
+        self.assertIn("--body-file", text)
+        self.assertIn("cairn index", text)
         self.assertIn("Never store secrets", text)
 
 

@@ -42,6 +42,10 @@ class GuidesTests(unittest.TestCase):
             text = (root / "CODEX.md").read_text(encoding="utf-8")
             self.assertIn("cairn doctor", text)
             self.assertIn("cairn retrieve", text)
+            self.assertIn("SCHEMA.md", text)
+            self.assertIn("--body-file", text)
+            self.assertIn("cairn vocab suggest", text)
+            self.assertIn("Run `cairn validate --path <vault>` and `cairn index --path <vault>` after every successful write", text)
 
     def test_cli_refresh_guides_uses_configured_generated_guides(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
