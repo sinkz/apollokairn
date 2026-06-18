@@ -1,10 +1,10 @@
 <div align="center">
-  <h1>Cairn</h1>
+  <h1>ApolloKairn</h1>
   <p><strong>Markdown knowledge for search, retrieval, and writeback workflows.</strong></p>
   <p>
-    <a href="https://sinkz.github.io/cairn/">Website</a> ·
+    <a href="https://sinkz.github.io/apollokairn/">Website</a> ·
     <a href="docs/guides/quick-install.md">Quick install</a> ·
-    <a href="https://sinkz.github.io/cairn/learn.html">How it works</a> ·
+    <a href="https://sinkz.github.io/apollokairn/learn.html">How it works</a> ·
     <a href="docs/guides/usage.md">Usage guide</a> ·
     <a href="examples/README.md">Examples</a> ·
     <a href="README.pt-BR.md">PT-BR</a>
@@ -20,14 +20,14 @@
   </p>
 </div>
 
-## What Cairn Is
+## What ApolloKairn Is
 
-Cairn is a local CLI for a Markdown knowledge vault. It helps people and agents
+ApolloKairn is a local CLI for a Markdown knowledge vault. It helps people and agents
 store reusable notes, search them later, retrieve only the context needed for a
 task, and write new lessons back to the vault.
 
 The source of truth is plain Markdown with frontmatter. Search is backed by a
-local, rebuildable SQLite index. Cairn works best inside agent workflows, but it
+local, rebuildable SQLite index. ApolloKairn works best inside agent workflows, but it
 does not depend on a specific agent product.
 
 | Area | What it gives you |
@@ -67,23 +67,26 @@ python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 170
 
 Prebuilt binaries from GitHub Releases do not require Python.
 
+> ApolloKairn was previously named Cairn. The `cairn` command remains available
+> as a compatibility alias for one release, but new docs use `apollokairn`.
+
 Linux and macOS:
 
 ```bash
-curl -fsSL https://sinkz.github.io/cairn/install.sh | sh
+curl -fsSL https://sinkz.github.io/apollokairn/install.sh | sh
 ```
 
 Windows PowerShell:
 
 ```powershell
-irm https://sinkz.github.io/cairn/install.ps1 | iex
+irm https://sinkz.github.io/apollokairn/install.ps1 | iex
 ```
 
 Then verify:
 
 ```powershell
-cairn --version
-cairn --help
+apollokairn --version
+apollokairn --help
 ```
 
 See [Quick install](docs/guides/quick-install.md) for custom install paths,
@@ -92,10 +95,10 @@ version pinning, PATH setup, checksum troubleshooting, and manual fallback.
 ## Create A Vault
 
 ```bash
-cairn init --path PATH_TO_VAULT --profile engineering
-cairn validate --path PATH_TO_VAULT
-cairn index --path PATH_TO_VAULT --rebuild
-cairn doctor --path PATH_TO_VAULT
+apollokairn init --path PATH_TO_VAULT --profile engineering
+apollokairn validate --path PATH_TO_VAULT
+apollokairn index --path PATH_TO_VAULT --rebuild
+apollokairn doctor --path PATH_TO_VAULT
 ```
 
 Profiles create an initial folder structure and schema:
@@ -114,10 +117,10 @@ Source install is mainly useful for development or when release binaries are not
 available yet:
 
 ```bash
-git clone https://github.com/sinkz/cairn.git
-cd cairn
+git clone https://github.com/sinkz/apollokairn.git
+cd apollokairn
 python -m pip install -e .
-cairn --help
+apollokairn --help
 ```
 
 Run without installing:
@@ -139,7 +142,7 @@ python -m cairn --help
 ### 1. Capture a note
 
 ```bash
-cairn capture --path PATH_TO_VAULT \
+apollokairn capture --path PATH_TO_VAULT \
   --title "Deploy 403 after token rotation" \
   --description "Fix stale CI authorization after token rotation." \
   --type Runbook \
@@ -153,7 +156,7 @@ cairn capture --path PATH_TO_VAULT \
 For larger notes, keep the body in a Markdown file:
 
 ```bash
-cairn capture --path PATH_TO_VAULT \
+apollokairn capture --path PATH_TO_VAULT \
   --title "Deploy 403 after token rotation" \
   --description "Fix stale CI authorization after token rotation." \
   --type Runbook \
@@ -168,37 +171,37 @@ common secret-like values before writing the file.
 ### 2. Search before opening files
 
 ```bash
-cairn index --path PATH_TO_VAULT
-cairn search "deploy 403 token" --path PATH_TO_VAULT --limit 3
-cairn search "deploy token rotation kubernetes secret" --path PATH_TO_VAULT --ranker rrf
-cairn search "deploy 403 token" --path PATH_TO_VAULT --json --explain
+apollokairn index --path PATH_TO_VAULT
+apollokairn search "deploy 403 token" --path PATH_TO_VAULT --limit 3
+apollokairn search "deploy token rotation kubernetes secret" --path PATH_TO_VAULT --ranker rrf
+apollokairn search "deploy 403 token" --path PATH_TO_VAULT --json --explain
 ```
 
 If your team uses stable synonyms such as `k8s` and `kubernetes`, keep them in
 `glossary.md` so strict search can expand exact misses deterministically:
 
 ```bash
-cairn vocab add-term Kubernetes --alias k8s --alias kube --path PATH_TO_VAULT
-cairn vocab validate --path PATH_TO_VAULT
-cairn vocab suggest "kubernetes rollback" --path PATH_TO_VAULT --json
+apollokairn vocab add-term Kubernetes --alias k8s --alias kube --path PATH_TO_VAULT
+apollokairn vocab validate --path PATH_TO_VAULT
+apollokairn vocab suggest "kubernetes rollback" --path PATH_TO_VAULT --json
 ```
 
 ### 3. Retrieve compact context
 
 ```bash
-cairn retrieve "deploy 403 token" --path PATH_TO_VAULT --budget 800
-cairn retrieve "deploy 403 token" --path PATH_TO_VAULT --mode passages --budget 400
-cairn retrieve "deploy token rotation kubernetes secret" --path PATH_TO_VAULT --ranker auto --budget 800
-cairn retrieve "deploy 403 token" --path PATH_TO_VAULT --mode passages --budget 400 --json
-cairn retrieve "deploy 403 token" --path PATH_TO_VAULT --mode passages --budget 400 --json --explain
+apollokairn retrieve "deploy 403 token" --path PATH_TO_VAULT --budget 800
+apollokairn retrieve "deploy 403 token" --path PATH_TO_VAULT --mode passages --budget 400
+apollokairn retrieve "deploy token rotation kubernetes secret" --path PATH_TO_VAULT --ranker auto --budget 800
+apollokairn retrieve "deploy 403 token" --path PATH_TO_VAULT --mode passages --budget 400 --json
+apollokairn retrieve "deploy 403 token" --path PATH_TO_VAULT --mode passages --budget 400 --json --explain
 ```
 
 ### 4. Update instead of duplicating
 
 ```bash
-cairn similar "deploy forbidden token" --path PATH_TO_VAULT --limit 5
+apollokairn similar "deploy forbidden token" --path PATH_TO_VAULT --limit 5
 
-cairn update knowledge/deploy-403-after-token-rotation.md \
+apollokairn update knowledge/deploy-403-after-token-rotation.md \
   --path PATH_TO_VAULT \
   --append "Add the verification step used in the latest incident."
 ```
@@ -214,21 +217,21 @@ before it is written.
 
 | Command | Purpose |
 | --- | --- |
-| `cairn init` | Create a vault |
-| `cairn validate` | Check frontmatter, schema, and common secret-like values |
-| `cairn index` | Build or update the local search index |
-| `cairn doctor` | Check vault and index health |
-| `cairn capture` / `cairn add` | Create a note |
-| `cairn similar` | Find existing notes before creating a duplicate |
-| `cairn search` | Return ranked snippets and paths |
-| `cairn retrieve` | Return context within a token budget |
-| `cairn show` | Open a full document, section, snippet, or line range |
-| `cairn update` | Append reusable information to an existing note |
-| `cairn vocab` | Manage deterministic glossary terms and aliases |
-| `cairn setup-agent` | Create tool-specific instructions such as `CODEX.md`, `HERMES.md`, or Copilot instructions |
-| `cairn refresh-guides` | Refresh generated agent guides |
-| `cairn stats` | Show vault counts and approximate token size |
-| `cairn export` / `cairn import` | Move a vault as a zip archive |
+| `apollokairn init` | Create a vault |
+| `apollokairn validate` | Check frontmatter, schema, and common secret-like values |
+| `apollokairn index` | Build or update the local search index |
+| `apollokairn doctor` | Check vault and index health |
+| `apollokairn capture` / `apollokairn add` | Create a note |
+| `apollokairn similar` | Find existing notes before creating a duplicate |
+| `apollokairn search` | Return ranked snippets and paths |
+| `apollokairn retrieve` | Return context within a token budget |
+| `apollokairn show` | Open a full document, section, snippet, or line range |
+| `apollokairn update` | Append reusable information to an existing note |
+| `apollokairn vocab` | Manage deterministic glossary terms and aliases |
+| `apollokairn setup-agent` | Create tool-specific instructions such as `CODEX.md`, `HERMES.md`, or Copilot instructions |
+| `apollokairn refresh-guides` | Refresh generated agent guides |
+| `apollokairn stats` | Show vault counts and approximate token size |
+| `apollokairn export` / `apollokairn import` | Move a vault as a zip archive |
 
 All operational commands support `--json` for agent workflows; see the
 [usage guide](docs/guides/usage.md) for the full contract.
@@ -236,10 +239,10 @@ All operational commands support `--json` for agent workflows; see the
 ## Example Vault
 
 ```bash
-cairn validate --path examples/engineering-vault
-cairn index --path examples/engineering-vault --rebuild
-cairn search "deploy 403 token" --path examples/engineering-vault --limit 3
-cairn retrieve "hotfix release rollback" --path examples/engineering-vault --mode passages --budget 400
+apollokairn validate --path examples/engineering-vault
+apollokairn index --path examples/engineering-vault --rebuild
+apollokairn search "deploy 403 token" --path examples/engineering-vault --limit 3
+apollokairn retrieve "hotfix release rollback" --path examples/engineering-vault --mode passages --budget 400
 ```
 
 See [examples/README.md](examples/README.md) for more walkthroughs.
@@ -248,8 +251,8 @@ See [examples/README.md](examples/README.md) for more walkthroughs.
 
 | Page | Description |
 | --- | --- |
-| [Website](https://sinkz.github.io/cairn/) | Public overview and benchmark cards |
-| [How it works](https://sinkz.github.io/cairn/learn.html) | Conceptual and technical explanation |
+| [Website](https://sinkz.github.io/apollokairn/) | Public overview and benchmark cards |
+| [How it works](https://sinkz.github.io/apollokairn/learn.html) | Conceptual and technical explanation |
 | [Quick install](docs/guides/quick-install.md) | Binary install, PATH setup, and troubleshooting |
 | [Usage guide](docs/guides/usage.md) | Full command guide |
 | [Agent adapters](docs/guides/adapters.md) | Generated guides for Codex, Claude, OpenCode, Hermes, Copilot, and generic agents |
@@ -284,8 +287,8 @@ previous run.
 
 ## OKF Reference
 
-Cairn follows the useful shape of Open Knowledge Format: one concept per
-Markdown file, frontmatter metadata, an `index.md`, and a `log.md`. Cairn does
+ApolloKairn follows the useful shape of Open Knowledge Format: one concept per
+Markdown file, frontmatter metadata, an `index.md`, and a `log.md`. ApolloKairn does
 not require Google Cloud, Gemini, BigQuery, or the OKF reference implementation.
 
 - [Google Cloud OKF announcement](https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing)

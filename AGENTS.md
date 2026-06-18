@@ -1,11 +1,11 @@
 # Agent Instructions
 
-Use this file when working on the Cairn repository. Keep changes small,
+Use this file when working on the ApolloKairn repository. Keep changes small,
 verified, and aligned with the project constraints.
 
 ## Project Principles
 
-- Cairn is a local-first, agent-agnostic CLI for Markdown knowledge vaults.
+- ApolloKairn is a local-first, agent-agnostic CLI for Markdown knowledge vaults.
 - Markdown files are the source of truth; `.cairn/index.db` is rebuildable.
 - Keep the core dependency-free at runtime. `pyproject.toml` should keep
   `dependencies = []` unless a deliberate architecture decision changes that.
@@ -36,7 +36,7 @@ From the repository root:
 
 ```bash
 python -m pip install -e .
-cairn --version
+apollokairn --version
 ```
 
 Without installing:
@@ -137,7 +137,7 @@ git push origin vX.Y.Z
 
 The `Release` workflow builds standalone binaries for Linux, macOS, and
 Windows, publishes `checksums.txt`, and creates the GitHub Release. After it
-finishes, verify at least one asset download and `cairn --version`.
+finishes, verify at least one asset download and `apollokairn --version`.
 
 ## Editing Rules
 

@@ -1,6 +1,6 @@
 # Roadmap
 
-Cairn is built around one constraint: useful retrieval should cost less context
+ApolloKairn is built around one constraint: useful retrieval should cost less context
 than opening everything. The roadmap is organized by product maturity, not by
 implementation history.
 
@@ -25,7 +25,7 @@ implementation history.
 - Public benchmark JSON and GitHub Pages cards for retrieval and writeback
   metrics, including current values and history.
 - BM25 default ranking plus opt-in RRF and `retrieve --ranker auto` fallback.
-- Top-level deterministic glossary with `cairn vocab`, approved aliases, and
+- Top-level deterministic glossary with `apollokairn vocab`, approved aliases, and
   benchmark coverage for synonym gaps such as `k8s`/`kubernetes`.
 - Ranking explanation output for search and retrieve, including matched
   fields/terms and glossary alias diagnostics without confidence claims.

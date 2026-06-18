@@ -1,6 +1,6 @@
 # Adapters Para Agentes
 
-Cairn permanece agnóstico de agentes: o vault é Markdown, o índice é local, e
+ApolloKairn permanece agnóstico de agentes: o vault é Markdown, o índice é local, e
 todo agente usa o mesmo contrato de CLI e JSON. Os adapters atuais são arquivos
 de instrução gerados, não plugins separados nem bases de conhecimento separadas.
 
@@ -8,35 +8,35 @@ de instrução gerados, não plugins separados nem bases de conhecimento separad
 
 | Target | Comando | Arquivo gerado |
 | --- | --- | --- |
-| Agentes genéricos | `cairn setup-agent agents --path CAMINHO_DO_VAULT` | `AGENTS.md` |
-| Codex | `cairn setup-agent codex --path CAMINHO_DO_VAULT` | `CODEX.md` |
-| Claude | `cairn setup-agent claude --path CAMINHO_DO_VAULT` | `CLAUDE.md` |
-| OpenCode | `cairn setup-agent opencode --path CAMINHO_DO_VAULT` | `OPENCODE.md` |
-| Hermes | `cairn setup-agent hermes --path CAMINHO_DO_VAULT` | `HERMES.md` |
-| GitHub Copilot | `cairn setup-agent copilot --path CAMINHO_DO_VAULT` | `.github/copilot-instructions.md` |
+| Agentes genéricos | `apollokairn setup-agent agents --path CAMINHO_DO_VAULT` | `AGENTS.md` |
+| Codex | `apollokairn setup-agent codex --path CAMINHO_DO_VAULT` | `CODEX.md` |
+| Claude | `apollokairn setup-agent claude --path CAMINHO_DO_VAULT` | `CLAUDE.md` |
+| OpenCode | `apollokairn setup-agent opencode --path CAMINHO_DO_VAULT` | `OPENCODE.md` |
+| Hermes | `apollokairn setup-agent hermes --path CAMINHO_DO_VAULT` | `HERMES.md` |
+| GitHub Copilot | `apollokairn setup-agent copilot --path CAMINHO_DO_VAULT` | `.github/copilot-instructions.md` |
 
 Use `--json` quando um instalador ou script de bootstrap precisa do caminho
 gerado:
 
 ```bash
-cairn setup-agent codex --path CAMINHO_DO_VAULT --json
-cairn setup-agent copilot --path CAMINHO_DO_VAULT --json
+apollokairn setup-agent codex --path CAMINHO_DO_VAULT --json
+apollokairn setup-agent copilot --path CAMINHO_DO_VAULT --json
 ```
 
 O guia gerado orienta o agente a:
 
-- rodar `cairn doctor` quando a saúde do vault for desconhecida;
+- rodar `apollokairn doctor` quando a saúde do vault for desconhecida;
 - usar busca JSON antes de responder;
 - preferir recuperação por passagens com `--ranker auto` antes de abrir arquivos completos;
-- rodar `cairn vocab suggest` quando o vocabulário pode ser diferente;
-- checar `cairn similar` antes de escrever;
+- rodar `apollokairn vocab suggest` quando o vocabulário pode ser diferente;
+- checar `apollokairn similar` antes de escrever;
 - usar types e tags compatíveis com `SCHEMA.md`;
 - usar `--body-file` ou `--body-stdin` para Markdown multi-linha;
-- rodar `cairn validate` e `cairn index` depois de escritas bem-sucedidas.
+- rodar `apollokairn validate` e `apollokairn index` depois de escritas bem-sucedidas.
 
 ## Atualizar Vários Guias
 
-`cairn refresh-guides` lê `.cairn/config.json` e reescreve todos os guias
+`apollokairn refresh-guides` lê `.cairn/config.json` e reescreve todos os guias
 configurados. Isso é útil quando o mesmo vault deve carregar instruções para
 vários harnesses.
 
@@ -54,7 +54,7 @@ vários harnesses.
 ```
 
 ```bash
-cairn refresh-guides --path CAMINHO_DO_VAULT --json
+apollokairn refresh-guides --path CAMINHO_DO_VAULT --json
 ```
 
 Os caminhos dos guias precisam ficar dentro do vault. Arquivos de guia gerados

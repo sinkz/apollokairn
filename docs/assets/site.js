@@ -1,5 +1,5 @@
 const state = {
-  lang: localStorage.getItem("cairn-lang") || "en",
+  lang: localStorage.getItem("apollokairn-lang") || localStorage.getItem("cairn-lang") || "en",
   benchmark: null,
 };
 
@@ -54,7 +54,7 @@ function localized(value, lang) {
 
 function setLanguage(lang) {
   state.lang = lang === "pt" ? "pt" : "en";
-  localStorage.setItem("cairn-lang", state.lang);
+  localStorage.setItem("apollokairn-lang", state.lang);
   document.body.dataset.lang = state.lang;
   document.documentElement.lang = state.lang === "pt" ? "pt-BR" : "en";
 

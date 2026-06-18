@@ -170,8 +170,12 @@ class GuidesTests(unittest.TestCase):
 
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         readme_pt = (ROOT / "README.pt-BR.md").read_text(encoding="utf-8")
+        self.assertIn("ApolloKairn", readme)
+        self.assertIn("ApolloKairn", readme_pt)
         self.assertIn("docs/guides/adapters.md", readme)
         self.assertIn("docs/guides/adapters.pt-BR.md", readme_pt)
+        self.assertIn("apollokairn setup-agent", readme)
+        self.assertIn("apollokairn setup-agent", readme_pt)
 
 
 if __name__ == "__main__":

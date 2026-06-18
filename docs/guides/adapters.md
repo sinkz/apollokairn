@@ -1,6 +1,6 @@
 # Agent Adapters
 
-Cairn stays agent-agnostic: the vault is Markdown, the index is local, and every
+ApolloKairn stays agent-agnostic: the vault is Markdown, the index is local, and every
 agent talks to the same CLI and JSON contract. Current adapters are generated
 instruction files, not separate plugins or separate knowledge stores.
 
@@ -8,34 +8,34 @@ instruction files, not separate plugins or separate knowledge stores.
 
 | Target | Command | Generated file |
 | --- | --- | --- |
-| Generic agents | `cairn setup-agent agents --path PATH_TO_VAULT` | `AGENTS.md` |
-| Codex | `cairn setup-agent codex --path PATH_TO_VAULT` | `CODEX.md` |
-| Claude | `cairn setup-agent claude --path PATH_TO_VAULT` | `CLAUDE.md` |
-| OpenCode | `cairn setup-agent opencode --path PATH_TO_VAULT` | `OPENCODE.md` |
-| Hermes | `cairn setup-agent hermes --path PATH_TO_VAULT` | `HERMES.md` |
-| GitHub Copilot | `cairn setup-agent copilot --path PATH_TO_VAULT` | `.github/copilot-instructions.md` |
+| Generic agents | `apollokairn setup-agent agents --path PATH_TO_VAULT` | `AGENTS.md` |
+| Codex | `apollokairn setup-agent codex --path PATH_TO_VAULT` | `CODEX.md` |
+| Claude | `apollokairn setup-agent claude --path PATH_TO_VAULT` | `CLAUDE.md` |
+| OpenCode | `apollokairn setup-agent opencode --path PATH_TO_VAULT` | `OPENCODE.md` |
+| Hermes | `apollokairn setup-agent hermes --path PATH_TO_VAULT` | `HERMES.md` |
+| GitHub Copilot | `apollokairn setup-agent copilot --path PATH_TO_VAULT` | `.github/copilot-instructions.md` |
 
 Use `--json` when an installer or bootstrap script needs the generated path:
 
 ```bash
-cairn setup-agent codex --path PATH_TO_VAULT --json
-cairn setup-agent copilot --path PATH_TO_VAULT --json
+apollokairn setup-agent codex --path PATH_TO_VAULT --json
+apollokairn setup-agent copilot --path PATH_TO_VAULT --json
 ```
 
 The generated guide tells the agent to:
 
-- run `cairn doctor` when vault health is unknown;
+- run `apollokairn doctor` when vault health is unknown;
 - use JSON search before answering;
 - prefer passage retrieval with `--ranker auto` before opening full files;
-- run `cairn vocab suggest` when vocabulary may differ;
-- check `cairn similar` before writing;
+- run `apollokairn vocab suggest` when vocabulary may differ;
+- check `apollokairn similar` before writing;
 - use schema-compatible types and tags;
 - use `--body-file` or `--body-stdin` for multi-line Markdown;
-- run `cairn validate` and `cairn index` after successful writes.
+- run `apollokairn validate` and `apollokairn index` after successful writes.
 
 ## Refresh Multiple Guides
 
-`cairn refresh-guides` reads `.cairn/config.json` and rewrites every configured
+`apollokairn refresh-guides` reads `.cairn/config.json` and rewrites every configured
 guide. This is useful when a vault should carry instructions for several
 harnesses.
 
@@ -53,7 +53,7 @@ harnesses.
 ```
 
 ```bash
-cairn refresh-guides --path PATH_TO_VAULT --json
+apollokairn refresh-guides --path PATH_TO_VAULT --json
 ```
 
 Guide paths must stay inside the vault. Generated guide files are ignored by

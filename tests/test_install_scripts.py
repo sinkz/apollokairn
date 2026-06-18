@@ -34,10 +34,16 @@ class InstallScriptTests(unittest.TestCase):
 
         self.assertIn("docs/guides/quick-install.md", readme)
         self.assertIn("docs/guides/quick-install.pt-BR.md", readme_pt)
-        self.assertIn("curl -fsSL https://sinkz.github.io/cairn/install.sh | sh", readme)
-        self.assertIn("irm https://sinkz.github.io/cairn/install.ps1 | iex", readme)
-        self.assertIn("curl -fsSL https://sinkz.github.io/cairn/install.sh | sh", readme_pt)
-        self.assertIn("irm https://sinkz.github.io/cairn/install.ps1 | iex", readme_pt)
+        self.assertIn("<h1>ApolloKairn</h1>", readme)
+        self.assertIn("<h1>ApolloKairn</h1>", readme_pt)
+        self.assertIn("ApolloKairn was previously named Cairn", readme)
+        self.assertIn("ApolloKairn se chamava Cairn", readme_pt)
+        self.assertIn("curl -fsSL https://sinkz.github.io/apollokairn/install.sh | sh", readme)
+        self.assertIn("irm https://sinkz.github.io/apollokairn/install.ps1 | iex", readme)
+        self.assertIn("curl -fsSL https://sinkz.github.io/apollokairn/install.sh | sh", readme_pt)
+        self.assertIn("irm https://sinkz.github.io/apollokairn/install.ps1 | iex", readme_pt)
+        self.assertIn("apollokairn --version", readme)
+        self.assertIn("apollokairn --version", readme_pt)
 
     def test_quick_install_guides_cover_path_troubleshooting_and_vault_creation(self) -> None:
         guide = (ROOT / "docs" / "guides" / "quick-install.md").read_text(encoding="utf-8")
@@ -46,8 +52,9 @@ class InstallScriptTests(unittest.TestCase):
         for text in (guide, guide_pt):
             self.assertIn("install.sh", text)
             self.assertIn("install.ps1", text)
-            self.assertIn("cairn --version", text)
-            self.assertIn("cairn init", text)
+            self.assertIn("apollokairn --version", text)
+            self.assertIn("apollokairn init", text)
+            self.assertIn("APOLLOKAIRN_INSTALL_DIR", text)
             self.assertIn("CAIRN_INSTALL_DIR", text)
             self.assertIn("PATH", text)
             self.assertIn("checksums.txt", text)
@@ -61,10 +68,28 @@ class InstallScriptTests(unittest.TestCase):
         self.assertIn("benchmarks.html", page)
         self.assertNotIn("id=\"benchmark-suites\"", page)
         self.assertNotIn("id=\"benchmark-history\"", page)
-        self.assertIn("curl -fsSL https://sinkz.github.io/cairn/install.sh | sh", page)
-        self.assertIn("irm https://sinkz.github.io/cairn/install.ps1 | iex", page)
+        self.assertIn("ApolloKairn", page)
+        self.assertIn("apollokairn --version", page)
+        self.assertIn("https://github.com/sinkz/apollokairn", page)
+        self.assertIn("curl -fsSL https://sinkz.github.io/apollokairn/install.sh | sh", page)
+        self.assertIn("irm https://sinkz.github.io/apollokairn/install.ps1 | iex", page)
         self.assertIn("guides/quick-install.md", page)
         self.assertIn("guides/quick-install.pt-BR.md", page)
+
+    def test_public_site_uses_apollokairn_links_and_storage_key(self) -> None:
+        files = [
+            ROOT / "docs" / "index.html",
+            ROOT / "docs" / "learn.html",
+            ROOT / "docs" / "benchmarks.html",
+            ROOT / "docs" / "assets" / "site.js",
+        ]
+        combined = "\n".join(path.read_text(encoding="utf-8") for path in files)
+
+        self.assertIn("ApolloKairn", combined)
+        self.assertIn("https://github.com/sinkz/apollokairn", combined)
+        self.assertIn("apollokairn-lang", combined)
+        self.assertNotIn("sinkz.github.io/cairn", combined)
+        self.assertNotIn("github.com/sinkz/cairn", combined)
 
     def test_benchmark_page_contains_full_dashboard_mounts(self) -> None:
         page = (ROOT / "docs" / "benchmarks.html").read_text(encoding="utf-8")

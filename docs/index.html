@@ -3,13 +3,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Cairn - Markdown knowledge for agent workflows</title>
+    <title>ApolloKairn - Markdown knowledge for agent workflows</title>
     <meta
       name="description"
-      content="Cairn is a local Markdown knowledge vault with CLI search, retrieval, writeback, and deterministic benchmarks."
+      content="ApolloKairn is a local Markdown knowledge vault with CLI search, retrieval, writeback, and deterministic benchmarks."
     />
     <meta name="theme-color" content="#f7f3e8" />
-    <meta property="og:title" content="Cairn - Markdown knowledge for agent workflows" />
+    <meta property="og:title" content="ApolloKairn - Markdown knowledge for agent workflows" />
     <meta
       property="og:description"
       content="A local Markdown vault with SQLite search, budgeted retrieval, writeback, and benchmark data."
@@ -24,9 +24,9 @@
     <a class="skip-link" href="#main">Skip to content</a>
 
     <header class="site-header" aria-label="Primary navigation">
-      <a class="brand" href="#top" aria-label="Cairn home">
-        <span class="brand-mark">CA</span>
-        <span>Cairn</span>
+      <a class="brand" href="#top" aria-label="ApolloKairn home">
+        <span class="brand-mark">AK</span>
+        <span>ApolloKairn</span>
       </a>
       <nav class="nav-links" aria-label="Page sections">
         <a href="learn.html">Learn</a>
@@ -34,7 +34,7 @@
         <a href="benchmarks.html">Benchmarks</a>
         <a href="#workflow">Workflow</a>
         <a href="#roadmap">Roadmap</a>
-        <a href="https://github.com/sinkz/cairn">GitHub</a>
+        <a href="https://github.com/sinkz/apollokairn">GitHub</a>
       </nav>
       <div class="language-switch" aria-label="Language">
         <button class="language-button" type="button" data-set-lang="en" aria-pressed="true">EN</button>
@@ -52,7 +52,7 @@
           <div class="scene-block block-b">retrieve</div>
           <div class="scene-block block-c">writeback</div>
           <div class="scene-terminal">
-            <span>$ cairn retrieve "deploy 403 token" --mode passages --budget 400</span>
+            <span>$ apollokairn retrieve "deploy 403 token" --mode passages --budget 400</span>
             <span>path: knowledge/deploy-403.md</span>
             <span>heading: Resolution</span>
             <span>context: 91.83% smaller</span>
@@ -66,11 +66,11 @@
           <h1 data-lang-content="pt">Conhecimento em Markdown para busca, recuperação e escrita.</h1>
 
           <p class="hero-copy" data-lang-content="en">
-            Cairn stores reusable notes as Markdown files, indexes them locally,
+            ApolloKairn stores reusable notes as Markdown files, indexes them locally,
             and exposes CLI commands that agents can use across tools.
           </p>
           <p class="hero-copy" data-lang-content="pt">
-            Cairn armazena notas reutilizáveis como arquivos Markdown, indexa tudo
+            ApolloKairn armazena notas reutilizáveis como arquivos Markdown, indexa tudo
             localmente e expõe comandos de CLI que agentes podem usar em diferentes
             ferramentas.
           </p>
@@ -82,7 +82,7 @@
             <a class="button secondary" href="learn.html" data-lang-content="pt">Como funciona</a>
             <a class="button secondary" href="benchmarks.html" data-lang-content="en">See benchmarks</a>
             <a class="button secondary" href="benchmarks.html" data-lang-content="pt">Ver benchmarks</a>
-            <a class="button secondary" href="https://github.com/sinkz/cairn">GitHub</a>
+            <a class="button secondary" href="https://github.com/sinkz/apollokairn">GitHub</a>
           </div>
         </div>
       </section>
@@ -113,12 +113,12 @@
           <h2 data-lang-content="pt">Instale a CLI primeiro. Crie o vault onde você quiser.</h2>
           <p data-lang-content="en">
             Release installers download standalone binaries from GitHub Releases,
-            verify checksums, and place <code>cairn</code> on your PATH. Python is
+            verify checksums, and place <code>apollokairn</code> on your PATH. Python is
             not required for this install path.
           </p>
           <p data-lang-content="pt">
             Os instaladores baixam binários standalone do GitHub Releases,
-            validam checksums e colocam <code>cairn</code> no PATH. Python não é
+            validam checksums e colocam <code>apollokairn</code> no PATH. Python não é
             necessário neste caminho de instalação.
           </p>
         </div>
@@ -126,16 +126,21 @@
         <div class="install-grid">
           <article class="install-card">
             <span>Linux / macOS</span>
-            <code>curl -fsSL https://sinkz.github.io/cairn/install.sh | sh</code>
+            <code>curl -fsSL https://sinkz.github.io/apollokairn/install.sh | sh</code>
           </article>
           <article class="install-card">
             <span>Windows PowerShell</span>
-            <code>irm https://sinkz.github.io/cairn/install.ps1 | iex</code>
+            <code>irm https://sinkz.github.io/apollokairn/install.ps1 | iex</code>
           </article>
           <article class="install-card">
             <span data-lang-content="en">Create a vault</span>
             <span data-lang-content="pt">Criar um vault</span>
-            <code>cairn init --path PATH_TO_VAULT --profile personal</code>
+            <code>apollokairn init --path PATH_TO_VAULT --profile personal</code>
+          </article>
+          <article class="install-card">
+            <span data-lang-content="en">Verify</span>
+            <span data-lang-content="pt">Verificar</span>
+            <code>apollokairn --version</code>
           </article>
         </div>
 
@@ -297,24 +302,24 @@
             <p data-lang-content="pt">Embeddings opcionais, UI/TUI e análises mais ricas de saúde do vault.</p>
           </article>
         </div>
-        <a class="text-link" href="https://github.com/sinkz/cairn/blob/main/ROADMAP.md" data-lang-content="en">Read the full roadmap</a>
-        <a class="text-link" href="https://github.com/sinkz/cairn/blob/main/ROADMAP.md" data-lang-content="pt">Ler o roadmap completo</a>
-        <a class="text-link" href="https://github.com/sinkz/cairn/blob/main/docs/guides/adapters.md" data-lang-content="en">Read the adapter guide</a>
-        <a class="text-link" href="https://github.com/sinkz/cairn/blob/main/docs/guides/adapters.pt-BR.md" data-lang-content="pt">Ler o guia de adapters</a>
+        <a class="text-link" href="https://github.com/sinkz/apollokairn/blob/main/ROADMAP.md" data-lang-content="en">Read the full roadmap</a>
+        <a class="text-link" href="https://github.com/sinkz/apollokairn/blob/main/ROADMAP.md" data-lang-content="pt">Ler o roadmap completo</a>
+        <a class="text-link" href="https://github.com/sinkz/apollokairn/blob/main/docs/guides/adapters.md" data-lang-content="en">Read the adapter guide</a>
+        <a class="text-link" href="https://github.com/sinkz/apollokairn/blob/main/docs/guides/adapters.pt-BR.md" data-lang-content="pt">Ler o guia de adapters</a>
       </section>
     </main>
 
     <footer class="site-footer">
       <div>
-        <strong>Cairn</strong>
+        <strong>ApolloKairn</strong>
         <p data-lang-content="en">Local Markdown knowledge for search, retrieval, and writeback.</p>
         <p data-lang-content="pt">Conhecimento local em Markdown para busca, recuperação e escrita.</p>
       </div>
       <div class="footer-links">
-        <a href="https://github.com/sinkz/cairn">GitHub</a>
-        <a href="https://github.com/sinkz/cairn/blob/main/docs/guides/usage.md">Usage</a>
-        <a href="https://github.com/sinkz/cairn/blob/main/docs/guides/adapters.md">Adapters</a>
-        <a href="https://github.com/sinkz/cairn/blob/main/docs/guides/usage.pt-BR.md">PT-BR</a>
+        <a href="https://github.com/sinkz/apollokairn">GitHub</a>
+        <a href="https://github.com/sinkz/apollokairn/blob/main/docs/guides/usage.md">Usage</a>
+        <a href="https://github.com/sinkz/apollokairn/blob/main/docs/guides/adapters.md">Adapters</a>
+        <a href="https://github.com/sinkz/apollokairn/blob/main/docs/guides/usage.pt-BR.md">PT-BR</a>
       </div>
     </footer>
 

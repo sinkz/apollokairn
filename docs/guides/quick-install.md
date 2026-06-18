@@ -1,30 +1,31 @@
 # Quick Install
 
-This guide installs the Cairn CLI from standalone binaries published on GitHub
+This guide installs the ApolloKairn CLI from standalone binaries published on GitHub
 Releases. This path does not require Python on the user's machine.
 
-The installer only installs the `cairn` command. Your Markdown vault is created
-afterwards, wherever you choose.
+The installer installs the `apollokairn` command plus the `ak` and `cairn`
+compatibility aliases. Your Markdown vault is created afterwards, wherever you
+choose.
 
 ## Install
 
 Linux and macOS:
 
 ```bash
-curl -fsSL https://sinkz.github.io/cairn/install.sh | sh
+curl -fsSL https://sinkz.github.io/apollokairn/install.sh | sh
 ```
 
 Windows PowerShell:
 
 ```powershell
-irm https://sinkz.github.io/cairn/install.ps1 | iex
+irm https://sinkz.github.io/apollokairn/install.ps1 | iex
 ```
 
 Verify the install:
 
 ```bash
-cairn --version
-cairn --help
+apollokairn --version
+apollokairn --help
 ```
 
 ## Create A Vault After Installing
@@ -34,19 +35,19 @@ Choose the vault path yourself. The installer does not create or move notes.
 Linux and macOS:
 
 ```bash
-cairn init --path ~/CairnVault --profile personal
-cairn validate --path ~/CairnVault
-cairn index --path ~/CairnVault --rebuild
-cairn doctor --path ~/CairnVault
+apollokairn init --path ~/ApolloKairnVault --profile personal
+apollokairn validate --path ~/ApolloKairnVault
+apollokairn index --path ~/ApolloKairnVault --rebuild
+apollokairn doctor --path ~/ApolloKairnVault
 ```
 
 Windows PowerShell:
 
 ```powershell
-cairn init --path "$env:USERPROFILE\CairnVault" --profile personal
-cairn validate --path "$env:USERPROFILE\CairnVault"
-cairn index --path "$env:USERPROFILE\CairnVault" --rebuild
-cairn doctor --path "$env:USERPROFILE\CairnVault"
+apollokairn init --path "$env:USERPROFILE\ApolloKairnVault" --profile personal
+apollokairn validate --path "$env:USERPROFILE\ApolloKairnVault"
+apollokairn index --path "$env:USERPROFILE\ApolloKairnVault" --rebuild
+apollokairn doctor --path "$env:USERPROFILE\ApolloKairnVault"
 ```
 
 ## What The Installers Do
@@ -58,25 +59,30 @@ The scripts:
 - download `checksums.txt`;
 - verify the SHA-256 checksum;
 - install the binary in a user-level directory;
-- run `cairn --version` at the end.
+- run `apollokairn --version` at the end.
+
+The current environment variables are `APOLLOKAIRN_VERSION`,
+`APOLLOKAIRN_INSTALL_DIR`, and `APOLLOKAIRN_REPO`. The installers still honor
+legacy `CAIRN_VERSION`, `CAIRN_INSTALL_DIR`, and `CAIRN_REPO` fallbacks during
+the rename window.
 
 Default install paths:
 
 | Platform | Default path |
 | --- | --- |
-| Linux | `~/.local/bin/cairn` |
-| macOS | `~/.local/bin/cairn` |
-| Windows | `%LOCALAPPDATA%\Programs\Cairn\bin\cairn.exe` |
+| Linux | `~/.local/bin/apollokairn` |
+| macOS | `~/.local/bin/apollokairn` |
+| Windows | `%LOCALAPPDATA%\Programs\ApolloKairn\bin\apollokairn.exe` |
 
 Published release assets:
 
 | Platform | Asset |
 | --- | --- |
-| Linux x64 | `cairn-linux-x64.tar.gz` |
-| Linux arm64 | `cairn-linux-arm64.tar.gz` |
-| macOS x64 | `cairn-macos-x64.tar.gz` |
-| macOS arm64 | `cairn-macos-arm64.tar.gz` |
-| Windows x64 | `cairn-windows-x64.zip` |
+| Linux x64 | `apollokairn-linux-x64.tar.gz` |
+| Linux arm64 | `apollokairn-linux-arm64.tar.gz` |
+| macOS x64 | `apollokairn-macos-x64.tar.gz` |
+| macOS arm64 | `apollokairn-macos-arm64.tar.gz` |
+| Windows x64 | `apollokairn-windows-x64.zip` |
 
 The Linux x64 release is built in a Debian 11 container with glibc 2.31 to keep
 the binary usable on older distributions. If your system is older than that or
@@ -87,14 +93,14 @@ uses a non-glibc libc, install from source instead.
 Linux and macOS:
 
 ```bash
-curl -fsSL https://sinkz.github.io/cairn/install.sh | CAIRN_VERSION=v0.1.1 sh
+curl -fsSL https://sinkz.github.io/apollokairn/install.sh | APOLLOKAIRN_VERSION=v0.1.1 sh
 ```
 
 Windows PowerShell:
 
 ```powershell
-$env:CAIRN_VERSION = "v0.1.1"
-irm https://sinkz.github.io/cairn/install.ps1 | iex
+$env:APOLLOKAIRN_VERSION = "v0.1.1"
+irm https://sinkz.github.io/apollokairn/install.ps1 | iex
 ```
 
 ## Install Somewhere Else
@@ -102,19 +108,19 @@ irm https://sinkz.github.io/cairn/install.ps1 | iex
 Linux and macOS:
 
 ```bash
-curl -fsSL https://sinkz.github.io/cairn/install.sh | CAIRN_INSTALL_DIR="$HOME/bin" sh
+curl -fsSL https://sinkz.github.io/apollokairn/install.sh | APOLLOKAIRN_INSTALL_DIR="$HOME/bin" sh
 ```
 
 Windows PowerShell:
 
 ```powershell
-$env:CAIRN_INSTALL_DIR = "$env:USERPROFILE\bin"
-irm https://sinkz.github.io/cairn/install.ps1 | iex
+$env:APOLLOKAIRN_INSTALL_DIR = "$env:USERPROFILE\bin"
+irm https://sinkz.github.io/apollokairn/install.ps1 | iex
 ```
 
 ## Troubleshooting
 
-### `cairn: command not found`
+### `apollokairn: command not found`
 
 The binary installed, but your shell cannot find the install directory.
 
@@ -122,7 +128,7 @@ Linux and macOS, for the current shell:
 
 ```bash
 export PATH="$HOME/.local/bin:$PATH"
-cairn --version
+apollokairn --version
 ```
 
 Persist it for future shells:
@@ -140,15 +146,15 @@ echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
 Windows PowerShell, for the current session:
 
 ```powershell
-$env:Path = "$env:LOCALAPPDATA\Programs\Cairn\bin;$env:Path"
-cairn --version
+$env:Path = "$env:LOCALAPPDATA\Programs\ApolloKairn\bin;$env:Path"
+apollokairn --version
 ```
 
 If the installer already added the user PATH, restart the terminal. If it did
 not, add it manually:
 
 ```powershell
-$dir = "$env:LOCALAPPDATA\Programs\Cairn\bin"
+$dir = "$env:LOCALAPPDATA\Programs\ApolloKairn\bin"
 $userPath = [Environment]::GetEnvironmentVariable("Path", "User")
 [Environment]::SetEnvironmentVariable("Path", "$userPath;$dir", "User")
 ```
@@ -158,14 +164,14 @@ $userPath = [Environment]::GetEnvironmentVariable("Path", "User")
 The requested release or asset does not exist. Check the latest release:
 
 ```text
-https://github.com/sinkz/cairn/releases
+https://github.com/sinkz/apollokairn/releases
 ```
 
 If no binary release has been published yet, install from source for development:
 
 ```bash
-git clone https://github.com/sinkz/cairn.git
-cd cairn
+git clone https://github.com/sinkz/apollokairn.git
+cd apollokairn
 python -m pip install -e .
 ```
 
@@ -181,13 +187,13 @@ Use a user-owned install directory:
 
 ```bash
 mkdir -p "$HOME/.local/bin"
-curl -fsSL https://sinkz.github.io/cairn/install.sh | CAIRN_INSTALL_DIR="$HOME/.local/bin" sh
+curl -fsSL https://sinkz.github.io/apollokairn/install.sh | APOLLOKAIRN_INSTALL_DIR="$HOME/.local/bin" sh
 ```
 
 If the file exists but is not executable:
 
 ```bash
-chmod +x "$HOME/.local/bin/cairn"
+chmod +x "$HOME/.local/bin/apollokairn"
 ```
 
 ### macOS says the binary cannot be opened
@@ -197,32 +203,32 @@ browser download. If you trust the GitHub Release and checksum, remove the
 quarantine attribute:
 
 ```bash
-xattr -dr com.apple.quarantine "$HOME/.local/bin/cairn"
-cairn --version
+xattr -dr com.apple.quarantine "$HOME/.local/bin/apollokairn"
+apollokairn --version
 ```
 
 ### Corporate proxy or TLS inspection blocks the script
 
 Download the matching release asset and `checksums.txt` manually from GitHub
-Releases, verify the SHA-256 hash, then place `cairn` in a directory on `PATH`.
+Releases, verify the SHA-256 hash, then place `apollokairn` in a directory on `PATH`.
 
 Manual Linux x64 example:
 
 ```bash
 mkdir -p "$HOME/.local/bin"
-curl -fL -o /tmp/cairn-linux-x64.tar.gz https://github.com/sinkz/cairn/releases/latest/download/cairn-linux-x64.tar.gz
-curl -fL -o /tmp/checksums.txt https://github.com/sinkz/cairn/releases/latest/download/checksums.txt
+curl -fL -o /tmp/apollokairn-linux-x64.tar.gz https://github.com/sinkz/apollokairn/releases/latest/download/apollokairn-linux-x64.tar.gz
+curl -fL -o /tmp/checksums.txt https://github.com/sinkz/apollokairn/releases/latest/download/checksums.txt
 cd /tmp
-grep '  cairn-linux-x64.tar.gz$' checksums.txt | sha256sum -c -
-tar -xzf cairn-linux-x64.tar.gz -C "$HOME/.local/bin"
-chmod +x "$HOME/.local/bin/cairn"
-cairn --version
+grep '  apollokairn-linux-x64.tar.gz$' checksums.txt | sha256sum -c -
+tar -xzf apollokairn-linux-x64.tar.gz -C "$HOME/.local/bin"
+chmod +x "$HOME/.local/bin/apollokairn"
+apollokairn --version
 ```
 
 On macOS, replace `sha256sum -c -` with:
 
 ```bash
-grep '  cairn-macos-arm64.tar.gz$' checksums.txt | shasum -a 256 -c -
+grep '  apollokairn-macos-arm64.tar.gz$' checksums.txt | shasum -a 256 -c -
 ```
 
 ## Uninstall
@@ -230,13 +236,15 @@ grep '  cairn-macos-arm64.tar.gz$' checksums.txt | shasum -a 256 -c -
 Linux and macOS:
 
 ```bash
-rm -f "$HOME/.local/bin/cairn"
+rm -f "$HOME/.local/bin/apollokairn" "$HOME/.local/bin/ak" "$HOME/.local/bin/cairn"
 ```
 
 Windows PowerShell:
 
 ```powershell
-Remove-Item "$env:LOCALAPPDATA\Programs\Cairn\bin\cairn.exe"
+Remove-Item "$env:LOCALAPPDATA\Programs\ApolloKairn\bin\apollokairn.exe"
+Remove-Item "$env:LOCALAPPDATA\Programs\ApolloKairn\bin\ak.exe" -ErrorAction SilentlyContinue
+Remove-Item "$env:LOCALAPPDATA\Programs\ApolloKairn\bin\cairn.exe" -ErrorAction SilentlyContinue
 ```
 
 This does not delete your vault. Remove the vault directory only if you no
