@@ -120,11 +120,11 @@ better search, previews, validation, and agent behavior.
 
 - No required cloud service.
 - No runtime network calls in the core CLI.
-- No GCP, BigQuery, Gemini, or Knowledge Catalog integration in the MVP.
-- No vector search, embeddings, local LLM, or RAG in the MVP.
-- No long-running server, web API, daemon, or hosted sync in the MVP.
-- No visual editor or GUI in the MVP.
-- No MCP server in the MVP.
+- No GCP, BigQuery, Gemini, or Knowledge Catalog integration in the core CLI.
+- No vector search, embeddings, local LLM, or RAG in the default runtime.
+- No long-running server, web API, daemon, or hosted sync in the core CLI.
+- No visual editor or GUI in the core CLI.
+- No MCP server in the core CLI.
 - No secrets manager. Cairn documents processes and knowledge, not credentials.
 - No product-specific lock-in. Plugins and slash commands are adapters, not the
   foundation.
@@ -195,7 +195,7 @@ offers to capture new reusable knowledge after solving a problem.
 ```
 [1] CHECK    -> `cairn validate` verifies schema and OKF subset
 [2] DOCTOR   -> `cairn doctor` reports vault health issues
-[3] REFRESH  -> `cairn guide refresh` regenerates agent guides
+[3] REFRESH  -> `cairn refresh-guides` regenerates agent guides
 [4] TUNE     -> humans adjust SCHEMA.md, templates, and profiles
 ```
 
@@ -303,8 +303,8 @@ Profiles are represented by generated Markdown/config files inside the vault:
 - `AGENTS.md`: guide for agents.
 
 Changing the profile after initialization must not delete existing knowledge.
-The `profile apply` command may add missing templates/tags but must avoid
-destructive edits.
+After initialization, users can edit `SCHEMA.md` and templates directly. Cairn
+commands should preserve existing knowledge and avoid destructive edits.
 
 ---
 
@@ -328,7 +328,7 @@ plugin.
 
 ### 10.2 Tool-Specific Adapters
 
-`cairn guide refresh` may generate tool-specific files:
+`cairn setup-agent` and `cairn refresh-guides` may generate tool-specific files:
 
 - `CLAUDE.md` for Claude Code.
 - `CODEX.md` or equivalent guidance for Codex.
@@ -354,20 +354,17 @@ Initializes a vault. Creates `.cairn/config.json`, `.cairn/index.db`,
 profile folders. Idempotent: never overwrites existing user files without an
 explicit force flag.
 
-### 11.2 `cairn search "<query>" [--type T] [--tag X] [--limit 3] [--json]`
+### 11.2 `cairn search "<query>" [--type T] [--tag X] [--system S] [--limit 3] [--ranker bm25|rrf] [--json]`
 
 Searches the local SQLite FTS index using BM25 ranking. Default limit is 3.
 Returns path, type, title, tags, score, and snippets. It never returns full
 document bodies unless explicitly asked through a separate command.
 
-Aliases:
-
-- `cairn recall`
-
-### 11.3 `cairn show <path> [--json]`
+### 11.3 `cairn show <path> [--lines A:B] [--section H] [--snippet TEXT]`
 
 Prints a concept after the user or agent has selected it from search results.
-Agents should call this for at most the top relevant documents.
+Agents should call this for at most the top relevant documents, preferably with
+a section, snippet, or line range when the full file is unnecessary.
 
 ### 11.4 `cairn add`
 
@@ -378,23 +375,19 @@ cairn add \
   --type Runbook \
   --title "Fix deploy 403" \
   --description "How to fix deploy 403 caused by missing permission." \
-  --tags deploy,permission \
-  --folder processes/deploy \
-  --body-file /tmp/body.md
+  --tag deploy \
+  --tag bug \
+  --folder knowledge \
+  --body "Deploy failed with HTTP 403 after token rotation."
 ```
 
-Before writing, `add` must run duplicate detection. If related docs exist, it
-prints candidates and refuses to create unless `--force-new` is passed.
-
-Alias:
-
-- `cairn remember`
+Before writing, humans and agents should run `cairn similar "<new knowledge>"`
+and update an existing note when the topic is already represented.
 
 ### 11.5 `cairn update <path>`
 
-Updates an existing concept. The first MVP form may append a section or replace
-the file from `--body-file`. It must update `timestamp`, reindex, and prepend
-`log.md`.
+Appends text to an existing concept if the exact text is not already present.
+After updating, run `cairn validate` and `cairn index`.
 
 ### 11.6 `cairn capture`
 
@@ -430,25 +423,19 @@ Reports vault health:
 - search index drift;
 - possible secrets.
 
-### 11.10 `cairn guide refresh [--target agents,claude,codex,opencode]`
+### 11.10 `cairn setup-agent agents|codex|claude|opencode`
 
-Regenerates agent guides from `SCHEMA.md`, `.cairn/config.json`, and built-in
-guide templates. Must preserve hand-written knowledge docs.
+Creates an agent-specific guide file inside the vault.
 
-### 11.11 `cairn profile list|show|apply`
+### 11.11 `cairn refresh-guides`
 
-Lists profiles, previews a profile, or applies profile defaults to an existing
-vault. Applying a profile is additive and non-destructive by default.
+Regenerates configured agent guides from `.cairn/config.json` and built-in guide
+templates. Must preserve hand-written knowledge docs.
 
-### 11.12 `cairn sync`
+### 11.12 Future Commands
 
-Optional Git wrapper for team vaults:
-
-```bash
-git pull --rebase && git push
-```
-
-This belongs after the core loop is stable.
+Profile management, Git sync helpers, plugins, and slash commands belong after
+the core file and CLI workflow is stable.
 
 ---
 
@@ -544,8 +531,6 @@ Possible slash commands:
 
 ```text
 /cairn-search
-/cairn-recall
-/cairn-remember
 /cairn-update
 /cairn-doctor
 /cairn-refresh
@@ -560,7 +545,7 @@ Possible adapters:
 - MCP server exposing search/show/add/update.
 - Offline HTML graph viewer with no CDN.
 
-Adapters are valuable for UX, but the MVP must work without them.
+Adapters are valuable for UX, but the core workflow must work without them.
 
 ---
 
@@ -596,8 +581,8 @@ Adapters are valuable for UX, but the MVP must work without them.
 
 ### Phase 3 - Agent Guides And Profiles
 
-- `cairn guide refresh`.
-- profile list/show/apply.
+- `cairn setup-agent` and `cairn refresh-guides`.
+- future profile management commands.
 - generated `AGENTS.md`, `CLAUDE.md`, and `CODEX.md` examples.
 - sample vaults for personal, engineering, support, product.
 - Acceptance: an agent reading only generated guidance can search, show, add,
@@ -608,7 +593,7 @@ Adapters are valuable for UX, but the MVP must work without them.
 - `cairn doctor`;
 - secret scanner;
 - pre-commit helper;
-- optional `cairn sync`;
+- optional Git sync helper;
 - retrieval benchmark/eval suite.
 - Acceptance: CI can validate a sample vault and run retrieval evals.
 

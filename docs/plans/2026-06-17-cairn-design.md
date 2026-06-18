@@ -33,14 +33,14 @@ OKF-compatible Markdown as the file contract and adds the workflow around it.
 
 Build Cairn as a zero-dependency Python CLI over a Markdown vault.
 
-The MVP architecture has five layers:
+The current core architecture has five layers:
 
 1. **Vault files**: Markdown concepts, `SCHEMA.md`, templates, `index.md`,
    `log.md`, and generated agent guides.
 2. **Config and index**: `.cairn/config.json` and `.cairn/index.db`. Both are
    rebuildable or generated state; Markdown remains authoritative.
 3. **Core CLI**: `cairn init`, `search`, `show`, `add`, `update`, `capture`,
-   `index`, `validate`, `doctor`, `guide refresh`, and `profile`.
+   `index`, `validate`, `doctor`, `setup-agent`, and `refresh-guides`.
 4. **Profiles**: `personal`, `engineering`, `support`, `product`, and `custom`.
    Profiles generate defaults but do not lock the vault to a domain.
 5. **Agent adapters**: generated `AGENTS.md` first, tool-specific files later.
@@ -73,7 +73,7 @@ cairn core
 │   ├── init/search/show
 │   ├── add/update/capture
 │   ├── index/validate/doctor
-│   └── guide/profile/sync
+│   └── setup-agent/refresh-guides
 └── future adapters
     ├── Claude Code
     ├── Codex
@@ -126,17 +126,17 @@ business logic; they only teach agents how to use the CLI and vault rules.
 ### Capture
 
 1. User/agent finishes solving or documenting something.
-2. Agent offers to remember it.
+2. Agent offers to save it.
 3. Cairn searches for related docs.
 4. If a same/similar doc exists, agent updates it with `cairn update`.
 5. Otherwise Cairn creates a new concept with `cairn add`.
-6. Cairn updates `timestamp`, SQLite index, `index.md`, and `log.md`.
+6. The user or agent validates and indexes the vault after writing.
 
 ### Maintenance
 
 1. `cairn validate` checks schema and OKF subset.
 2. `cairn doctor` reports health issues.
-3. `cairn guide refresh` regenerates agent guidance from current schema.
+3. `cairn refresh-guides` regenerates configured agent guidance.
 
 ## Alternatives Considered
 
@@ -154,13 +154,13 @@ come first. Wikilinks can be generated later as optional ergonomics.
 
 ### MCP-First Memory Server
 
-Rejected for the MVP. MCP is useful later, but a CLI/file core is simpler,
+Rejected for the core. MCP is useful later, but a CLI/file core is simpler,
 auditable, works in restricted environments, and supports tools without plugin
 systems.
 
 ### Vector Search / RAG First
 
-Rejected for the MVP. Full-text search plus structured metadata should be
+Rejected for the core default. Full-text search plus structured metadata should be
 measured before adding embeddings, model dependencies, or local LLM complexity.
 Semantic search becomes justified only if retrieval evals show textual search
 cannot meet the target.
@@ -175,10 +175,10 @@ local-first core.
 
 - Commands must fail with actionable messages and non-zero exit codes.
 - `init` must be idempotent and avoid overwriting user files.
-- `add` must refuse likely duplicates unless `--force-new` is explicit.
-- `search` must degrade gracefully if FTS5 is unavailable.
+- users and agents should run `similar` before `add` to avoid duplicates.
+- `search` must fail with an actionable message when the index is missing or invalid.
 - `validate` must distinguish errors from warnings.
-- `guide refresh` must preserve knowledge docs and only update generated guide
+- `refresh-guides` must preserve knowledge docs and only update generated guide
   files.
 - Secret scan findings should identify file and reason without printing secret
   values.

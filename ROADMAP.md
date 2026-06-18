@@ -18,6 +18,8 @@ Detailed execution plan: [Cairn Search Optimization Implementation Plan](docs/su
 
 ## Next
 
+- Improve capture/update ergonomics: body from file/stdin, clearer path errors, and safer multi-section writing.
+- Improve retrieval guidance when strict BM25 returns no context but RRF would recover a result.
 - Optional package/plugin adapters for Codex, Claude, GitHub Copilot, and OpenCode.
 - Team-oriented review workflows for shared vault changes.
 

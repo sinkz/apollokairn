@@ -21,15 +21,16 @@ Typical use cases:
 The core idea is simple: agents should search first, open only the most relevant
 documents, and write back reusable knowledge after the work is solved.
 
-## Installation
+## Installation And First Run
 
-For local development:
+Install from the repository root:
 
 ```bash
 python -m pip install -e .
+cairn --help
 ```
 
-From a source checkout without installing:
+Or run without installing:
 
 ```bash
 export PYTHONPATH="$PWD/src"
@@ -43,10 +44,16 @@ $env:PYTHONPATH = Join-Path (Resolve-Path .).Path "src"
 python -m cairn --help
 ```
 
+After creating or editing notes, run `cairn index`. Search and retrieve use the
+local index; if it is missing or stale, `cairn doctor` will tell you.
+
 ## Creating a Vault
 
 ```bash
 cairn init --path ~/brain --profile personal
+cairn validate --path ~/brain
+cairn index --path ~/brain --rebuild
+cairn doctor --path ~/brain
 ```
 
 Profiles define default folders, types, and tags.
@@ -181,11 +188,15 @@ cairn add --path ~/brain \
   --tag deploy \
   --system ci \
   --signal "HTTP 403" \
-  --body "# Context\n\nDeploy failed after token rotation."
+  --body "Deploy failed after token rotation. Update the CI secret and rerun the failed job."
 ```
 
 `capture` is an alias with the same behavior. Use these after a task is solved
 and the knowledge is likely to be useful again.
+
+The CLI body argument is best for short text. For multi-section notes, create
+the note first, edit the Markdown file directly, then run `cairn validate` and
+`cairn index`.
 
 ### `cairn update`
 

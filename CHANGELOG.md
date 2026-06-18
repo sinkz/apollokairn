@@ -26,3 +26,4 @@ Initial public release.
 - Export blocking when common secret-like values are detected.
 - CI, contribution guide, roadmap, and example vault.
 - Categorized deterministic search benchmark with golden ranking checks and token metrics.
+- Expanded onboarding documentation, example walkthroughs, and a stress-vault report for agent write/search behavior.

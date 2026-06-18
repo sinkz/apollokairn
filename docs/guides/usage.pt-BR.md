@@ -22,15 +22,16 @@ A ideia central é simples: agentes devem buscar primeiro, abrir só os document
 mais relevantes e registrar conhecimento reutilizável depois que o trabalho foi
 resolvido.
 
-## Instalação
+## Instalação E Primeiro Uso
 
-Para desenvolvimento local:
+Instale a partir da raiz do repositório:
 
 ```bash
 python -m pip install -e .
+cairn --help
 ```
 
-Em um checkout fonte sem instalar:
+Ou rode sem instalar:
 
 ```bash
 export PYTHONPATH="$PWD/src"
@@ -44,10 +45,16 @@ $env:PYTHONPATH = Join-Path (Resolve-Path .).Path "src"
 python -m cairn --help
 ```
 
+Depois de criar ou editar notas, rode `cairn index`. Busca e recuperação usam o
+índice local; se ele estiver ausente ou desatualizado, `cairn doctor` avisa.
+
 ## Criando Um Vault
 
 ```bash
 cairn init --path ~/brain --profile personal
+cairn validate --path ~/brain
+cairn index --path ~/brain --rebuild
+cairn doctor --path ~/brain
 ```
 
 Perfis definem pastas, tipos e tags iniciais.
@@ -183,11 +190,15 @@ cairn add --path ~/brain \
   --tag deploy \
   --system ci \
   --signal "HTTP 403" \
-  --body "# Context\n\nDeploy falhou depois da rotação do token."
+  --body "Deploy falhou depois da rotação do token. Atualize o segredo de CI e rode novamente o job que falhou."
 ```
 
 `capture` é um alias com o mesmo comportamento. Use depois que uma tarefa foi
 resolvida e o conhecimento provavelmente será útil de novo.
+
+O argumento `--body` da CLI é melhor para textos curtos. Para notas com várias
+seções, crie a nota primeiro, edite o Markdown diretamente e depois rode
+`cairn validate` e `cairn index`.
 
 ### `cairn update`
 
