@@ -12,7 +12,7 @@
   <p>
     <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white">
     <img alt="Runtime dependencies: zero" src="https://img.shields.io/badge/runtime_dependencies-0-2f6f4e">
-    <img alt="Regression tests: 111" src="https://img.shields.io/badge/tests-111-3b6ea8">
+    <img alt="Regression tests: 118" src="https://img.shields.io/badge/tests-118-3b6ea8">
     <img alt="Recall at 3: 1.00" src="https://img.shields.io/badge/Recall%403-1.00-2f6f4e">
     <img alt="Context reduction: 92.16%" src="https://img.shields.io/badge/context_reduction-92.16%25-8a5a44">
     <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-15130f">
@@ -48,7 +48,7 @@ ranking quality, token budgets, and passage-vs-document context reduction.
 | nDCG@3 | `0.9931` | Ranking quality against deterministic relevance labels. |
 | Context reduction | `92.16%` | Passage retrieval returns far less text than opening full documents. |
 | Comparison reduction | `53.73%` | Reduction measured in configured comparison runs. |
-| Regression tests | `111` | Unit and workflow tests run before publishing the current page. |
+| Regression tests | `118` | Unit and workflow tests run before publishing the current page. |
 
 Benchmark data is also published on the website through
 [`docs/data/benchmarks.json`](docs/data/benchmarks.json).
@@ -226,6 +226,7 @@ See [examples/README.md](examples/README.md) for more walkthroughs.
 | [Example vaults](examples/README.md) | Reproducible examples |
 | [Roadmap](ROADMAP.md) | Current implementation phases |
 | [Changelog](CHANGELOG.md) | Released changes |
+| [Agent instructions](AGENTS.md) | Repository rules for AI agents |
 | [PT-BR README](README.pt-BR.md) | Portuguese documentation |
 
 ## Development

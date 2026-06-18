@@ -12,7 +12,7 @@
   <p>
     <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white">
     <img alt="Dependências de runtime: zero" src="https://img.shields.io/badge/dependencias_runtime-0-2f6f4e">
-    <img alt="Testes de regressão: 111" src="https://img.shields.io/badge/testes-111-3b6ea8">
+    <img alt="Testes de regressão: 118" src="https://img.shields.io/badge/testes-118-3b6ea8">
     <img alt="Recall at 3: 1.00" src="https://img.shields.io/badge/Recall%403-1.00-2f6f4e">
     <img alt="Redução de contexto: 92.16%" src="https://img.shields.io/badge/reducao_contexto-92.16%25-8a5a44">
     <img alt="Licença: MIT" src="https://img.shields.io/badge/licenca-MIT-15130f">
@@ -49,7 +49,7 @@ contra documentos completos.
 | nDCG@3 | `0.9931` | Qualidade de ranking contra rótulos determinísticos de relevância. |
 | Redução de contexto | `92.16%` | Recuperação por passagens retorna muito menos texto que abrir documentos completos. |
 | Redução em comparativos | `53.73%` | Redução medida nas rodadas comparativas configuradas. |
-| Testes de regressão | `111` | Testes unitários e de workflow rodados antes da publicação atual. |
+| Testes de regressão | `118` | Testes unitários e de workflow rodados antes da publicação atual. |
 
 Os dados do benchmark também são publicados no site por
 [`docs/data/benchmarks.json`](docs/data/benchmarks.json).
@@ -228,6 +228,7 @@ Veja [examples/README.md](examples/README.md) para mais walkthroughs.
 | [Vaults de exemplo](examples/README.md) | Exemplos reproduzíveis |
 | [Roadmap](ROADMAP.md) | Fases atuais de implementação |
 | [Changelog](CHANGELOG.md) | Mudanças publicadas |
+| [Instruções para agentes](AGENTS.md) | Regras do repositório para agentes de IA |
 | [README em inglês](README.md) | Documentação em inglês |
 
 ## Desenvolvimento
