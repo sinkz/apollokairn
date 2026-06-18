@@ -10,6 +10,7 @@ from typing import Sequence
 from cairn.config import is_excluded, load_config
 from cairn.frontmatter import FrontmatterError, parse_document
 from cairn.passages import split_passages
+from cairn.ranking import rrf_merge
 from cairn.validate import RESERVED_NAMES
 
 
@@ -324,32 +325,19 @@ def _rrf_doc_rows(con: sqlite3.Connection, query: str, candidate_limit: int) -> 
     for variant in (_fts_query(query), _fts_or_query(query)):
         if variant and variant not in variants:
             variants.append(variant)
-    fused: dict[str, dict[str, object]] = {}
+    runs: list[list[str]] = []
+    fused: dict[str, tuple[sqlite3.Row, int, float]] = {}
     for variant in variants:
+        run: list[str] = []
         for rank, row in enumerate(_search_doc_rows(con, variant, candidate_limit), start=1):
             path = str(row[0])
             score = float(row[5])
-            item = fused.setdefault(
-                path,
-                {"row": row, "rrf": 0.0, "best_rank": rank, "best_score": score},
-            )
-            item["rrf"] = float(item["rrf"]) + (1 / (_RRF_K + rank))
-            if rank < int(item["best_rank"]) or score < float(item["best_score"]):
-                item["row"] = row
-                item["best_rank"] = rank
-                item["best_score"] = score
-    return [
-        item["row"]
-        for item in sorted(
-            fused.values(),
-            key=lambda item: (
-                -float(item["rrf"]),
-                int(item["best_rank"]),
-                float(item["best_score"]),
-                str(item["row"][0]),
-            ),
-        )
-    ]
+            run.append(path)
+            previous = fused.get(path)
+            if previous is None or rank < previous[1] or score < previous[2]:
+                fused[path] = (row, rank, score)
+        runs.append(run)
+    return [fused[path][0] for path in rrf_merge(runs, k=_RRF_K) if path in fused]
 
 
 def search(
