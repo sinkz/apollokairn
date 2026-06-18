@@ -169,6 +169,49 @@ class RetrieverTests(unittest.TestCase):
             self.assertEqual(packet["sources"][0]["heading"], "Resolution")
             self.assertIn("score", packet["sources"][0])
 
+    def test_cli_retrieve_json_explain_reports_source_explanations(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="engineering")
+            write_concept(
+                root,
+                "deploy-403.md",
+                (
+                    "type: Runbook",
+                    "title: Deploy 403",
+                    "description: Fix deploy authorization failures.",
+                    "tags: [deploy, bug]",
+                    "timestamp: 2026-06-17T10:00:00Z",
+                    "signals: [http 403, ci token]",
+                ),
+                "# Resolution\n\nRotate the CI token and rerun the job.\n",
+            )
+            run_cairn(root, "index", "--rebuild")
+
+            result = run_cairn(
+                root,
+                "retrieve",
+                "deploy 403 token",
+                "--mode",
+                "passages",
+                "--budget",
+                "300",
+                "--json",
+                "--explain",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            payload = json.loads(result.stdout)
+            self.assertIn("packet", payload)
+            self.assertEqual(payload["packet"]["source_count"], 1)
+            explanation = payload["explanations"][0]
+            self.assertEqual(explanation["path"], "knowledge/deploy-403.md")
+            self.assertEqual(explanation["heading"], "Resolution")
+            self.assertIn("not confidence", explanation["score_note"])
+            matched = {item["term"]: item["fields"] for item in explanation["matched_terms"]}
+            self.assertIn("title", matched["deploy"])
+            self.assertIn("signals", matched["token"])
+
     def test_cli_retrieve_accepts_rrf_ranker(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

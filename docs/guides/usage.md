@@ -364,7 +364,11 @@ JSON output for agents:
 
 ```bash
 cairn search "cache stampede" --path ~/brain --json
+cairn search "cache stampede" --path ~/brain --json --explain
 ```
+
+`--explain` wraps results with deterministic ranking diagnostics: score, matched
+fields, matched query terms, and an explicit note that scores are not confidence.
 
 ### `cairn retrieve`
 
@@ -378,6 +382,7 @@ cairn retrieve "deploy token rotation kubernetes secret" --path ~/brain --ranker
 cairn retrieve "reconnecting cache workers" --path ~/brain --mode passages --ranker rrf --budget 500
 cairn retrieve "reconnecting cache workers" --path ~/brain --mode passages --ranker auto --budget 500
 cairn retrieve "deploy 403" --path ~/brain --mode passages --budget 500 --json
+cairn retrieve "deploy 403" --path ~/brain --mode passages --budget 500 --json --explain
 ```
 
 Use this when an agent needs useful context immediately without manually running
@@ -396,6 +401,8 @@ Use `--ranker rrf` when you explicitly want fused lexical ranking every time.
 JSON output returns the same context packet with metadata: query, mode, requested
 ranker, ranker actually used, token budget, estimated tokens used, source count,
 rendered context, and per-source metadata.
+With `--explain`, JSON output is `{ "packet": ..., "explanations": [...] }` and
+each explanation includes matched fields/terms plus the score diagnostic note.
 
 Filters work the same way as `search`:
 

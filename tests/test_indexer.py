@@ -578,6 +578,39 @@ class IndexerTests(unittest.TestCase):
             self.assertNotIn("body", payload[0])
             self.assertNotIn("FULL_BODY_SHOULD_NOT_APPEAR", result.stdout)
 
+    def test_cli_search_json_explain_reports_matched_fields_without_confidence_claims(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="engineering")
+            write_concept(
+                root,
+                "deploy-403.md",
+                (
+                    "type: Runbook",
+                    "title: Deploy 403",
+                    "description: Fix deploy authorization failures.",
+                    "tags: [deploy, bug]",
+                    "timestamp: 2026-06-17T10:00:00Z",
+                    "signals: [http 403, ci token]",
+                ),
+                "# Resolution\n\nRotate the CI token and rerun the job.\n",
+            )
+            rebuild_index(root)
+
+            result = run_cairn(root, "search", "deploy 403 token", "--json", "--explain")
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            payload = json.loads(result.stdout)
+            self.assertEqual(payload["query"], "deploy 403 token")
+            first = payload["results"][0]
+            self.assertEqual(first["result"]["path"], "knowledge/deploy-403.md")
+            explanation = first["explanation"]
+            self.assertEqual(explanation["path"], "knowledge/deploy-403.md")
+            self.assertIn("not confidence", explanation["score_note"])
+            matched = {item["term"]: item["fields"] for item in explanation["matched_terms"]}
+            self.assertIn("title", matched["deploy"])
+            self.assertIn("signals", matched["token"])
+
     def test_cli_search_path_searches_vault_from_outside_directory(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             base = Path(tmp)

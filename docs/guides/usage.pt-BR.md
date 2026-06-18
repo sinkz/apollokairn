@@ -368,7 +368,12 @@ Saída JSON para agentes:
 
 ```bash
 cairn search "cache stampede" --path ~/brain --json
+cairn search "cache stampede" --path ~/brain --json --explain
 ```
+
+`--explain` envolve os resultados com diagnósticos determinísticos de ranking:
+score, campos encontrados, termos da consulta encontrados e uma nota explícita
+de que score não é confiança.
 
 ### `cairn retrieve`
 
@@ -382,6 +387,7 @@ cairn retrieve "deploy token rotation kubernetes secret" --path ~/brain --ranker
 cairn retrieve "reconnecting cache workers" --path ~/brain --mode passages --ranker rrf --budget 500
 cairn retrieve "reconnecting cache workers" --path ~/brain --mode passages --ranker auto --budget 500
 cairn retrieve "deploy 403" --path ~/brain --mode passages --budget 500 --json
+cairn retrieve "deploy 403" --path ~/brain --mode passages --budget 500 --json --explain
 ```
 
 Use quando um agente precisa de contexto útil imediatamente sem rodar `search` e
@@ -400,6 +406,9 @@ retornado. Use `--ranker rrf` quando quiser ranking lexical fundido sempre.
 A saída JSON retorna o mesmo pacote de contexto com metadados: query, modo,
 ranker pedido, ranker realmente usado, orçamento de tokens, tokens estimados
 usados, quantidade de fontes, contexto renderizado e metadados por fonte.
+Com `--explain`, a saída JSON é `{ "packet": ..., "explanations": [...] }`, e
+cada explicação inclui campos/termos encontrados mais a nota diagnóstica do
+score.
 
 Filtros funcionam como em `search`:
 

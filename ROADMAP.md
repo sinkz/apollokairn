@@ -24,6 +24,8 @@ implementation history.
 - BM25 default ranking plus opt-in RRF and `retrieve --ranker auto` fallback.
 - Top-level deterministic glossary with `cairn vocab`, approved aliases, and
   benchmark coverage for synonym gaps such as `k8s`/`kubernetes`.
+- Ranking explanation output for search and retrieve, including matched
+  fields/terms and glossary alias diagnostics without confidence claims.
 - Secret-safety checks for validation, retrieval, and export.
 - Similar-note detection with fingerprint fallback and `duplicate_candidate` /
   `related` labels.
@@ -48,8 +50,7 @@ implementation history.
   from the same model.
 - Harden writeback with dry-run output, no-op reasons, and conflict detection
   based on file signatures before agents update shared notes.
-- Complete ranking explanation output for search and retrieve, focused on
-  debugging and benchmarks rather than confidence claims.
+- Add more benchmark slices for explanation quality and multi-role vaults.
 
 ## Next
 

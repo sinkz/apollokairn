@@ -24,7 +24,7 @@ Follow `ROADMAP.md`. The current focus is:
 - safer writeback through dry-run, no-op reasons, and conflict detection;
 - deterministic glossary aliases through top-level `glossary.md` and
   `cairn vocab`;
-- richer ranking/writeback explanations and benchmark slices.
+- richer writeback explanations, adapter boundaries, and benchmark slices.
 
 Do not treat ranking scores as confidence. Keep glossary behavior explicit and
 reviewable; do not hard-code domain synonyms in Python. Do not add persistent

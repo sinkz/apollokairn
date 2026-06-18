@@ -108,6 +108,7 @@ def build_parser() -> argparse.ArgumentParser:
     search_cmd.add_argument("--limit", type=int, default=3)
     search_cmd.add_argument("--ranker", choices=["bm25", "rrf"], default="bm25")
     search_cmd.add_argument("--json", action="store_true")
+    search_cmd.add_argument("--explain", action="store_true", help="Include deterministic ranking explanations.")
     search_cmd.add_argument("--type", dest="type_filter", help="Filter results by document type.")
     search_cmd.add_argument("--tag", action="append", default=[], help="Filter results by tag. Can be repeated.")
     search_cmd.add_argument("--system", action="append", default=[], help="Filter results by system. Can be repeated.")
@@ -123,6 +124,7 @@ def build_parser() -> argparse.ArgumentParser:
     retrieve_cmd.add_argument("--tag", action="append", default=[], help="Filter results by tag. Can be repeated.")
     retrieve_cmd.add_argument("--system", action="append", default=[], help="Filter results by system. Can be repeated.")
     retrieve_cmd.add_argument("--json", action="store_true")
+    retrieve_cmd.add_argument("--explain", action="store_true", help="Include deterministic ranking explanations.")
     _add_vault_path(retrieve_cmd)
 
     similar_cmd = sub.add_parser("similar", help="Find existing notes before creating a duplicate.")
@@ -434,12 +436,14 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if args.command == "search":
         from cairn.indexer import CairnIndexError, search
+        from cairn.explain import explain_search_results
 
         if args.limit <= 0:
             parser.error("--limit must be positive")
+        root = Path(args.path)
         try:
             results = search(
-                Path(args.path),
+                root,
                 args.query,
                 limit=args.limit,
                 type_filter=args.type_filter,
@@ -450,6 +454,27 @@ def main(argv: list[str] | None = None) -> int:
         except CairnIndexError as exc:
             print(f"ERROR {exc}", file=sys.stderr)
             return 1
+        if args.explain:
+            explanations = explain_search_results(root, args.query, results, args.ranker)
+            if args.json:
+                _print_json(
+                    {
+                        "query": args.query,
+                        "ranker": args.ranker,
+                        "results": [
+                            {"result": result, "explanation": explanation}
+                            for result, explanation in zip(results, explanations)
+                        ],
+                    }
+                )
+            else:
+                for result, explanation in zip(results, explanations):
+                    print(f"{result.path} :: {result.title}")
+                    print(result.snippet)
+                    print(f"score: {explanation.score} ({explanation.score_note})")
+                    if explanation.matched_fields:
+                        print("matched_fields: " + ", ".join(explanation.matched_fields))
+            return 0
         if args.json:
             _print_json(results)
         else:
@@ -458,6 +483,7 @@ def main(argv: list[str] | None = None) -> int:
                 print(result.snippet)
         return 0
     if args.command == "retrieve":
+        from cairn.explain import explain_retrieval_sources
         from cairn.indexer import CairnIndexError
         from cairn.retriever import retrieve_packet
 
@@ -480,6 +506,20 @@ def main(argv: list[str] | None = None) -> int:
         except (CairnIndexError, FileNotFoundError, ValueError) as exc:
             print(f"ERROR {exc}", file=sys.stderr)
             return 1
+        if args.explain:
+            explanations = explain_retrieval_sources(Path(args.path), args.query, packet.sources, packet.ranker)
+            if args.json:
+                _print_json({"packet": packet, "explanations": explanations})
+            else:
+                print(packet.context, end="")
+                if explanations:
+                    print("\n# Ranking Explanations")
+                    for explanation in explanations:
+                        location = f" ({explanation.heading})" if explanation.heading else ""
+                        print(f"{explanation.path}{location}: {explanation.score} ({explanation.score_note})")
+                        if explanation.matched_fields:
+                            print("matched_fields: " + ", ".join(explanation.matched_fields))
+            return 0
         if args.json:
             _print_json(packet)
         else:

@@ -191,7 +191,7 @@ def retrieve_packet(
     tag_filters: Sequence[str] = (),
     system_filters: Sequence[str] = (),
     ranker: str = "bm25",
-) -> str:
+) -> RetrievalPacket:
     if limit <= 0:
         raise ValueError("limit must be positive")
     if budget_tokens <= 0:

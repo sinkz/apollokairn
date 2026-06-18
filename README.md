@@ -12,7 +12,7 @@
   <p>
     <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white">
     <img alt="Runtime dependencies: zero" src="https://img.shields.io/badge/runtime_dependencies-0-2f6f4e">
-    <img alt="Regression tests: 155" src="https://img.shields.io/badge/tests-155-3b6ea8">
+    <img alt="Regression tests: 158" src="https://img.shields.io/badge/tests-158-3b6ea8">
     <img alt="Recall at 3: 1.00" src="https://img.shields.io/badge/Recall%403-1.00-2f6f4e">
     <img alt="Context reduction: 92.15%" src="https://img.shields.io/badge/context_reduction-92.15%25-8a5a44">
     <img alt="Writeback decision accuracy: 100%" src="https://img.shields.io/badge/writeback_decisions-100%25-285da8">
@@ -52,7 +52,7 @@ writeback decisions for update-vs-create workflows.
 | Comparison reduction | `53.73%` | Reduction measured in configured comparison runs. |
 | Writeback decision accuracy | `100%` | Correct create, update, no-op, and conflict decisions in the fixture set. |
 | Duplicate avoidance | `100%` | Existing reusable notes are updated or preserved instead of duplicated. |
-| Regression tests | `155` | Unit and workflow tests run before publishing the current page. |
+| Regression tests | `158` | Unit and workflow tests run before publishing the current page. |
 
 Benchmark data is also published on the website through
 [`docs/data/benchmarks.json`](docs/data/benchmarks.json).
@@ -170,6 +170,7 @@ common secret-like values before writing the file.
 cairn index --path PATH_TO_VAULT
 cairn search "deploy 403 token" --path PATH_TO_VAULT --limit 3
 cairn search "deploy token rotation kubernetes secret" --path PATH_TO_VAULT --ranker rrf
+cairn search "deploy 403 token" --path PATH_TO_VAULT --json --explain
 ```
 
 If your team uses stable synonyms such as `k8s` and `kubernetes`, keep them in
@@ -188,6 +189,7 @@ cairn retrieve "deploy 403 token" --path PATH_TO_VAULT --budget 800
 cairn retrieve "deploy 403 token" --path PATH_TO_VAULT --mode passages --budget 400
 cairn retrieve "deploy token rotation kubernetes secret" --path PATH_TO_VAULT --ranker auto --budget 800
 cairn retrieve "deploy 403 token" --path PATH_TO_VAULT --mode passages --budget 400 --json
+cairn retrieve "deploy 403 token" --path PATH_TO_VAULT --mode passages --budget 400 --json --explain
 ```
 
 ### 4. Update instead of duplicating

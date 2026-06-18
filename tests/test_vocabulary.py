@@ -75,6 +75,29 @@ class VocabularyTests(unittest.TestCase):
 
             self.assertEqual([result.path for result in results], ["knowledge/rollback-k8s.md"])
 
+    def test_search_explain_reports_approved_glossary_alias_matches(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="engineering")
+            write_glossary(root)
+            write_k8s_note(root)
+            rebuild_index(root)
+
+            result = run_cairn(
+                root,
+                "search",
+                "kubernetes rollback emergencial deploy",
+                "--json",
+                "--explain",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            payload = json.loads(result.stdout)
+            explanation = payload["results"][0]["explanation"]
+            matched = {item["term"]: item["fields"] for item in explanation["matched_terms"]}
+            self.assertIn("k8s", matched)
+            self.assertIn("title", matched["k8s"])
+
     def test_retrieve_auto_uses_glossary_aliases_for_context(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
