@@ -20,6 +20,10 @@ verified, and aligned with the project constraints.
 - The vault registry is local user state. Tests must isolate it with
   `APOLLOKAIRN_REGISTRY_PATH`; never touch the real user registry in automated
   tests.
+- Agentic assets live under `agentic/` and are installed by
+  `apollokairn agent`. Keep skill text succinct, product-agnostic, and free of
+  secrets. The CLI embeds the same instructions so standalone binaries work
+  without a source checkout.
 
 ## Current Priority
 
@@ -72,7 +76,7 @@ work is done:
 python -m unittest discover
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
 python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
-python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 194
+python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 200
 git diff --check
 ```
 
@@ -109,7 +113,7 @@ writeback regressions:
 ```bash
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
 python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
-python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 194
+python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 200
 ```
 
 When benchmark numbers change intentionally, update:
@@ -165,3 +169,5 @@ finishes, verify at least one asset download and `apollokairn --version`.
 - If changing vault registry behavior, update `tests/test_registry.py`,
   `tests/test_cli.py`, and public docs. Preserve resolution order:
   `--path`, `--vault`, active registry vault, current directory.
+- If changing agent skill installation or `agentic/` assets, update
+  `tests/test_agentic.py`, `docs/guides/adapters*.md`, and both READMEs.

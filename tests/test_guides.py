@@ -168,6 +168,7 @@ class GuidesTests(unittest.TestCase):
             for term in ("Codex", "Claude", "OpenCode", "Hermes", "GitHub Copilot"):
                 self.assertIn(term, text)
             self.assertIn("setup-agent", text)
+            self.assertIn("apollokairn agent install", text)
             self.assertIn("JSON", text)
 
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
@@ -178,6 +179,8 @@ class GuidesTests(unittest.TestCase):
         self.assertIn("docs/guides/adapters.pt-BR.md", readme_pt)
         self.assertIn("apollokairn setup-agent", readme)
         self.assertIn("apollokairn setup-agent", readme_pt)
+        self.assertIn("apollokairn agent", readme)
+        self.assertIn("apollokairn agent", readme_pt)
 
 
 if __name__ == "__main__":

@@ -121,6 +121,24 @@ def build_parser(prog: str = PUBLIC_COMMAND) -> argparse.ArgumentParser:
     vault_doctor = vault_sub.add_parser("doctor", help="Check registered vault paths.")
     vault_doctor.add_argument("--json", action="store_true")
 
+    agent_cmd = sub.add_parser("agent", help="Install or check optional agent skills.")
+    agent_sub = agent_cmd.add_subparsers(dest="agent_command")
+    agent_install = agent_sub.add_parser("install", help="Install the ApolloKairn skill for an agent.")
+    agent_install.add_argument("agent", choices=["codex", "hermes"])
+    agent_install.add_argument("--scope", choices=["user", "repo"], default="user")
+    agent_install.add_argument("--mode", choices=["copy", "symlink"], default="copy")
+    agent_install.add_argument("--path", help="Repository path for --scope repo.")
+    agent_install.add_argument("--target-dir", help="Override the skills directory.")
+    agent_install.add_argument("--force", action="store_true", help="Overwrite an existing managed skill.")
+    agent_install.add_argument("--dry-run", action="store_true", help="Show what would be installed without writing.")
+    agent_install.add_argument("--json", action="store_true")
+    agent_doctor = agent_sub.add_parser("doctor", help="Check installed ApolloKairn agent skills.")
+    agent_doctor.add_argument("agent", nargs="?", choices=["codex", "hermes"])
+    agent_doctor.add_argument("--scope", choices=["user", "repo"], default="user")
+    agent_doctor.add_argument("--path", help="Repository path for --scope repo.")
+    agent_doctor.add_argument("--target-dir", help="Override the skills directory.")
+    agent_doctor.add_argument("--json", action="store_true")
+
     def add_note_parser(name: str, help_text: str) -> argparse.ArgumentParser:
         cmd = sub.add_parser(name, help=help_text)
         cmd.add_argument("--title", required=True)
@@ -390,6 +408,45 @@ def main(argv: list[str] | None = None, invoked_as: str | None = None) -> int:
             print(f"ERROR {exc}", file=sys.stderr)
             return 1
         parser.error("vault requires a subcommand")
+    if args.command == "agent":
+        from cairn.agentic import AgenticError, doctor_agent_skills, install_agent_skill
+
+        try:
+            if args.agent_command == "install":
+                result = install_agent_skill(
+                    args.agent,
+                    scope=args.scope,
+                    mode=args.mode,
+                    target_dir=args.target_dir,
+                    repo_path=args.path,
+                    force=args.force,
+                    dry_run=args.dry_run,
+                )
+                if args.json:
+                    _print_json(result)
+                else:
+                    action = "would install" if result.would_change and not result.changed else "installed"
+                    if not result.would_change:
+                        action = "already installed"
+                    print(f"{action} {result.skill} for {result.agent} at {result.path}")
+                return 0
+            if args.agent_command == "doctor":
+                report = doctor_agent_skills(
+                    args.agent,
+                    scope=args.scope,
+                    target_dir=args.target_dir,
+                    repo_path=args.path,
+                )
+                if args.json:
+                    _print_json(report)
+                else:
+                    for check in report.checks:
+                        print(f"{check.agent}: {check.message} ({check.path})")
+                return 0 if report.ok else 1
+        except AgenticError as exc:
+            print(f"ERROR {exc}", file=sys.stderr)
+            return 1
+        parser.error("agent requires a subcommand")
     from cairn.registry import RegistryError
 
     try:

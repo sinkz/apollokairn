@@ -12,7 +12,7 @@
   <p>
     <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white">
     <img alt="Dependências de runtime: zero" src="https://img.shields.io/badge/dependencias_runtime-0-2f6f4e">
-    <img alt="Testes de regressão: 194" src="https://img.shields.io/badge/testes-194-3b6ea8">
+    <img alt="Testes de regressão: 200" src="https://img.shields.io/badge/testes-200-3b6ea8">
     <img alt="Recall at 3: 1.00" src="https://img.shields.io/badge/Recall%403-1.00-2f6f4e">
     <img alt="Redução de contexto: 91.83%" src="https://img.shields.io/badge/reducao_contexto-91.83%25-8a5a44">
     <img alt="Acurácia de decisão de escrita: 100%" src="https://img.shields.io/badge/escrita_decisoes-100%25-285da8">
@@ -53,7 +53,7 @@ atualizar vs criar.
 | Redução em comparativos | `53.73%` | Redução medida nas rodadas comparativas configuradas. |
 | Acurácia de decisão de escrita | `100%` | Decisões corretas de criar, atualizar, no-op e conflito no conjunto de fixtures. |
 | Prevenção de duplicatas | `100%` | Notas reutilizáveis existentes são atualizadas ou preservadas em vez de duplicadas. |
-| Testes de regressão | `194` | Testes unitários e de workflow rodados antes da publicação atual. |
+| Testes de regressão | `200` | Testes unitários e de workflow rodados antes da publicação atual. |
 
 Os dados do benchmark também são publicados no site por
 [`docs/data/benchmarks.json`](docs/data/benchmarks.json).
@@ -61,7 +61,7 @@ Os dados do benchmark também são publicados no site por
 ```bash
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
 python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
-python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 194
+python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 200
 ```
 
 ## Instalação Rápida
@@ -141,6 +141,22 @@ apollokairn search "deploy 403" --vault pessoal --json
 
 A ordem de resolução é `--path`, depois `--vault`, depois o vault ativo
 registrado e, por fim, o diretório atual para manter compatibilidade.
+
+## Skill Opcional Para Agentes
+
+Instale a skill compartilhada quando quiser que Codex ou Hermes saibam usar o
+fluxo da CLI a partir de qualquer repositório:
+
+```bash
+apollokairn agent install codex
+apollokairn agent install hermes
+apollokairn agent doctor --json
+```
+
+O instalador copia uma skill pequena chamada `apollokairn-vault` por padrão e
+pode ser rodado novamente. Use `--mode symlink` apenas em desenvolvimento com o
+checkout do código. Guias locais dentro do vault continuam disponíveis com
+`apollokairn setup-agent`.
 
 ## Instalar Pelo Código Fonte
 
@@ -261,6 +277,7 @@ de segredo antes da escrita.
 | `apollokairn show` | Abre documento completo, seção, snippet ou intervalo de linhas |
 | `apollokairn update` | Adiciona informação reutilizável a uma nota existente |
 | `apollokairn vocab` | Gerencia termos e aliases determinísticos do glossário |
+| `apollokairn agent` | Instala ou verifica skills opcionais para Codex/Hermes |
 | `apollokairn setup-agent` | Cria instruções específicas como `CODEX.md`, `HERMES.md` ou instruções do Copilot |
 | `apollokairn refresh-guides` | Atualiza guias de agente gerados |
 | `apollokairn stats` | Mostra contagens e tamanho aproximado em tokens |
@@ -289,6 +306,7 @@ Veja [examples/README.md](examples/README.md) para mais walkthroughs.
 | [Como funciona](https://sinkz.github.io/apollokairn/learn.html) | Explicação conceitual e técnica |
 | [Instalação rápida](docs/guides/quick-install.pt-BR.md) | Binários, PATH e solução de problemas |
 | [Guia de uso](docs/guides/usage.pt-BR.md) | Guia completo dos comandos |
+| [Assets agentic](agentic/README.md) | Fonte da skill compartilhada para Codex/Hermes |
 | [Adapters para agentes](docs/guides/adapters.pt-BR.md) | Guias gerados para Codex, Claude, OpenCode, Hermes, Copilot e agentes genéricos |
 | [Vaults de exemplo](examples/README.md) | Exemplos reproduzíveis |
 | [Roadmap](ROADMAP.md) | Fases atuais de implementação |
@@ -309,7 +327,7 @@ Rode os benchmarks determinísticos:
 ```bash
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
 python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
-python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 194
+python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 200
 ```
 
 Os benchmarks verificam qualidade de ranking, prefixos golden, orçamentos de

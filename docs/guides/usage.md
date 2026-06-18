@@ -591,6 +591,28 @@ importing. Export aborts when common secret-like values are detected in files
 that would be included in the archive.
 JSON output reports the archive `output` path or imported `root` path.
 
+### `apollokairn agent`
+
+Installs or checks the optional shared Agent Skill for Codex and Hermes.
+
+```bash
+apollokairn agent install codex
+apollokairn agent install hermes
+apollokairn agent install codex --scope repo --path PATH_TO_REPO
+apollokairn agent install codex --mode symlink
+apollokairn agent doctor
+apollokairn agent doctor codex --json
+```
+
+Default installs use `copy`, which works from source installs and standalone
+binaries. Re-running the same install is a no-op unless `--force` is used. Use
+`--mode symlink` only for local development from a source checkout. Codex
+supports user scope and repo scope. Hermes installs to user scope in this CLI.
+Use `--target-dir` for custom layouts, tests, or manual agent directories.
+
+This command installs reusable skill instructions outside the vault. Use
+`setup-agent` when you want vault-local files such as `CODEX.md` or `HERMES.md`.
+
 ### `apollokairn setup-agent` and `apollokairn refresh-guides`
 
 Creates or refreshes agent-specific instructions inside the vault.
@@ -645,7 +667,7 @@ Run deterministic evaluations:
 python bench/run_eval.py
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
 python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
-python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 194
+python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 200
 ```
 
 Benchmark topics may include `category`, `mode`, `compare_mode`, `ranker`, and

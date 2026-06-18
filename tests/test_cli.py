@@ -63,6 +63,7 @@ class CliSmokeTests(unittest.TestCase):
         self.assertIn("usage: apollokairn", result.stdout)
         self.assertIn("init", result.stdout)
         self.assertIn("search", result.stdout)
+        self.assertIn("agent", result.stdout)
         self.assertIn("validate", result.stdout)
 
     def test_version_prints_public_command_name_and_package_version(self) -> None:

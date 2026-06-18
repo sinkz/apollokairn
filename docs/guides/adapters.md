@@ -1,10 +1,27 @@
 # Agent Adapters
 
 ApolloKairn stays agent-agnostic: the vault is Markdown, the index is local, and every
-agent talks to the same CLI and JSON contract. Current adapters are generated
-instruction files, not separate plugins or separate knowledge stores.
+agent talks to the same CLI and JSON contract. Adapters are small instruction
+layers over that contract, not separate knowledge stores.
 
-## Supported Targets
+## Global Skills
+
+For Codex and Hermes, install the shared `apollokairn-vault` Agent Skill when
+you want the agent to know the ApolloKairn workflow from any repository:
+
+```bash
+apollokairn agent install codex
+apollokairn agent install hermes
+apollokairn agent doctor --json
+```
+
+The default mode is `copy`. Use `--mode symlink` only while developing from a
+source checkout. The versioned skill source lives in `agentic/skills/`.
+
+## Vault-Local Guides
+
+Use generated guide files when a specific vault should carry instructions for
+one or more agent harnesses.
 
 | Target | Command | Generated file |
 | --- | --- | --- |
@@ -33,7 +50,7 @@ The generated guide tells the agent to:
 - use `--body-file` or `--body-stdin` for multi-line Markdown;
 - run `apollokairn validate` and `apollokairn index` after successful writes.
 
-## Refresh Multiple Guides
+## Refresh Multiple Vault Guides
 
 `apollokairn refresh-guides` reads `.cairn/config.json` and rewrites every configured
 guide. This is useful when a vault should carry instructions for several

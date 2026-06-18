@@ -12,7 +12,7 @@
   <p>
     <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white">
     <img alt="Runtime dependencies: zero" src="https://img.shields.io/badge/runtime_dependencies-0-2f6f4e">
-    <img alt="Regression tests: 194" src="https://img.shields.io/badge/tests-194-3b6ea8">
+    <img alt="Regression tests: 200" src="https://img.shields.io/badge/tests-200-3b6ea8">
     <img alt="Recall at 3: 1.00" src="https://img.shields.io/badge/Recall%403-1.00-2f6f4e">
     <img alt="Context reduction: 91.83%" src="https://img.shields.io/badge/context_reduction-91.83%25-8a5a44">
     <img alt="Writeback decision accuracy: 100%" src="https://img.shields.io/badge/writeback_decisions-100%25-285da8">
@@ -52,7 +52,7 @@ writeback decisions for update-vs-create workflows.
 | Comparison reduction | `53.73%` | Reduction measured in configured comparison runs. |
 | Writeback decision accuracy | `100%` | Correct create, update, no-op, and conflict decisions in the fixture set. |
 | Duplicate avoidance | `100%` | Existing reusable notes are updated or preserved instead of duplicated. |
-| Regression tests | `194` | Unit and workflow tests run before publishing the current page. |
+| Regression tests | `200` | Unit and workflow tests run before publishing the current page. |
 
 Benchmark data is also published on the website through
 [`docs/data/benchmarks.json`](docs/data/benchmarks.json).
@@ -60,7 +60,7 @@ Benchmark data is also published on the website through
 ```bash
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
 python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
-python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 194
+python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 200
 ```
 
 ## Quick Install
@@ -139,6 +139,21 @@ apollokairn search "deploy 403" --vault personal --json
 
 Vault resolution order is `--path`, then `--vault`, then the active registered
 vault, then the current directory for backward compatibility.
+
+## Optional Agent Skill
+
+Install the shared ApolloKairn skill when you want Codex or Hermes to know the
+CLI workflow from any repository:
+
+```bash
+apollokairn agent install codex
+apollokairn agent install hermes
+apollokairn agent doctor --json
+```
+
+The installer copies a small `apollokairn-vault` skill by default and is safe to
+run again. Use `--mode symlink` only when developing from a source checkout.
+Vault-local guide files are still available through `apollokairn setup-agent`.
 
 ## Install From Source
 
@@ -258,6 +273,7 @@ before it is written.
 | `apollokairn show` | Open a full document, section, snippet, or line range |
 | `apollokairn update` | Append reusable information to an existing note |
 | `apollokairn vocab` | Manage deterministic glossary terms and aliases |
+| `apollokairn agent` | Install or check optional Codex/Hermes skills |
 | `apollokairn setup-agent` | Create tool-specific instructions such as `CODEX.md`, `HERMES.md`, or Copilot instructions |
 | `apollokairn refresh-guides` | Refresh generated agent guides |
 | `apollokairn stats` | Show vault counts and approximate token size |
@@ -286,6 +302,7 @@ See [examples/README.md](examples/README.md) for more walkthroughs.
 | [How it works](https://sinkz.github.io/apollokairn/learn.html) | Conceptual and technical explanation |
 | [Quick install](docs/guides/quick-install.md) | Binary install, PATH setup, and troubleshooting |
 | [Usage guide](docs/guides/usage.md) | Full command guide |
+| [Agentic assets](agentic/README.md) | Shared Codex/Hermes skill source |
 | [Agent adapters](docs/guides/adapters.md) | Generated guides for Codex, Claude, OpenCode, Hermes, Copilot, and generic agents |
 | [Example vaults](examples/README.md) | Reproducible examples |
 | [Roadmap](ROADMAP.md) | Current implementation phases |
@@ -306,7 +323,7 @@ Run the deterministic benchmarks:
 ```bash
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
 python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
-python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 194
+python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 200
 ```
 
 The benchmarks check ranking quality, golden result prefixes, token budgets,

@@ -9,6 +9,8 @@ All notable ApolloKairn changes are tracked here.
 - Added `apollokairn vault` for local multi-vault registration, active-vault
   switching, JSON-friendly discovery, and `--vault` resolution from any
   working directory.
+- Added versioned `agentic/` assets and `apollokairn agent install/doctor` for
+  optional Codex and Hermes Agent Skill setup.
 
 ## 0.1.4 - 2026-06-18
 

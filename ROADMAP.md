@@ -46,6 +46,9 @@ implementation history.
   `OPENCODE.md`, `HERMES.md`, and GitHub Copilot instructions, including JSON
   search, passage retrieval, glossary guidance, schema-compatible writes,
   multi-line body handling, and post-write validation/indexing.
+- Optional shared Agent Skill source under `agentic/` plus
+  `apollokairn agent install/doctor` for Codex and Hermes setup outside a
+  specific vault.
 - Standalone GitHub Release binaries, checksums, and quick install scripts for
   Linux, macOS, and Windows.
 - Opt-in local usage metrics with redacted JSONL events and static vault reports
@@ -57,7 +60,7 @@ implementation history.
 
 - Add more benchmark slices for explanation quality and multi-role vaults.
 - Prototype optional plugin or MCP adapter packages outside the dependency-free
-  core.
+  core, building on the shared Agent Skill source.
 - Design read-only suggestion workflows after similar-note thresholds are
   measured, so agents can propose update-existing vs create-new actions with
   evidence.

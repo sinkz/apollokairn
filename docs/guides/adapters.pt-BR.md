@@ -1,10 +1,28 @@
 # Adapters Para Agentes
 
 ApolloKairn permanece agnóstico de agentes: o vault é Markdown, o índice é local, e
-todo agente usa o mesmo contrato de CLI e JSON. Os adapters atuais são arquivos
-de instrução gerados, não plugins separados nem bases de conhecimento separadas.
+todo agente usa o mesmo contrato de CLI e JSON. Adapters são pequenas camadas de
+instrução sobre esse contrato, não bases de conhecimento separadas.
 
-## Targets Suportados
+## Skills Globais
+
+Para Codex e Hermes, instale a Agent Skill compartilhada `apollokairn-vault`
+quando quiser que o agente saiba usar o fluxo do ApolloKairn a partir de
+qualquer repositório:
+
+```bash
+apollokairn agent install codex
+apollokairn agent install hermes
+apollokairn agent doctor --json
+```
+
+O modo padrão é `copy`. Use `--mode symlink` apenas em desenvolvimento com um
+checkout do código. A fonte versionada da skill fica em `agentic/skills/`.
+
+## Guias Locais Do Vault
+
+Use arquivos de guia gerados quando um vault específico deve carregar instruções
+para um ou mais harnesses de agentes.
 
 | Target | Comando | Arquivo gerado |
 | --- | --- | --- |
