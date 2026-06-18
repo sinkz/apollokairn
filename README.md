@@ -12,9 +12,9 @@
   <p>
     <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white">
     <img alt="Runtime dependencies: zero" src="https://img.shields.io/badge/runtime_dependencies-0-2f6f4e">
-    <img alt="Regression tests: 166" src="https://img.shields.io/badge/tests-166-3b6ea8">
+    <img alt="Regression tests: 170" src="https://img.shields.io/badge/tests-170-3b6ea8">
     <img alt="Recall at 3: 1.00" src="https://img.shields.io/badge/Recall%403-1.00-2f6f4e">
-    <img alt="Context reduction: 92.15%" src="https://img.shields.io/badge/context_reduction-92.15%25-8a5a44">
+    <img alt="Context reduction: 91.83%" src="https://img.shields.io/badge/context_reduction-91.83%25-8a5a44">
     <img alt="Writeback decision accuracy: 100%" src="https://img.shields.io/badge/writeback_decisions-100%25-285da8">
     <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-15130f">
   </p>
@@ -47,12 +47,12 @@ writeback decisions for update-vs-create workflows.
 | --- | ---: | --- |
 | Recall@3 | `1.00` | Expected notes appear in the top three results. |
 | MRR@3 | `1.00` | Relevant results are ranked first in the current fixture set. |
-| nDCG@3 | `0.9934` | Ranking quality against deterministic relevance labels. |
-| Context reduction | `92.15%` | Passage retrieval returns far less text than opening full documents. |
+| nDCG@3 | `0.9941` | Ranking quality against deterministic relevance labels. |
+| Context reduction | `91.83%` | Passage retrieval returns far less text than opening full documents. |
 | Comparison reduction | `53.73%` | Reduction measured in configured comparison runs. |
 | Writeback decision accuracy | `100%` | Correct create, update, no-op, and conflict decisions in the fixture set. |
 | Duplicate avoidance | `100%` | Existing reusable notes are updated or preserved instead of duplicated. |
-| Regression tests | `166` | Unit and workflow tests run before publishing the current page. |
+| Regression tests | `170` | Unit and workflow tests run before publishing the current page. |
 
 Benchmark data is also published on the website through
 [`docs/data/benchmarks.json`](docs/data/benchmarks.json).
@@ -60,6 +60,7 @@ Benchmark data is also published on the website through
 ```bash
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
 python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
+python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 170
 ```
 
 ## Quick Install
@@ -271,11 +272,15 @@ Run the deterministic benchmarks:
 ```bash
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
 python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
+python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 170
 ```
 
 The benchmarks check ranking quality, golden result prefixes, token budgets,
 passage-vs-document context reduction, update-vs-create decisions, no-op
 idempotency, duplicate avoidance, and stale-write conflict detection.
+`bench/publish_metrics.py` refreshes the public GitHub Pages JSON, deduplicates
+the latest history row by date and label, and adds metric deltas against the
+previous run.
 
 ## OKF Reference
 

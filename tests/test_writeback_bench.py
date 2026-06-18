@@ -45,6 +45,18 @@ class WritebackBenchTests(unittest.TestCase):
         self.assertTrue({"knowledge", "process", "decision", "pt-BR"}.issubset(payload["categories"]))
         self.assertTrue(all("actual_action" in item for item in payload["per_case"]))
 
+    def test_writeback_benchmark_includes_synonym_and_abbreviation_cases(self) -> None:
+        result = run_writeback_bench()
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        payload = json.loads(result.stdout)
+        cases = {item["id"]: item for item in payload["per_case"]}
+
+        self.assertEqual(cases["prod_access_synonym_update"]["actual_action"], "update")
+        self.assertEqual(cases["prod_access_synonym_update"]["target_path"], "processes/production-access-request.md")
+        self.assertEqual(cases["ruff_abbreviation_update"]["actual_action"], "update")
+        self.assertEqual(cases["ruff_abbreviation_update"]["target_path"], "decisions/use-ruff-formatting.md")
+
     def test_writeback_benchmark_compare_golden_detects_decision_regression(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             golden = Path(tmp) / "golden.json"

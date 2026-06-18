@@ -13,6 +13,13 @@ const text = {
     date: "Date",
     label: "Label",
     shortHistory: "Trend chart appears after three benchmark runs. Current snapshot:",
+    previousRun: "vs previous run",
+    trends: {
+      better: "better",
+      worse: "worse",
+      flat: "flat",
+      changed: "changed",
+    },
   },
   pt: {
     updated: "Atualizado",
@@ -23,6 +30,13 @@ const text = {
     date: "Data",
     label: "Rótulo",
     shortHistory: "O gráfico de tendência aparece após três rodadas de benchmark. Snapshot atual:",
+    previousRun: "vs rodada anterior",
+    trends: {
+      better: "melhor",
+      worse: "pior",
+      flat: "estável",
+      changed: "mudou",
+    },
   },
 };
 
@@ -121,11 +135,30 @@ function renderMetricCard(metric, lang) {
   const value = document.createElement("strong");
   value.textContent = formatMetric(metric, lang);
 
+  const delta = renderMetricDelta(metric, lang);
+
   const description = document.createElement("p");
   description.textContent = localized(metric.description, lang);
 
-  article.append(label, value, description);
+  article.append(label, value);
+  if (delta) article.append(delta);
+  article.append(description);
   return article;
+}
+
+function renderMetricDelta(metric, lang) {
+  if (!metric.delta || typeof metric.delta.value !== "number") return null;
+
+  const trend = metric.delta.trend || metric.delta.direction || "changed";
+  const label = document.createElement("small");
+  label.className = "metric-delta";
+  label.setAttribute("data-trend", trend);
+
+  const sign = metric.delta.value > 0 ? "+" : "";
+  const formatted = `${sign}${formatMetric(metric, lang, metric.delta.value)}`;
+  const trendText = text[lang].trends[trend] || trend;
+  label.textContent = `${formatted} ${text[lang].previousRun} · ${trendText}`;
+  return label;
 }
 
 function renderSuite(suite, lang) {

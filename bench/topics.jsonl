@@ -23,3 +23,6 @@
 {"id":"q23","query":"request production access approval owner audit log","category":"access","type":"Process","budget":600}
 {"id":"q24","query":"ruff formatting python lint library standard","category":"library","type":"Decision","budget":600}
 {"id":"q25","query":"kubernetes rollback emergencial deploy","category":"vocabulary","budget":600}
+{"id":"q26","query":"kubernetes rollback voltar versao deploy quebrado","category":"same_problem_synonyms","budget":600}
+{"id":"q27","query":"prod access break glass approval audit owner temporary role","category":"support_access_synonyms","type":"Process","budget":600}
+{"id":"q28","query":"py fmt lint ruff standard repository checks","category":"tooling_abbreviation","type":"Decision","budget":600}

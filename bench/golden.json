@@ -80,5 +80,14 @@
     "knowledge/k8s-rollback.md",
     "processes/hotfix-rollback.md",
     "knowledge/deploy-403-consolidated.md"
+  ],
+  "q26": [
+    "knowledge/k8s-rollback.md"
+  ],
+  "q27": [
+    "processes/production-access-request.md"
+  ],
+  "q28": [
+    "decisions/use-ruff-formatting.md"
   ]
 }

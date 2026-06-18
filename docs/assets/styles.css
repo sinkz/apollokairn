@@ -489,7 +489,39 @@ h3 {
   font-family: "Source Serif 4", serif;
   font-size: 2.45rem;
   line-height: 1;
-  margin: 22px 0 18px;
+  margin: 22px 0 12px;
+}
+
+.metric-delta {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  display: inline-flex;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 16px;
+  padding: 6px 9px;
+  text-transform: uppercase;
+}
+
+.metric-delta[data-trend="better"] {
+  background: var(--green-soft);
+  border-color: rgba(15, 107, 91, 0.28);
+  color: var(--green);
+}
+
+.metric-delta[data-trend="worse"] {
+  background: var(--coral-soft);
+  border-color: rgba(189, 79, 61, 0.28);
+  color: var(--coral);
+}
+
+.metric-delta[data-trend="flat"] {
+  background: var(--blue-soft);
+  border-color: rgba(40, 93, 168, 0.24);
+  color: var(--blue);
 }
 
 .install-section {

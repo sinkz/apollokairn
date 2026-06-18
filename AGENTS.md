@@ -62,6 +62,7 @@ work is done:
 python -m unittest discover
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
 python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
+python bench/publish_metrics.py --output docs/data/benchmarks.json --tests CURRENT_TEST_COUNT
 git diff --check
 ```
 
@@ -98,6 +99,7 @@ writeback regressions:
 ```bash
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
 python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
+python bench/publish_metrics.py --output docs/data/benchmarks.json --tests CURRENT_TEST_COUNT
 ```
 
 When benchmark numbers change intentionally, update:
@@ -106,7 +108,8 @@ When benchmark numbers change intentionally, update:
   reason;
 - `bench/writeback/golden.json` only when expected writeback decisions change
   for a good reason;
-- `docs/data/benchmarks.json` when public metrics change;
+- `docs/data/benchmarks.json` through `bench/publish_metrics.py` when public
+  metrics change;
 - README badges/tables if public counts or metrics are shown there.
 
 Keep RRF/noisy-query topics separate from glossary topics. If a new glossary

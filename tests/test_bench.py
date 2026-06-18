@@ -172,9 +172,29 @@ class BenchTests(unittest.TestCase):
                 "access",
                 "library",
                 "vocabulary",
+                "same_problem_synonyms",
+                "support_access_synonyms",
+                "tooling_abbreviation",
             }.issubset(categories),
             categories,
         )
+
+    def test_benchmark_includes_synonym_stress_cases(self) -> None:
+        result = run_bench()
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        payload = json.loads(result.stdout)
+        topics = {item["id"]: item for item in payload["per_topic"]}
+
+        self.assertEqual(topics["q26"]["category"], "same_problem_synonyms")
+        self.assertEqual(topics["q26"]["docs"][0], "knowledge/k8s-rollback.md")
+        self.assertEqual(topics["q26"]["recall_at_k"], 1.0)
+
+        self.assertEqual(topics["q27"]["category"], "support_access_synonyms")
+        self.assertEqual(topics["q27"]["docs"][0], "processes/production-access-request.md")
+
+        self.assertEqual(topics["q28"]["category"], "tooling_abbreviation")
+        self.assertEqual(topics["q28"]["docs"][0], "decisions/use-ruff-formatting.md")
 
     def test_benchmark_has_vocabulary_slice_for_glossary_aliases(self) -> None:
         result = run_bench()

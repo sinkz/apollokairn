@@ -12,9 +12,9 @@
   <p>
     <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white">
     <img alt="Dependências de runtime: zero" src="https://img.shields.io/badge/dependencias_runtime-0-2f6f4e">
-    <img alt="Testes de regressão: 166" src="https://img.shields.io/badge/testes-166-3b6ea8">
+    <img alt="Testes de regressão: 170" src="https://img.shields.io/badge/testes-170-3b6ea8">
     <img alt="Recall at 3: 1.00" src="https://img.shields.io/badge/Recall%403-1.00-2f6f4e">
-    <img alt="Redução de contexto: 92.15%" src="https://img.shields.io/badge/reducao_contexto-92.15%25-8a5a44">
+    <img alt="Redução de contexto: 91.83%" src="https://img.shields.io/badge/reducao_contexto-91.83%25-8a5a44">
     <img alt="Acurácia de decisão de escrita: 100%" src="https://img.shields.io/badge/escrita_decisoes-100%25-285da8">
     <img alt="Licença: MIT" src="https://img.shields.io/badge/licenca-MIT-15130f">
   </p>
@@ -48,12 +48,12 @@ atualizar vs criar.
 | --- | ---: | --- |
 | Recall@3 | `1.00` | Notas esperadas aparecem nos três primeiros resultados. |
 | MRR@3 | `1.00` | Resultados relevantes aparecem primeiro no conjunto atual. |
-| nDCG@3 | `0.9934` | Qualidade de ranking contra rótulos determinísticos de relevância. |
-| Redução de contexto | `92.15%` | Recuperação por passagens retorna muito menos texto que abrir documentos completos. |
+| nDCG@3 | `0.9941` | Qualidade de ranking contra rótulos determinísticos de relevância. |
+| Redução de contexto | `91.83%` | Recuperação por passagens retorna muito menos texto que abrir documentos completos. |
 | Redução em comparativos | `53.73%` | Redução medida nas rodadas comparativas configuradas. |
 | Acurácia de decisão de escrita | `100%` | Decisões corretas de criar, atualizar, no-op e conflito no conjunto de fixtures. |
 | Prevenção de duplicatas | `100%` | Notas reutilizáveis existentes são atualizadas ou preservadas em vez de duplicadas. |
-| Testes de regressão | `166` | Testes unitários e de workflow rodados antes da publicação atual. |
+| Testes de regressão | `170` | Testes unitários e de workflow rodados antes da publicação atual. |
 
 Os dados do benchmark também são publicados no site por
 [`docs/data/benchmarks.json`](docs/data/benchmarks.json).
@@ -61,6 +61,7 @@ Os dados do benchmark também são publicados no site por
 ```bash
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
 python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
+python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 170
 ```
 
 ## Instalação Rápida
@@ -274,12 +275,16 @@ Rode os benchmarks determinísticos:
 ```bash
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
 python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
+python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 170
 ```
 
 Os benchmarks verificam qualidade de ranking, prefixos golden, orçamentos de
 tokens, redução de contexto em passagens contra documentos completos, decisões
 de atualizar vs criar, idempotência de no-op, prevenção de duplicatas e detecção
 de conflito por escrita obsoleta.
+`bench/publish_metrics.py` atualiza o JSON público do GitHub Pages, deduplica a
+linha mais recente do histórico por data e rótulo e adiciona deltas das métricas
+contra a rodada anterior.
 
 ## Referência OKF
 

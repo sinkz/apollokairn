@@ -4,9 +4,9 @@ title: Production access request
 description: Request and approve temporary production access with owner review and audit log.
 tags: [support, access]
 timestamp: 2026-06-17T10:00:00Z
-aliases: [prod access approval, access request]
+aliases: [prod access approval, access request, break glass access, temporary permission]
 systems: [iam, production]
-signals: [production access, approval owner, audit log]
+signals: [production access, approval owner, audit log, temporary role, break glass]
 ---
 
 # Context

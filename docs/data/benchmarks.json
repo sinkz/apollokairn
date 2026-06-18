@@ -32,6 +32,13 @@
             "description": {
               "en": "Expected notes appear in the top three results.",
               "pt": "Notas esperadas aparecem nos três primeiros resultados."
+            },
+            "delta": {
+              "value": 0.0,
+              "direction": "flat",
+              "trend": "flat",
+              "baseline_date": "2026-06-18",
+              "baseline_label": "BM25 + passages + RRF fallback"
             }
           },
           {
@@ -46,6 +53,13 @@
             "description": {
               "en": "Relevant results are ranked first in the current fixture set.",
               "pt": "Resultados relevantes aparecem primeiro no conjunto atual."
+            },
+            "delta": {
+              "value": 0.0,
+              "direction": "flat",
+              "trend": "flat",
+              "baseline_date": "2026-06-18",
+              "baseline_label": "BM25 + passages + RRF fallback"
             }
           },
           {
@@ -54,12 +68,19 @@
               "en": "nDCG@3",
               "pt": "nDCG@3"
             },
-            "value": 0.9934,
+            "value": 0.9941,
             "format": "decimal",
             "precision": 4,
             "description": {
               "en": "Ranking quality against deterministic relevance labels.",
               "pt": "Qualidade de ranking contra rótulos determinísticos de relevância."
+            },
+            "delta": {
+              "value": 0.001,
+              "direction": "up",
+              "trend": "better",
+              "baseline_date": "2026-06-18",
+              "baseline_label": "BM25 + passages + RRF fallback"
             }
           },
           {
@@ -68,12 +89,19 @@
               "en": "Context reduction",
               "pt": "Redução de contexto"
             },
-            "value": 0.9215,
+            "value": 0.9183,
             "format": "percent",
             "precision": 2,
             "description": {
               "en": "Passage retrieval returns far less text than opening full documents.",
               "pt": "Recuperação por passagens retorna muito menos texto que abrir documentos completos."
+            },
+            "delta": {
+              "value": -0.0033,
+              "direction": "down",
+              "trend": "worse",
+              "baseline_date": "2026-06-18",
+              "baseline_label": "BM25 + passages + RRF fallback"
             }
           },
           {
@@ -88,11 +116,22 @@
             "description": {
               "en": "Measured reduction in configured comparison runs.",
               "pt": "Redução medida nas rodadas comparativas configuradas."
+            },
+            "delta": {
+              "value": 0.0,
+              "direction": "flat",
+              "trend": "flat",
+              "baseline_date": "2026-06-18",
+              "baseline_label": "BM25 + passages + RRF fallback"
             }
           }
         ]
       },
-      "history_metrics": ["recall_at_3", "ndcg_at_3", "context_reduction"],
+      "history_metrics": [
+        "recall_at_3",
+        "ndcg_at_3",
+        "context_reduction"
+      ],
       "history": [
         {
           "date": "2026-06-18",
@@ -108,8 +147,8 @@
           "label": "BM25 + glossary aliases",
           "recall_at_3": 1.0,
           "mrr_at_3": 1.0,
-          "ndcg_at_3": 0.9934,
-          "context_reduction": 0.9215,
+          "ndcg_at_3": 0.9941,
+          "context_reduction": 0.9183,
           "comparison_reduction": 0.5373
         }
       ]
@@ -209,7 +248,7 @@
               "en": "Writeback cases",
               "pt": "Casos de escrita"
             },
-            "value": 9,
+            "value": 11,
             "format": "integer",
             "precision": 0,
             "description": {
@@ -219,7 +258,11 @@
           }
         ]
       },
-      "history_metrics": ["decision_accuracy", "target_path_accuracy", "duplicate_avoidance_rate"],
+      "history_metrics": [
+        "decision_accuracy",
+        "target_path_accuracy",
+        "duplicate_avoidance_rate"
+      ],
       "history": [
         {
           "date": "2026-06-18",
@@ -229,7 +272,7 @@
           "noop_accuracy": 1.0,
           "conflict_detection_rate": 1.0,
           "duplicate_avoidance_rate": 1.0,
-          "writeback_cases": 9
+          "writeback_cases": 11
         }
       ]
     }
@@ -252,6 +295,97 @@
         "description": {
           "en": "Expected notes appear in the top three results.",
           "pt": "Notas esperadas aparecem nos três primeiros resultados."
+        },
+        "delta": {
+          "value": 0.0,
+          "direction": "flat",
+          "trend": "flat",
+          "baseline_date": "2026-06-18",
+          "baseline_label": "BM25 + passages + RRF fallback"
+        }
+      },
+      {
+        "id": "mrr_at_3",
+        "label": {
+          "en": "MRR@3",
+          "pt": "MRR@3"
+        },
+        "value": 1.0,
+        "format": "decimal",
+        "precision": 2,
+        "description": {
+          "en": "Relevant results are ranked first in the current fixture set.",
+          "pt": "Resultados relevantes aparecem primeiro no conjunto atual."
+        },
+        "delta": {
+          "value": 0.0,
+          "direction": "flat",
+          "trend": "flat",
+          "baseline_date": "2026-06-18",
+          "baseline_label": "BM25 + passages + RRF fallback"
+        }
+      },
+      {
+        "id": "ndcg_at_3",
+        "label": {
+          "en": "nDCG@3",
+          "pt": "nDCG@3"
+        },
+        "value": 0.9941,
+        "format": "decimal",
+        "precision": 4,
+        "description": {
+          "en": "Ranking quality against deterministic relevance labels.",
+          "pt": "Qualidade de ranking contra rótulos determinísticos de relevância."
+        },
+        "delta": {
+          "value": 0.001,
+          "direction": "up",
+          "trend": "better",
+          "baseline_date": "2026-06-18",
+          "baseline_label": "BM25 + passages + RRF fallback"
+        }
+      },
+      {
+        "id": "context_reduction",
+        "label": {
+          "en": "Context reduction",
+          "pt": "Redução de contexto"
+        },
+        "value": 0.9183,
+        "format": "percent",
+        "precision": 2,
+        "description": {
+          "en": "Passage retrieval returns far less text than opening full documents.",
+          "pt": "Recuperação por passagens retorna muito menos texto que abrir documentos completos."
+        },
+        "delta": {
+          "value": -0.0033,
+          "direction": "down",
+          "trend": "worse",
+          "baseline_date": "2026-06-18",
+          "baseline_label": "BM25 + passages + RRF fallback"
+        }
+      },
+      {
+        "id": "comparison_reduction",
+        "label": {
+          "en": "Comparison reduction",
+          "pt": "Redução em comparativos"
+        },
+        "value": 0.5373,
+        "format": "percent",
+        "precision": 2,
+        "description": {
+          "en": "Measured reduction in configured comparison runs.",
+          "pt": "Redução medida nas rodadas comparativas configuradas."
+        },
+        "delta": {
+          "value": 0.0,
+          "direction": "flat",
+          "trend": "flat",
+          "baseline_date": "2026-06-18",
+          "baseline_label": "BM25 + passages + RRF fallback"
         }
       },
       {
@@ -260,7 +394,7 @@
           "en": "Regression tests",
           "pt": "Testes de regressão"
         },
-        "value": 166,
+        "value": 170,
         "format": "integer",
         "precision": 0,
         "description": {
@@ -271,7 +405,10 @@
     ]
   },
   "suite": {
-    "name": "Deterministic search benchmark",
+    "name": {
+      "en": "Deterministic retrieval benchmark",
+      "pt": "Benchmark determinístico de recuperação"
+    },
     "command": "python bench/run_eval.py --quiet --compare-golden bench/golden.json",
     "notes": {
       "en": "Runs locally without model calls. Measures ranking quality, token budgets, and passage-vs-document context reduction.",
@@ -284,8 +421,8 @@
       "label": "BM25 + passages + RRF fallback",
       "recall_at_3": 1.0,
       "mrr_at_3": 1.0,
-      "ndcg_at_3": 0.9934,
-      "context_reduction": 0.9215,
+      "ndcg_at_3": 0.9931,
+      "context_reduction": 0.9216,
       "comparison_reduction": 0.5373
     },
     {
@@ -293,8 +430,8 @@
       "label": "BM25 + glossary aliases",
       "recall_at_3": 1.0,
       "mrr_at_3": 1.0,
-      "ndcg_at_3": 0.9934,
-      "context_reduction": 0.9215,
+      "ndcg_at_3": 0.9941,
+      "context_reduction": 0.9183,
       "comparison_reduction": 0.5373
     }
   ],
@@ -313,5 +450,7 @@
         "pt": "Backend opcional de embeddings"
       }
     }
-  ]
+  ],
+  "generated_by": "bench/publish_metrics.py",
+  "publish_command": "python bench/publish_metrics.py --output docs/data/benchmarks.json"
 }

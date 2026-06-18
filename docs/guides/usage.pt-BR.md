@@ -561,6 +561,7 @@ Rodar avaliações determinísticas:
 python bench/run_eval.py
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
 python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
+python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 170
 ```
 
 Tópicos do benchmark podem incluir `category`, `mode`, `compare_mode`, `ranker`
@@ -572,5 +573,10 @@ inclui um resumo `comparison` para comparações de redução de tokens.
 O benchmark de escrita usa casos determinísticos para criar, atualizar, no-op,
 conflito, prevenção de duplicatas e acurácia do caminho alvo. Ele não chama
 modelo; exercita os primitivos locais de similaridade e escrita do Cairn.
+
+`bench/publish_metrics.py` é a etapa de publicação para o dashboard do GitHub
+Pages. Ele roda as duas suítes determinísticas, atualiza os valores atuais,
+deduplica a linha mais recente do histórico por data e rótulo e adiciona deltas
+das métricas contra a rodada anterior.
 
 O runtime usa apenas a biblioteca padrão do Python.

@@ -4,9 +4,9 @@ title: Use Ruff for Python formatting and linting
 description: Standardize the Python lint and formatting library around Ruff.
 tags: [architecture, library]
 timestamp: 2026-06-17T10:00:00Z
-aliases: [ruff formatter, python lint standard]
+aliases: [ruff formatter, python lint standard, py fmt, repository checks]
 systems: [developer-experience]
-signals: [python formatting, lint library, ruff standard]
+signals: [python formatting, lint library, ruff standard, py fmt]
 ---
 
 # Decision

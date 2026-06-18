@@ -44,6 +44,16 @@
       "actual_action": "create",
       "target_path": "notes/weekly-planning-dashboard-idea.md",
       "reason": "created"
+    },
+    "prod_access_synonym_update": {
+      "actual_action": "update",
+      "target_path": "processes/production-access-request.md",
+      "reason": "updated"
+    },
+    "ruff_abbreviation_update": {
+      "actual_action": "update",
+      "target_path": "decisions/use-ruff-formatting.md",
+      "reason": "updated"
     }
   }
 }

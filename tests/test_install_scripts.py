@@ -81,6 +81,16 @@ class InstallScriptTests(unittest.TestCase):
         self.assertIn("history.length < 3", script)
         self.assertIn("history-snapshot", script)
 
+    def test_benchmark_dashboard_renders_metric_deltas(self) -> None:
+        script = (ROOT / "docs" / "assets" / "site.js").read_text(encoding="utf-8")
+        styles = (ROOT / "docs" / "assets" / "styles.css").read_text(encoding="utf-8")
+
+        self.assertIn("function renderMetricDelta", script)
+        self.assertIn("metric.delta", script)
+        self.assertIn("metric-delta", script)
+        self.assertIn("data-trend", script)
+        self.assertIn(".metric-delta", styles)
+
     def test_release_workflow_builds_standalone_assets(self) -> None:
         workflow = (ROOT / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
 

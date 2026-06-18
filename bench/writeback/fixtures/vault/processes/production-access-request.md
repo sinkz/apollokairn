@@ -5,7 +5,8 @@ description: How to request temporary production access with manager approval an
 tags: [access, process]
 timestamp: 2026-06-17T10:00:00Z
 systems: [iam, production]
-signals: [production access, manager approval, temporary role, access ticket]
+aliases: [prod access approval, break glass access, temporary permission]
+signals: [production access, manager approval, temporary role, access ticket, audit log, break glass]
 ---
 
 # Request

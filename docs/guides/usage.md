@@ -551,6 +551,7 @@ Run deterministic evaluations:
 python bench/run_eval.py
 python bench/run_eval.py --quiet --compare-golden bench/golden.json
 python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
+python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 170
 ```
 
 Benchmark topics may include `category`, `mode`, `compare_mode`, `ranker`, and
@@ -563,5 +564,10 @@ token-reduction comparisons.
 The writeback benchmark uses deterministic cases for create, update, no-op,
 conflict, duplicate avoidance, and target-path accuracy. It does not call a
 model; it exercises Cairn's local similarity and writeback primitives.
+
+`bench/publish_metrics.py` is the publishing step for the GitHub Pages
+dashboard. It runs both deterministic suites, updates current metric values,
+deduplicates the latest history row by date and label, and adds metric deltas
+against the previous run.
 
 The runtime uses only the Python standard library.
