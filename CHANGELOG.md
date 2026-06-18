@@ -4,12 +4,23 @@ All notable Cairn changes are tracked here.
 
 ## Unreleased
 
+No unreleased changes yet.
+
+## 0.1.1 - 2026-06-18
+
 ### Added
 
 - `cairn add` and `cairn capture` can read note bodies from `--body-file` or `--body-stdin`.
 - `cairn update` can append from `--append-file` or `--append-stdin`.
 - `cairn retrieve --ranker auto` tries BM25 first and falls back to RRF only when no context is returned.
 - `cairn similar` results include `kind` labels: `duplicate_candidate` or `related`.
+- `cairn vocab` manages a deterministic top-level `glossary.md` for approved aliases such as `k8s` and `kubernetes`.
+- `cairn search --explain` and `cairn retrieve --explain` expose deterministic ranking diagnostics without treating scores as confidence.
+- `cairn setup-agent` supports Hermes and GitHub Copilot generated instruction files.
+- Machine-readable `--json` output is available across operational commands.
+- Pre-write policy validation blocks invalid schema values and common secret-like values before new content is written.
+- Deterministic writeback benchmark covers create, update, no-op, conflict, and duplicate-avoidance decisions.
+- Standalone release binaries and quick install scripts are available for Linux, macOS, and Windows.
 - GitHub Pages overview with EN/PT-BR copy and benchmark data loaded from JSON.
 
 ### Changed

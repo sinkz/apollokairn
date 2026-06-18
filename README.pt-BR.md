@@ -12,7 +12,7 @@
   <p>
     <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white">
     <img alt="Dependências de runtime: zero" src="https://img.shields.io/badge/dependencias_runtime-0-2f6f4e">
-    <img alt="Testes de regressão: 158" src="https://img.shields.io/badge/testes-158-3b6ea8">
+    <img alt="Testes de regressão: 163" src="https://img.shields.io/badge/testes-163-3b6ea8">
     <img alt="Recall at 3: 1.00" src="https://img.shields.io/badge/Recall%403-1.00-2f6f4e">
     <img alt="Redução de contexto: 92.15%" src="https://img.shields.io/badge/reducao_contexto-92.15%25-8a5a44">
     <img alt="Acurácia de decisão de escrita: 100%" src="https://img.shields.io/badge/escrita_decisoes-100%25-285da8">
@@ -53,7 +53,7 @@ atualizar vs criar.
 | Redução em comparativos | `53.73%` | Redução medida nas rodadas comparativas configuradas. |
 | Acurácia de decisão de escrita | `100%` | Decisões corretas de criar, atualizar, no-op e conflito no conjunto de fixtures. |
 | Prevenção de duplicatas | `100%` | Notas reutilizáveis existentes são atualizadas ou preservadas em vez de duplicadas. |
-| Testes de regressão | `158` | Testes unitários e de workflow rodados antes da publicação atual. |
+| Testes de regressão | `163` | Testes unitários e de workflow rodados antes da publicação atual. |
 
 Os dados do benchmark também são publicados no site por
 [`docs/data/benchmarks.json`](docs/data/benchmarks.json).
@@ -227,7 +227,7 @@ de segredo antes da escrita.
 | `cairn show` | Abre documento completo, seção, snippet ou intervalo de linhas |
 | `cairn update` | Adiciona informação reutilizável a uma nota existente |
 | `cairn vocab` | Gerencia termos e aliases determinísticos do glossário |
-| `cairn setup-agent` | Cria instruções específicas como `CODEX.md` |
+| `cairn setup-agent` | Cria instruções específicas como `CODEX.md`, `HERMES.md` ou instruções do Copilot |
 | `cairn refresh-guides` | Atualiza guias de agente gerados |
 | `cairn stats` | Mostra contagens e tamanho aproximado em tokens |
 | `cairn export` / `cairn import` | Move um vault como arquivo zip |
@@ -254,6 +254,7 @@ Veja [examples/README.md](examples/README.md) para mais walkthroughs.
 | [Como funciona](https://sinkz.github.io/cairn/learn.html) | Explicação conceitual e técnica |
 | [Instalação rápida](docs/guides/quick-install.pt-BR.md) | Binários, PATH e solução de problemas |
 | [Guia de uso](docs/guides/usage.pt-BR.md) | Guia completo dos comandos |
+| [Adapters para agentes](docs/guides/adapters.pt-BR.md) | Guias gerados para Codex, Claude, OpenCode, Hermes, Copilot e agentes genéricos |
 | [Vaults de exemplo](examples/README.md) | Exemplos reproduzíveis |
 | [Roadmap](ROADMAP.md) | Fases atuais de implementação |
 | [Changelog](CHANGELOG.md) | Mudanças publicadas |

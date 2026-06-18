@@ -180,7 +180,10 @@ class ValidateTests(unittest.TestCase):
             (root / "index.md").write_text("# No frontmatter\n", encoding="utf-8")
             (root / "log.md").write_text("# No frontmatter\n", encoding="utf-8")
             (root / "README.md").write_text("# No frontmatter\n", encoding="utf-8")
+            (root / "HERMES.md").write_text("# No frontmatter\n", encoding="utf-8")
             (root / "OPENCODE.md").write_text("# No frontmatter\n", encoding="utf-8")
+            (root / ".github").mkdir()
+            (root / ".github" / "copilot-instructions.md").write_text("# No frontmatter\n", encoding="utf-8")
             (root / "_templates" / "ignored.md").write_text("# No frontmatter\n", encoding="utf-8")
             (root / ".cairn" / "ignored.md").write_text("# No frontmatter\n", encoding="utf-8")
 

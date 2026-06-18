@@ -87,13 +87,13 @@ uses a non-glibc libc, install from source instead.
 Linux and macOS:
 
 ```bash
-curl -fsSL https://sinkz.github.io/cairn/install.sh | CAIRN_VERSION=v0.1.0 sh
+curl -fsSL https://sinkz.github.io/cairn/install.sh | CAIRN_VERSION=v0.1.1 sh
 ```
 
 Windows PowerShell:
 
 ```powershell
-$env:CAIRN_VERSION = "v0.1.0"
+$env:CAIRN_VERSION = "v0.1.1"
 irm https://sinkz.github.io/cairn/install.ps1 | iex
 ```
 

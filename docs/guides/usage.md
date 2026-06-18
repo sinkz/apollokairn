@@ -507,6 +507,8 @@ Creates or refreshes agent-specific instructions inside the vault.
 cairn setup-agent codex --path ~/brain
 cairn setup-agent claude --path ~/brain
 cairn setup-agent opencode --path ~/brain
+cairn setup-agent hermes --path ~/brain
+cairn setup-agent copilot --path ~/brain
 cairn refresh-guides --path ~/brain
 cairn setup-agent codex --path ~/brain --json
 cairn refresh-guides --path ~/brain --json
@@ -520,6 +522,7 @@ Generated guides tell agents to use JSON search, passage retrieval with
 types/tags, `--body-file` or `--body-stdin` for multi-line Markdown, and
 `validate` plus `index` after every successful write.
 JSON output reports generated guide paths.
+See [Agent adapters](adapters.md) for supported targets and generated paths.
 
 ## Recommended Agent Workflow
 

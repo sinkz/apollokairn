@@ -9,6 +9,8 @@ GUIDE_FILES = {
     "agents": "AGENTS.md",
     "codex": "CODEX.md",
     "claude": "CLAUDE.md",
+    "copilot": ".github/copilot-instructions.md",
+    "hermes": "HERMES.md",
     "opencode": "OPENCODE.md",
 }
 
@@ -19,14 +21,27 @@ class GuideResult:
 
 
 def _guide_name_from_file(path: str) -> str:
-    upper = path.upper()
+    upper = Path(path).name.upper()
     if upper == "CODEX.MD":
         return "Codex"
     if upper == "CLAUDE.MD":
         return "Claude"
+    if upper == "COPILOT-INSTRUCTIONS.MD":
+        return "GitHub Copilot"
+    if upper == "HERMES.MD":
+        return "Hermes"
     if upper == "OPENCODE.MD":
         return "OpenCode"
     return "Agents"
+
+
+def _guide_path(root: Path, filename: str) -> Path:
+    path = root / filename
+    try:
+        path.resolve().relative_to(root.resolve())
+    except ValueError as exc:
+        raise ValueError("guide path must stay inside vault") from exc
+    return path
 
 
 def render_agent_guide(name: str = "Agents") -> str:
@@ -57,7 +72,9 @@ def setup_agent(root: Path, agent: str) -> GuideResult:
         known = ", ".join(sorted(GUIDE_FILES))
         raise ValueError(f"unknown agent '{agent}'. Known agents: {known}")
     filename = GUIDE_FILES[key]
-    (root / filename).write_text(render_agent_guide(_guide_name_from_file(filename)), encoding="utf-8")
+    path = _guide_path(root, filename)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(render_agent_guide(_guide_name_from_file(filename)), encoding="utf-8")
     return GuideResult(path=filename)
 
 
@@ -75,6 +92,8 @@ def refresh_guides(root: Path) -> list[GuideResult]:
             pass
     results: list[GuideResult] = []
     for filename in guide_files:
-        (root / filename).write_text(render_agent_guide(_guide_name_from_file(filename)), encoding="utf-8")
+        path = _guide_path(root, filename)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(render_agent_guide(_guide_name_from_file(filename)), encoding="utf-8")
         results.append(GuideResult(path=filename))
     return results

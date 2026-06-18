@@ -35,9 +35,9 @@ implementation history.
   checked against `SCHEMA.md`, and new content is scanned for common
   secret-like values before files are written.
 - Disciplined generated agent guides for `AGENTS.md`, `CODEX.md`, `CLAUDE.md`,
-  and `OPENCODE.md`, including JSON search, passage retrieval, glossary
-  guidance, schema-compatible writes, multi-line body handling, and post-write
-  validation/indexing.
+  `OPENCODE.md`, `HERMES.md`, and GitHub Copilot instructions, including JSON
+  search, passage retrieval, glossary guidance, schema-compatible writes,
+  multi-line body handling, and post-write validation/indexing.
 - Standalone GitHub Release binaries, checksums, and quick install scripts for
   Linux, macOS, and Windows.
 - Public documentation, example vault, changelog, contribution guide, and GitHub
@@ -51,6 +51,8 @@ implementation history.
 - Harden writeback with dry-run output, no-op reasons, and conflict detection
   based on file signatures before agents update shared notes.
 - Add more benchmark slices for explanation quality and multi-role vaults.
+- Prepare optional plugin or MCP adapter packages outside the dependency-free
+  core.
 
 ## Next
 
@@ -58,7 +60,7 @@ implementation history.
   so agents can propose update-existing vs create-new actions with evidence.
 - Surface note freshness and provenance metadata in results without mutating
   Markdown files during read operations.
-- Build optional adapters or plugin packages for Codex, Claude, GitHub Copilot,
+- Build richer optional plugin packages for Codex, Claude, GitHub Copilot,
   OpenCode, Hermes, and other agent harnesses on top of the stable CLI/JSON
   contract.
 - Team workflows for reviewing shared vault changes before they become common

@@ -58,6 +58,35 @@ class GuidesTests(unittest.TestCase):
             payload = json.loads(result.stdout)
             self.assertEqual(payload["path"], "CODEX.md")
 
+    def test_cli_setup_agent_supports_hermes_guide(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="support")
+
+            result = run_cairn(root, "setup-agent", "hermes", "--json")
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            payload = json.loads(result.stdout)
+            self.assertEqual(payload["path"], "HERMES.md")
+            text = (root / "HERMES.md").read_text(encoding="utf-8")
+            self.assertIn("Cairn Guide for Hermes", text)
+            self.assertIn("cairn search", text)
+            self.assertIn("--json", text)
+
+    def test_cli_setup_agent_supports_copilot_custom_instructions(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="engineering")
+
+            result = run_cairn(root, "setup-agent", "copilot", "--json")
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            payload = json.loads(result.stdout)
+            self.assertEqual(payload["path"], ".github/copilot-instructions.md")
+            text = (root / ".github" / "copilot-instructions.md").read_text(encoding="utf-8")
+            self.assertIn("Cairn Guide for GitHub Copilot", text)
+            self.assertIn("cairn retrieve", text)
+
     def test_cli_refresh_guides_uses_configured_generated_guides(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -89,6 +118,57 @@ class GuidesTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stderr)
             payload = json.loads(result.stdout)
             self.assertEqual([item["path"] for item in payload], ["AGENTS.md", "CLAUDE.md"])
+
+    def test_cli_refresh_guides_creates_nested_configured_guide_paths(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="personal")
+            config_path = root / ".cairn" / "config.json"
+            config = json.loads(config_path.read_text(encoding="utf-8"))
+            config["generated_guides"] = ["AGENTS.md", ".github/copilot-instructions.md"]
+            config_path.write_text(json.dumps(config), encoding="utf-8")
+
+            result = run_cairn(root, "refresh-guides", "--json")
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            payload = json.loads(result.stdout)
+            self.assertEqual(
+                [item["path"] for item in payload],
+                ["AGENTS.md", ".github/copilot-instructions.md"],
+            )
+            self.assertTrue((root / ".github" / "copilot-instructions.md").is_file())
+
+    def test_cli_refresh_guides_rejects_paths_outside_vault(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "vault"
+            init_vault(root, profile_name="personal")
+            config_path = root / ".cairn" / "config.json"
+            config = json.loads(config_path.read_text(encoding="utf-8"))
+            config["generated_guides"] = ["../outside.md"]
+            config_path.write_text(json.dumps(config), encoding="utf-8")
+
+            result = run_cairn(root, "refresh-guides")
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("guide path must stay inside vault", result.stderr)
+            self.assertFalse((root.parent / "outside.md").exists())
+
+    def test_public_adapter_guides_document_supported_targets(self) -> None:
+        docs = [
+            ROOT / "docs" / "guides" / "adapters.md",
+            ROOT / "docs" / "guides" / "adapters.pt-BR.md",
+        ]
+        for path in docs:
+            text = path.read_text(encoding="utf-8")
+            for term in ("Codex", "Claude", "OpenCode", "Hermes", "GitHub Copilot"):
+                self.assertIn(term, text)
+            self.assertIn("setup-agent", text)
+            self.assertIn("JSON", text)
+
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        readme_pt = (ROOT / "README.pt-BR.md").read_text(encoding="utf-8")
+        self.assertIn("docs/guides/adapters.md", readme)
+        self.assertIn("docs/guides/adapters.pt-BR.md", readme_pt)
 
 
 if __name__ == "__main__":

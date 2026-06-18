@@ -157,7 +157,9 @@ def build_parser() -> argparse.ArgumentParser:
     _add_vault_path(doctor_cmd)
 
     setup_agent_cmd = sub.add_parser("setup-agent", help="Create an agent-specific Cairn guide.")
-    setup_agent_cmd.add_argument("agent", choices=["agents", "codex", "claude", "opencode"])
+    from cairn.guides import GUIDE_FILES
+
+    setup_agent_cmd.add_argument("agent", choices=sorted(GUIDE_FILES))
     setup_agent_cmd.add_argument("--json", action="store_true")
     _add_vault_path(setup_agent_cmd)
 
@@ -348,7 +350,11 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "refresh-guides":
         from cairn.guides import refresh_guides
 
-        results = refresh_guides(Path(args.path))
+        try:
+            results = refresh_guides(Path(args.path))
+        except ValueError as exc:
+            print(f"ERROR {exc}", file=sys.stderr)
+            return 1
         if args.json:
             _print_json(results)
         else:

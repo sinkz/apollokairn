@@ -16,7 +16,9 @@ RESERVED_NAMES = {
     "AGENTS.md",
     "CLAUDE.md",
     "CODEX.md",
+    "copilot-instructions.md",
     "glossary.md",
+    "HERMES.md",
     "OPENCODE.md",
     "SCHEMA.md",
 }
