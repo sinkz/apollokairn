@@ -12,6 +12,7 @@ const text = {
     metric: "Metric",
     date: "Date",
     label: "Label",
+    shortHistory: "Trend chart appears after three benchmark runs. Current snapshot:",
   },
   pt: {
     updated: "Atualizado",
@@ -21,6 +22,7 @@ const text = {
     metric: "Métrica",
     date: "Data",
     label: "Rótulo",
+    shortHistory: "O gráfico de tendência aparece após três rodadas de benchmark. Snapshot atual:",
   },
 };
 
@@ -93,6 +95,20 @@ function metricDefinitions(suite) {
   const out = new Map();
   (suite.current?.metrics || []).forEach((metric) => out.set(metric.id, metric));
   return out;
+}
+
+function findSuiteMetric(suites, suiteId, metricId) {
+  const suite = suites.find((item) => item.id === suiteId);
+  return (suite?.current?.metrics || []).find((metric) => metric.id === metricId);
+}
+
+function benchmarkPreviewMetrics(data, suites) {
+  return [
+    findSuiteMetric(suites, "retrieval", "recall_at_3"),
+    findSuiteMetric(suites, "retrieval", "context_reduction"),
+    findSuiteMetric(suites, "writeback", "decision_accuracy"),
+    (data.current?.metrics || []).find((metric) => metric.id === "tests"),
+  ].filter(Boolean);
 }
 
 function renderMetricCard(metric, lang) {
@@ -220,6 +236,44 @@ function renderHistoryChart(suite, lang) {
   return svg;
 }
 
+function renderHistorySnapshot(suite, lang) {
+  const metrics = metricDefinitions(suite);
+  const history = suite.history || [];
+  const ids = suite.history_metrics || [];
+  const latest = history[history.length - 1] || {};
+  const panel = document.createElement("div");
+  panel.className = "history-snapshot";
+
+  const note = document.createElement("p");
+  note.className = "history-snapshot-note";
+  note.textContent = text[lang].shortHistory;
+  panel.append(note);
+
+  ids.forEach((id) => {
+    const metric = metrics.get(id);
+    if (!metric) return;
+    const item = document.createElement("div");
+    item.className = "history-snapshot-item";
+
+    const label = document.createElement("span");
+    label.textContent = localized(metric.label, lang);
+
+    const value = document.createElement("strong");
+    value.textContent = formatMetric(metric, lang, Number(latest[id] || 0));
+
+    item.append(label, value);
+    panel.append(item);
+  });
+
+  return panel;
+}
+
+function renderHistoryVisual(suite, lang) {
+  const history = suite.history || [];
+  if (history.length < 3) return renderHistorySnapshot(suite, lang);
+  return renderHistoryChart(suite, lang);
+}
+
 function renderHistoryTable(suite, lang) {
   const metrics = metricDefinitions(suite);
   const ids = suite.history_metrics || [];
@@ -263,7 +317,7 @@ function renderHistory(suite, lang) {
   const heading = document.createElement("h3");
   heading.textContent = `${localized(suite.current?.label, lang)} - ${text[lang].history}`;
 
-  article.append(heading, renderHistoryChart(suite, lang), renderHistoryTable(suite, lang));
+  article.append(heading, renderHistoryVisual(suite, lang), renderHistoryTable(suite, lang));
   return article;
 }
 
@@ -274,8 +328,9 @@ function renderBenchmark() {
   const suiteContainer = document.getElementById("benchmark-suites");
   const historyContainer = document.getElementById("benchmark-history");
   const legacyCards = document.getElementById("benchmark-cards");
+  const previewCards = document.getElementById("benchmark-preview-cards");
 
-  if (!suiteContainer && !legacyCards) return;
+  if (!suiteContainer && !legacyCards && !previewCards) return;
   if (!data) return;
 
   const suites = benchmarkSuites(data);
@@ -300,6 +355,10 @@ function renderBenchmark() {
     legacyCards.replaceChildren(...(first.current?.metrics || []).map((metric) => renderMetricCard(metric, lang)));
   }
 
+  if (previewCards) {
+    previewCards.replaceChildren(...benchmarkPreviewMetrics(data, suites).map((metric) => renderMetricCard(metric, lang)));
+  }
+
   if (historyContainer) {
     historyContainer.replaceChildren(...suites.map((suite) => renderHistory(suite, lang)));
   }
@@ -312,7 +371,9 @@ async function loadBenchmark() {
     state.benchmark = await response.json();
     renderBenchmark();
   } catch (error) {
-    const target = document.getElementById("benchmark-suites") || document.getElementById("benchmark-cards");
+    const target = document.getElementById("benchmark-suites")
+      || document.getElementById("benchmark-preview-cards")
+      || document.getElementById("benchmark-cards");
     if (target) {
       target.replaceChildren();
       const article = document.createElement("article");

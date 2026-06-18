@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cairn Benchmarks - Deterministic retrieval and writeback</title>
+    <meta
+      name="description"
+      content="Deterministic Cairn benchmark dashboard for retrieval, context reduction, writeback decisions, history, and reproducible commands."
+    />
+    <meta name="theme-color" content="#f7f3e8" />
+    <meta property="og:title" content="Cairn Benchmarks" />
+    <meta
+      property="og:description"
+      content="Current deterministic benchmark metrics and history for Cairn retrieval and writeback."
+    />
+    <link
+      rel="icon"
+      href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="%2315130f"/><path d="M18 18h28v7H26v7h15v7H26v7h21v7H18z" fill="%23f7f3e8"/></svg>'
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body data-lang="en" data-benchmark-page>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header" aria-label="Primary navigation">
+      <a class="brand" href="index.html" aria-label="Cairn home">
+        <span class="brand-mark">CA</span>
+        <span>Cairn</span>
+      </a>
+      <nav class="nav-links" aria-label="Page sections">
+        <a href="index.html">Overview</a>
+        <a href="learn.html">Learn</a>
+        <a href="index.html#install">Install</a>
+        <a href="#dashboard">Dashboard</a>
+        <a href="#metrics">Metrics</a>
+        <a href="https://github.com/sinkz/cairn">GitHub</a>
+      </nav>
+      <div class="language-switch" aria-label="Language">
+        <button class="language-button" type="button" data-set-lang="en" aria-pressed="true">EN</button>
+        <button class="language-button" type="button" data-set-lang="pt" aria-pressed="false">PT-BR</button>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="benchmark-hero" id="top">
+        <div class="section-heading">
+          <p class="eyebrow" data-lang-content="en">Deterministic benchmark dashboard</p>
+          <p class="eyebrow" data-lang-content="pt">Dashboard determinístico de benchmarks</p>
+          <h1 data-lang-content="en">Measured retrieval and writeback behavior.</h1>
+          <h1 data-lang-content="pt">Comportamento medido de recuperação e escrita.</h1>
+          <p class="hero-copy" data-lang-content="en">
+            This page keeps the full benchmark surface out of the landing page:
+            current scores, reproducible commands, short-history snapshots,
+            tables, and metric definitions.
+          </p>
+          <p class="hero-copy" data-lang-content="pt">
+            Esta página tira a superfície completa de benchmark da landing:
+            scores atuais, comandos reproduzíveis, snapshots de histórico curto,
+            tabelas e definições de métricas.
+          </p>
+        </div>
+
+        <div class="benchmark-preview-grid" id="benchmark-preview-cards" aria-live="polite">
+          <article class="metric-card">
+            <span>Recall@3</span>
+            <strong>1.00</strong>
+            <p>Expected notes appear in the top three results.</p>
+          </article>
+          <article class="metric-card">
+            <span>context_reduction</span>
+            <strong>92.15%</strong>
+            <p>Passage retrieval returns far less text than opening full documents.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section benchmark-dashboard" id="dashboard">
+        <div class="section-heading compact">
+          <p class="eyebrow" data-lang-content="en">Current suites</p>
+          <p class="eyebrow" data-lang-content="pt">Suítes atuais</p>
+          <h2 data-lang-content="en">Current benchmark scores and commands.</h2>
+          <h2 data-lang-content="pt">Scores atuais e comandos dos benchmarks.</h2>
+          <p data-lang-content="en">
+            These cards are loaded from <code>docs/data/benchmarks.json</code>.
+            They are meant to catch regressions before a model or agent workflow
+            gets involved.
+          </p>
+          <p data-lang-content="pt">
+            Estes cards são carregados de <code>docs/data/benchmarks.json</code>.
+            Eles servem para capturar regressões antes de envolver um modelo ou
+            fluxo com agente.
+          </p>
+        </div>
+
+        <div class="suite-stack" id="benchmark-suites" aria-live="polite">
+          <article class="metric-card">
+            <span>Benchmark</span>
+            <strong>JSON</strong>
+            <p>Benchmark suites are loaded from docs/data/benchmarks.json.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section benchmark-dashboard" id="history">
+        <div class="section-heading compact">
+          <p class="eyebrow" data-lang-content="en">History</p>
+          <p class="eyebrow" data-lang-content="pt">Histórico</p>
+          <h2 data-lang-content="en">Trend charts only appear when there is enough history.</h2>
+          <h2 data-lang-content="pt">Gráficos de tendência só aparecem quando há histórico suficiente.</h2>
+          <p data-lang-content="en">
+            With one or two runs, Cairn shows a snapshot and table instead of a
+            misleading line chart. When the history reaches three runs, the chart
+            becomes useful and is rendered automatically.
+          </p>
+          <p data-lang-content="pt">
+            Com uma ou duas rodadas, o Cairn mostra snapshot e tabela em vez de
+            um gráfico de linha enganoso. Quando o histórico chega a três rodadas,
+            o gráfico passa a ser útil e é renderizado automaticamente.
+          </p>
+        </div>
+
+        <div class="history-panel" id="benchmark-history">
+          <article class="metric-card">
+            <span>History</span>
+            <strong>JSON</strong>
+            <p>Benchmark history is loaded from docs/data/benchmarks.json.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="metrics">
+        <div class="section-heading">
+          <p class="eyebrow" data-lang-content="en">Metric definitions</p>
+          <p class="eyebrow" data-lang-content="pt">Definições das métricas</p>
+          <h2 data-lang-content="en">What the deterministic benchmark measures.</h2>
+          <h2 data-lang-content="pt">O que o benchmark determinístico mede.</h2>
+        </div>
+
+        <div class="metric-explainer-grid benchmark-glossary">
+          <article>
+            <strong>Recall@3</strong>
+            <p data-lang-content="en">Fraction of benchmark topics where at least one expected note appears in the first three results.</p>
+            <p data-lang-content="pt">Fração dos tópicos em que pelo menos uma nota esperada aparece nos três primeiros resultados.</p>
+          </article>
+          <article>
+            <strong>MRR@3</strong>
+            <p data-lang-content="en">Rewards the first relevant result appearing earlier in the ranked list.</p>
+            <p data-lang-content="pt">Recompensa quando o primeiro resultado relevante aparece mais cedo na lista ranqueada.</p>
+          </article>
+          <article>
+            <strong>nDCG@3</strong>
+            <p data-lang-content="en">Checks whether highly relevant results are ordered above weaker matches.</p>
+            <p data-lang-content="pt">Verifica se resultados muito relevantes ficam acima de matches mais fracos.</p>
+          </article>
+          <article>
+            <strong>context_reduction</strong>
+            <p data-lang-content="en">Measures how much less text passage retrieval returns compared with full documents.</p>
+            <p data-lang-content="pt">Mede quanto texto a recuperação por passagens economiza contra documentos completos.</p>
+          </article>
+          <article>
+            <strong>decision_accuracy</strong>
+            <p data-lang-content="en">Checks whether a writeback case correctly creates, updates, no-ops, or blocks a conflict.</p>
+            <p data-lang-content="pt">Verifica se um caso de escrita cria, atualiza, faz no-op ou bloqueia conflito corretamente.</p>
+          </article>
+          <article>
+            <strong>duplicate_avoidance</strong>
+            <p data-lang-content="en">Checks whether existing reusable notes are reused instead of creating duplicates.</p>
+            <p data-lang-content="pt">Verifica se notas reutilizáveis existentes são reaproveitadas em vez de duplicadas.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div>
+        <strong>Cairn</strong>
+        <p data-lang-content="en">Local Markdown knowledge for search, retrieval, and writeback.</p>
+        <p data-lang-content="pt">Conhecimento local em Markdown para busca, recuperação e escrita.</p>
+      </div>
+      <div class="footer-links">
+        <a href="index.html">Overview</a>
+        <a href="learn.html">Learn</a>
+        <a href="data/benchmarks.json">JSON</a>
+        <a href="https://github.com/sinkz/cairn">GitHub</a>
+      </div>
+    </footer>
+
+    <script src="assets/site.js"></script>
+  </body>
+</html>

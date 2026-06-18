@@ -54,12 +54,32 @@ class InstallScriptTests(unittest.TestCase):
         page = (ROOT / "docs" / "index.html").read_text(encoding="utf-8")
 
         self.assertIn("id=\"install\"", page)
-        self.assertIn("id=\"benchmark-suites\"", page)
-        self.assertIn("id=\"benchmark-history\"", page)
+        self.assertIn("id=\"benchmark-preview-cards\"", page)
+        self.assertIn("benchmarks.html", page)
+        self.assertNotIn("id=\"benchmark-suites\"", page)
+        self.assertNotIn("id=\"benchmark-history\"", page)
         self.assertIn("curl -fsSL https://sinkz.github.io/cairn/install.sh | sh", page)
         self.assertIn("irm https://sinkz.github.io/cairn/install.ps1 | iex", page)
         self.assertIn("guides/quick-install.md", page)
         self.assertIn("guides/quick-install.pt-BR.md", page)
+
+    def test_benchmark_page_contains_full_dashboard_mounts(self) -> None:
+        page = (ROOT / "docs" / "benchmarks.html").read_text(encoding="utf-8")
+
+        self.assertIn("id=\"benchmark-suites\"", page)
+        self.assertIn("id=\"benchmark-history\"", page)
+        self.assertIn("id=\"benchmark-preview-cards\"", page)
+        self.assertIn("data-benchmark-page", page)
+        self.assertIn("Recall@3", page)
+        self.assertIn("nDCG@3", page)
+        self.assertIn("context_reduction", page)
+
+    def test_benchmark_history_uses_snapshot_for_short_history(self) -> None:
+        script = (ROOT / "docs" / "assets" / "site.js").read_text(encoding="utf-8")
+
+        self.assertIn("function renderHistorySnapshot", script)
+        self.assertIn("history.length < 3", script)
+        self.assertIn("history-snapshot", script)
 
     def test_release_workflow_builds_standalone_assets(self) -> None:
         workflow = (ROOT / ".github" / "workflows" / "release.yml").read_text(encoding="utf-8")
