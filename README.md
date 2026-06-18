@@ -1,8 +1,13 @@
 # Cairn
 
-Cairn is a local CLI for a Markdown knowledge vault. It helps people and AI
-agents save reusable notes, search them later, and retrieve only the context
-needed for the current task.
+Cairn is a local CLI for a Markdown knowledge vault, optimized for AI-agent
+workflows. It helps agents save reusable notes, search them later, and retrieve
+only the context needed for the current task.
+
+The core is agent-agnostic: it works with Codex, Claude, OpenCode, GitHub
+Copilot, or any other harness that can run shell commands. Cairn is most useful
+when an agent follows the search, retrieve, solve, and writeback loop, but the
+source of truth remains plain Markdown plus a local SQLite index.
 
 Portuguese version: [README.pt-BR.md](README.pt-BR.md)
 
@@ -17,7 +22,7 @@ Cairn is useful when you want to remember things like:
 - personal notes that should be searchable by an agent later.
 
 The vault is just Markdown files plus frontmatter. The SQLite search index is
-local and rebuildable.
+local, rebuildable, and independent from any agent vendor.
 
 ## Requirements
 

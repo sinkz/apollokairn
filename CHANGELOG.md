@@ -16,6 +16,7 @@ All notable Cairn changes are tracked here.
 - Multi-section note bodies that already start with a Markdown heading are preserved without adding a duplicate `# Context` heading.
 - `cairn update` accepts absolute document paths inside the vault, reports the normalized vault-relative path, and refreshes the note timestamp only when new text is appended.
 - Internal research, plans, and reports are excluded from the public documentation tree.
+- Public docs now position Cairn as agent-optimized and agent-agnostic, with Markdown and SQLite as the product-independent core.
 
 ## 0.1.0 - 2026-06-17
 

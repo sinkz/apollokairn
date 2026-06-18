@@ -5,9 +5,14 @@ each command.
 
 ## What Cairn Is For
 
-Cairn is a local Markdown knowledge vault optimized for AI agents and humans.
-It helps you save reusable knowledge after solving problems, making decisions,
+Cairn is a local Markdown knowledge vault optimized for AI-agent workflows. It
+helps agents save reusable knowledge after solving problems, making decisions,
 documenting processes, or learning recurring patterns.
+
+Cairn does not depend on a specific agent product. Any harness that can run CLI
+commands can use the same vault and the same Markdown files. It is most useful
+when an agent searches first, retrieves only the necessary context, solves the
+task, and writes back reusable knowledge.
 
 Typical use cases:
 
@@ -399,8 +404,9 @@ cairn setup-agent opencode --path ~/brain
 cairn refresh-guides --path ~/brain
 ```
 
-Use these when a vault should be consumed by different agent harnesses. Cairn
-keeps Markdown as the source of truth; plugins can come later as thin adapters.
+Use these when a vault should be consumed by different agent harnesses. Cairn is
+agent-agnostic by design: generated guides and future plugins are adapters over
+the same local Markdown vault, not separate knowledge stores.
 
 ## Recommended Agent Workflow
 

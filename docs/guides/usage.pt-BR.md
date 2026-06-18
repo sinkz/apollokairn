@@ -5,9 +5,14 @@ cada comando.
 
 ## Para Que Serve
 
-Cairn é um vault local em Markdown otimizado para humanos e agentes de IA. Ele
-ajuda a salvar conhecimento reutilizável depois de resolver problemas, tomar
-decisões, documentar processos ou aprender padrões recorrentes.
+Cairn é um vault local em Markdown otimizado para fluxos com agentes de IA. Ele
+ajuda agentes a salvar conhecimento reutilizável depois de resolver problemas,
+tomar decisões, documentar processos ou aprender padrões recorrentes.
+
+Cairn não depende de um produto agentico específico. Qualquer harness que
+consiga rodar comandos de CLI pode usar o mesmo vault e os mesmos arquivos
+Markdown. Ele entrega mais valor quando um agente busca primeiro, recupera só o
+contexto necessário, resolve a tarefa e registra o conhecimento reutilizável.
 
 Casos de uso comuns:
 
@@ -403,8 +408,9 @@ cairn refresh-guides --path ~/brain
 ```
 
 Use quando o mesmo vault deve ser consumido por diferentes harnesses agenticos.
-Cairn mantém Markdown como fonte da verdade; plugins podem vir depois como
-adaptadores finos.
+Cairn é agnóstico de agentes por design: guias gerados e plugins futuros são
+adaptadores sobre o mesmo vault local em Markdown, não bases de conhecimento
+separadas.
 
 ## Fluxo Recomendado Para Agentes
 
