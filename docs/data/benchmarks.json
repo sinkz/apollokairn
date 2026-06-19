@@ -911,7 +911,7 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 121.4986
+            "value": 123.324
           },
           {
             "id": "search_p95_ms",
@@ -921,7 +921,7 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 139.828
+            "value": 127.3025
           },
           {
             "id": "retrieve_p50_ms",
@@ -931,7 +931,7 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 122.5592
+            "value": 124.5555
           },
           {
             "id": "retrieve_p95_ms",
@@ -941,7 +941,7 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 137.4524
+            "value": 130.6739
           },
           {
             "id": "full_index_ms",
@@ -951,7 +951,7 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 852.4519
+            "value": 790.2752
           },
           {
             "id": "incremental_index_ms",
@@ -961,7 +961,7 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 141.9071
+            "value": 146.6871
           },
           {
             "id": "index_db_bytes",
@@ -979,8 +979,8 @@
           "topics": 80,
           "repeat": 1,
           "limit": 3,
-          "full_index_ms": 852.4519,
-          "incremental_index_ms": 141.9071,
+          "full_index_ms": 790.2752,
+          "incremental_index_ms": 146.6871,
           "incremental_index": {
             "updated": 1,
             "removed": 0,
@@ -989,17 +989,17 @@
           "index_db_bytes": 1744896,
           "search_ms": {
             "samples": 80,
-            "min": 116.4106,
-            "p50": 121.4986,
-            "p95": 139.828,
-            "max": 172.8714
+            "min": 118.8322,
+            "p50": 123.324,
+            "p95": 127.3025,
+            "max": 131.1136
           },
           "retrieve_ms": {
             "samples": 80,
-            "min": 117.6109,
-            "p50": 122.5592,
-            "p95": 137.4524,
-            "max": 151.0019
+            "min": 120.1506,
+            "p50": 124.5555,
+            "p95": 130.6739,
+            "max": 134.9842
           }
         }
       },
@@ -1008,12 +1008,12 @@
           "date": "2026-06-19",
           "label": "large-fixture-local",
           "topics": 80,
-          "search_p50_ms": 121.4986,
-          "search_p95_ms": 139.828,
-          "retrieve_p50_ms": 122.5592,
-          "retrieve_p95_ms": 137.4524,
-          "full_index_ms": 852.4519,
-          "incremental_index_ms": 141.9071,
+          "search_p50_ms": 123.324,
+          "search_p95_ms": 127.3025,
+          "retrieve_p50_ms": 124.5555,
+          "retrieve_p95_ms": 130.6739,
+          "full_index_ms": 790.2752,
+          "incremental_index_ms": 146.6871,
           "index_db_bytes": 1744896
         }
       ],

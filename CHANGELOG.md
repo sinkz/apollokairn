@@ -4,6 +4,10 @@ All notable ApolloKairn changes are tracked here.
 
 ## Unreleased
 
+No changes yet.
+
+## 0.2.0 - 2026-06-19
+
 ### Added
 
 - Added `apollokairn vault` for local multi-vault registration, active-vault
@@ -11,6 +15,30 @@ All notable ApolloKairn changes are tracked here.
   working directory.
 - Added versioned `agentic/` assets and `apollokairn agent install/doctor` for
   optional Codex and Hermes Agent Skill setup.
+- Added deterministic L0/L1 agent evaluation harnesses, including task schema
+  validation, no-answer abstention checks, and optional live provider evaluation
+  through an external command.
+- Added a large retrieval fixture with paired topics, qrels, and agent tasks for
+  measuring ranking quality and context sufficiency on the same corpus.
+- Added retrieval metrics by slice, explicit quality/efficiency reporting, a
+  raw grep baseline, and a local performance benchmark suite.
+- Added ranking experiment documentation with acceptance gates for lexical
+  tuning, RRF changes, L0/L1/L2 agent evals, and optional embedding adapters.
+
+### Changed
+
+- Search-backed commands now repair a valid stale index before querying so
+  manual Markdown edits, new notes, deleted notes, and changed passages are
+  reflected without a separate `index` command.
+- Published benchmark data now includes corpus metadata, grep baseline results,
+  performance metrics, and the current regression-test count.
+
+### Fixed
+
+- Hardened stale-index repair so same-size edits with preserved `mtime_ns` are
+  detected by content hash instead of skipped.
+- Incomplete or invalid index schemas now fail with the actionable index-rebuild
+  error instead of allowing stale FTS tables to be queried.
 
 ## 0.1.4 - 2026-06-18
 
