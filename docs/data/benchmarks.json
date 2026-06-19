@@ -390,6 +390,22 @@
           "returned_tokens": 7122,
           "context_reduction": 0.9183,
           "budget_compliance_rate": 1.0
+        },
+        "baselines": {
+          "grep_raw_read": {
+            "suite": "grep_raw_read",
+            "command": "python bench/run_grep_baseline.py --quiet --compare-golden bench/grep-golden.json",
+            "topics": 28,
+            "max_files": 20,
+            "mean_recall_at_k": 0.7857,
+            "mean_mrr_at_k": 0.7857,
+            "mean_ndcg_at_k": 0.7857,
+            "false_positive_rate": 0.0,
+            "files_read": 25,
+            "mean_files_read": 0.8929,
+            "returned_tokens": 3988,
+            "mean_returned_tokens": 142.4286
+          }
         }
       },
       "history_metrics": [
@@ -688,6 +704,22 @@
             "returned_tokens": 7122,
             "context_reduction": 0.9183,
             "budget_compliance_rate": 1.0
+          },
+          "baselines": {
+            "grep_raw_read": {
+              "suite": "grep_raw_read",
+              "command": "python bench/run_grep_baseline.py --quiet --compare-golden bench/grep-golden.json",
+              "topics": 28,
+              "max_files": 20,
+              "mean_recall_at_k": 0.7857,
+              "mean_mrr_at_k": 0.7857,
+              "mean_ndcg_at_k": 0.7857,
+              "false_positive_rate": 0.0,
+              "files_read": 25,
+              "mean_files_read": 0.8929,
+              "returned_tokens": 3988,
+              "mean_returned_tokens": 142.4286
+            }
           }
         }
       ]
@@ -985,7 +1017,7 @@
           "en": "Regression tests",
           "pt": "Testes de regressão"
         },
-        "value": 216,
+        "value": 219,
         "format": "integer",
         "precision": 0,
         "description": {
@@ -1258,6 +1290,22 @@
       "returned_tokens": 7122,
       "context_reduction": 0.9183,
       "budget_compliance_rate": 1.0
+    },
+    "baselines": {
+      "grep_raw_read": {
+        "suite": "grep_raw_read",
+        "command": "python bench/run_grep_baseline.py --quiet --compare-golden bench/grep-golden.json",
+        "topics": 28,
+        "max_files": 20,
+        "mean_recall_at_k": 0.7857,
+        "mean_mrr_at_k": 0.7857,
+        "mean_ndcg_at_k": 0.7857,
+        "false_positive_rate": 0.0,
+        "files_read": 25,
+        "mean_files_read": 0.8929,
+        "returned_tokens": 3988,
+        "mean_returned_tokens": 142.4286
+      }
     }
   },
   "suite": {
@@ -1562,6 +1610,22 @@
         "returned_tokens": 7122,
         "context_reduction": 0.9183,
         "budget_compliance_rate": 1.0
+      },
+      "baselines": {
+        "grep_raw_read": {
+          "suite": "grep_raw_read",
+          "command": "python bench/run_grep_baseline.py --quiet --compare-golden bench/grep-golden.json",
+          "topics": 28,
+          "max_files": 20,
+          "mean_recall_at_k": 0.7857,
+          "mean_mrr_at_k": 0.7857,
+          "mean_ndcg_at_k": 0.7857,
+          "false_positive_rate": 0.0,
+          "files_read": 25,
+          "mean_files_read": 0.8929,
+          "returned_tokens": 3988,
+          "mean_returned_tokens": 142.4286
+        }
       }
     }
   ],

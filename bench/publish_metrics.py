@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 RETRIEVAL_COMMAND = "python bench/run_eval.py --quiet --compare-golden bench/golden.json"
 WRITEBACK_COMMAND = "python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json"
+GREP_BASELINE_COMMAND = "python bench/run_grep_baseline.py --quiet --compare-golden bench/grep-golden.json"
 
 DEFAULT_HISTORY_METRICS = {
     "retrieval": ["recall_at_3", "ndcg_at_3", "context_reduction"],
@@ -152,6 +153,33 @@ def _update_retrieval(suite: dict[str, Any], payload: dict[str, Any], run_date: 
     _add_deltas(suite, history_index)
 
 
+def _baseline_summary(payload: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "suite": payload["suite"],
+        "command": GREP_BASELINE_COMMAND,
+        "topics": payload["topics"],
+        "max_files": payload["max_files"],
+        "mean_recall_at_k": payload["mean_recall_at_k"],
+        "mean_mrr_at_k": payload["mean_mrr_at_k"],
+        "mean_ndcg_at_k": payload["mean_ndcg_at_k"],
+        "false_positive_rate": payload["false_positive_rate"],
+        "files_read": payload["files_read"],
+        "mean_files_read": payload["mean_files_read"],
+        "returned_tokens": payload["returned_tokens"],
+        "mean_returned_tokens": payload["mean_returned_tokens"],
+    }
+
+
+def _attach_retrieval_baseline(suite: dict[str, Any], payload: dict[str, Any], run_date: str, label: str) -> None:
+    summary = _baseline_summary(payload)
+    current = suite.setdefault("current", {})
+    current.setdefault("baselines", {})["grep_raw_read"] = deepcopy(summary)
+    for row in suite.setdefault("history", []):
+        if row.get("date") == run_date and row.get("label") == label:
+            row.setdefault("baselines", {})["grep_raw_read"] = deepcopy(summary)
+            break
+
+
 def _update_writeback(suite: dict[str, Any], payload: dict[str, Any], run_date: str, label: str) -> None:
     suite.setdefault("suite", {})
     suite["suite"]["command"] = WRITEBACK_COMMAND
@@ -206,11 +234,13 @@ def publish_metrics(
 ) -> dict[str, Any]:
     data = _load_json(input_path)
     retrieval_payload = _run_json(["bench/run_eval.py"])
+    grep_payload = _run_json(["bench/run_grep_baseline.py", "--compare-golden", "bench/grep-golden.json"])
     writeback_payload = _run_json(["bench/run_writeback_eval.py"])
 
     retrieval = _suite(data, "retrieval")
     writeback = _suite(data, "writeback")
     _update_retrieval(retrieval, retrieval_payload, run_date, retrieval_label)
+    _attach_retrieval_baseline(retrieval, grep_payload, run_date, retrieval_label)
     _update_writeback(writeback, writeback_payload, run_date, writeback_label)
     _update_legacy_fields(data, retrieval, tests)
 

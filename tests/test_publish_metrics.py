@@ -65,6 +65,11 @@ class PublishMetricsTests(unittest.TestCase):
             self.assertEqual(metrics["ndcg_at_3"]["delta"]["direction"], "up")
             self.assertEqual(metrics["ndcg_at_3"]["delta"]["trend"], "better")
             self.assertEqual(metrics["context_reduction"]["delta"]["direction"], "down")
+            baseline = retrieval["current"]["baselines"]["grep_raw_read"]
+            self.assertEqual(baseline["suite"], "grep_raw_read")
+            self.assertEqual(baseline["topics"], 28)
+            self.assertEqual(baseline["max_files"], 20)
+            self.assertGreater(baseline["returned_tokens"], 0)
             corpus = retrieval["current"]["corpus"]
             self.assertEqual(corpus["markdown_files"], 25)
             self.assertEqual(corpus["topics"], 28)
@@ -85,6 +90,7 @@ class PublishMetricsTests(unittest.TestCase):
             self.assertEqual(retrieval_row["slice_metrics"], retrieval["current"]["slice_metrics"])
             self.assertEqual(retrieval_row["quality"], retrieval["current"]["quality"])
             self.assertEqual(retrieval_row["efficiency"], retrieval["current"]["efficiency"])
+            self.assertEqual(retrieval_row["baselines"]["grep_raw_read"], baseline)
             legacy_row = next(
                 row for row in data["history"]
                 if row["date"] == "2026-06-18" and row["label"] == "BM25 + glossary aliases"
