@@ -44,17 +44,55 @@ def _string_list(value: object) -> tuple[str, ...]:
 
 def load_topics(path: Path) -> list[Topic]:
     topics: list[Topic] = []
-    for line in path.read_text(encoding="utf-8").splitlines():
+    errors: list[str] = []
+    seen_ids: set[str] = set()
+    for line_no, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
         if not line.strip():
             continue
-        row = json.loads(line)
+        try:
+            row = json.loads(line)
+        except json.JSONDecodeError as exc:
+            errors.append(f"{path}:{line_no}: invalid JSON: {exc.msg}")
+            continue
+        if not isinstance(row, dict):
+            errors.append(f"{path}:{line_no}: topic must be an object")
+            continue
+        topic_id = row.get("id")
+        query = row.get("query")
+        if not isinstance(topic_id, str) or not topic_id:
+            errors.append(f"{path}:{line_no}: id must be a non-empty string")
+            continue
+        if topic_id in seen_ids:
+            errors.append(f"{path}:{line_no}: duplicate topic id {topic_id}")
+        seen_ids.add(topic_id)
+        if not isinstance(query, str) or not query:
+            errors.append(f"{path}:{line_no}: query must be a non-empty string")
+            continue
+        budget = row.get("budget", 600)
+        try:
+            budget_value = int(budget)
+        except (TypeError, ValueError):
+            errors.append(f"{path}:{line_no}: budget must be a positive integer")
+            budget_value = 600
+        if budget_value <= 0:
+            errors.append(f"{path}:{line_no}: budget must be a positive integer")
+            budget_value = 600
+        limit = None
+        if "limit" in row:
+            try:
+                limit = int(row["limit"])
+            except (TypeError, ValueError):
+                errors.append(f"{path}:{line_no}: limit must be a positive integer")
+            else:
+                if limit <= 0:
+                    errors.append(f"{path}:{line_no}: limit must be a positive integer")
         topics.append(
             Topic(
-                id=row["id"],
-                query=row["query"],
-                budget=int(row.get("budget", 600)),
+                id=topic_id,
+                query=query,
+                budget=budget_value,
                 category=row.get("category", "general") if isinstance(row.get("category", "general"), str) else "general",
-                limit=int(row["limit"]) if "limit" in row else None,
+                limit=limit,
                 type_filter=row.get("type") if isinstance(row.get("type"), str) else None,
                 tag_filters=_string_list(row.get("tag")),
                 system_filters=_string_list(row.get("system")),
@@ -64,17 +102,79 @@ def load_topics(path: Path) -> list[Topic]:
                 compare_ranker=row.get("compare_ranker") if isinstance(row.get("compare_ranker"), str) else None,
             )
         )
+        if topics[-1].mode not in {"documents", "passages"}:
+            errors.append(f"{path}:{line_no}: mode must be 'documents' or 'passages'")
+        if topics[-1].ranker not in {"bm25", "rrf"}:
+            errors.append(f"{path}:{line_no}: ranker must be 'bm25' or 'rrf'")
+        if topics[-1].compare_mode and topics[-1].compare_mode not in {"documents", "passages"}:
+            errors.append(f"{path}:{line_no}: compare_mode must be 'documents' or 'passages'")
+        if topics[-1].compare_ranker and topics[-1].compare_ranker not in {"bm25", "rrf"}:
+            errors.append(f"{path}:{line_no}: compare_ranker must be 'bm25' or 'rrf'")
+    if not topics:
+        errors.append(f"{path}: expected at least one topic")
+    if errors:
+        raise ValueError("\n".join(errors))
     return topics
 
 
 def load_qrels(path: Path) -> dict[str, dict[str, int]]:
     qrels: dict[str, dict[str, int]] = {}
-    for line in path.read_text(encoding="utf-8").splitlines():
+    errors: list[str] = []
+    for line_no, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
         if not line.strip() or line.startswith("#"):
             continue
-        qid, doc, rel = line.split("\t")
-        qrels.setdefault(qid, {})[doc] = int(rel)
+        if line_no == 1 and line.casefold().startswith("query_id\t"):
+            continue
+        parts = line.split("\t")
+        if len(parts) != 3:
+            errors.append(f"{path}:{line_no}: qrel must have query_id, path, relevance")
+            continue
+        qid, doc, rel_text = parts
+        if not qid or not doc:
+            errors.append(f"{path}:{line_no}: query_id and path must be non-empty")
+            continue
+        try:
+            rel = int(rel_text)
+        except ValueError:
+            errors.append(f"{path}:{line_no}: relevance must be an integer")
+            continue
+        if rel < 0:
+            errors.append(f"{path}:{line_no}: relevance must be non-negative")
+            continue
+        qrels.setdefault(qid, {})[doc] = rel
+    if errors:
+        raise ValueError("\n".join(errors))
     return qrels
+
+
+def _safe_qrel_path(value: str) -> bool:
+    path = Path(value)
+    return not path.is_absolute() and ".." not in Path(value).parts and "\\" not in value
+
+
+def validate_inputs(root: Path, topics: Sequence[Topic], qrels: dict[str, dict[str, int]]) -> None:
+    errors: list[str] = []
+    topic_ids = {topic.id for topic in topics}
+    answerable_topic_ids = {topic.id for topic in topics if topic.category != "no_answer"}
+    for topic_id in sorted(answerable_topic_ids - set(qrels)):
+        errors.append(f"topic {topic_id}: missing qrels")
+    for topic_id in sorted(set(qrels) - topic_ids):
+        errors.append(f"qrels: unknown topic id {topic_id}")
+    no_answer_ids = topic_ids - answerable_topic_ids
+    for topic_id in sorted(no_answer_ids):
+        if any(rel > 0 for rel in qrels.get(topic_id, {}).values()):
+            errors.append(f"topic {topic_id}: no_answer topics must not have positive qrels")
+    for topic_id, docs in sorted(qrels.items()):
+        for rel, relevance in sorted(docs.items()):
+            if not _safe_qrel_path(rel):
+                errors.append(f"qrels {topic_id}: path must stay inside fixture: {rel}")
+                continue
+            if not (root / rel).is_file():
+                errors.append(f"qrels {topic_id}: path does not exist: {rel}")
+            if relevance > 3:
+                errors.append(f"qrels {topic_id}: relevance must be between 0 and 3")
+    if errors:
+        raise ValueError("\n".join(errors))
 
 
 def dcg(rels: list[int]) -> float:
@@ -249,8 +349,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--quiet", action="store_true")
     args = parser.parse_args(argv)
 
-    topics = load_topics(Path(args.topics))
-    qrels = load_qrels(Path(args.qrels))
+    try:
+        topics = load_topics(Path(args.topics))
+        qrels = load_qrels(Path(args.qrels))
+        validate_inputs(Path(args.fixture), topics, qrels)
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        print(f"benchmark input error: {exc}", file=sys.stderr)
+        return 2
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp) / "vault"
         shutil.copytree(Path(args.fixture), root)

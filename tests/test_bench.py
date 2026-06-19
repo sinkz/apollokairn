@@ -268,6 +268,53 @@ class BenchTests(unittest.TestCase):
             self.assertEqual(result.returncode, 1)
             self.assertIn("golden regression", result.stderr)
 
+    def test_benchmark_rejects_duplicate_topic_ids(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            topics = base / "topics.jsonl"
+            topics.write_text(
+                '{"id":"q_dup","query":"deploy 403 token rotation","budget":400}\n'
+                '{"id":"q_dup","query":"jwt expired clock skew auth","budget":400}\n',
+                encoding="utf-8",
+            )
+            qrels = base / "qrels.tsv"
+            qrels.write_text("q_dup\tknowledge/deploy-403.md\t3\n", encoding="utf-8")
+
+            result = run_bench("--topics", str(topics), "--qrels", str(qrels))
+
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("duplicate topic id q_dup", result.stderr)
+
+    def test_benchmark_rejects_qrel_paths_missing_from_fixture(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            topics = base / "topics.jsonl"
+            topics.write_text('{"id":"q_missing","query":"deploy 403 token rotation","budget":400}\n', encoding="utf-8")
+            qrels = base / "qrels.tsv"
+            qrels.write_text("q_missing\tknowledge/missing.md\t3\n", encoding="utf-8")
+
+            result = run_bench("--topics", str(topics), "--qrels", str(qrels))
+
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("path does not exist: knowledge/missing.md", result.stderr)
+
+    def test_benchmark_rejects_unknown_qrel_topic_ids(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            topics = base / "topics.jsonl"
+            topics.write_text('{"id":"q_known","query":"deploy 403 token rotation","budget":400}\n', encoding="utf-8")
+            qrels = base / "qrels.tsv"
+            qrels.write_text(
+                "q_known\tknowledge/deploy-403.md\t3\n"
+                "q_unknown\tknowledge/jwt-clock-skew.md\t3\n",
+                encoding="utf-8",
+            )
+
+            result = run_bench("--topics", str(topics), "--qrels", str(qrels))
+
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("unknown topic id q_unknown", result.stderr)
+
 
 if __name__ == "__main__":
     unittest.main()
