@@ -423,9 +423,13 @@ apollokairn search "deploy token rotation kubernetes secret" --path ~/brain --ra
 ```
 
 Use antes de abrir documentos completos. Este é o principal comando para
-economizar tokens. O ranker padrão `bm25` é estrito e estável. Use o
-experimental `--ranker rrf` quando a busca mistura sinais corretos com termos
-extras ou variantes lexicais.
+economizar tokens. O ranker padrão `bm25` é estrito e estável. Ele primeiro
+tenta a consulta AND estrita. Se ela não retorna linhas porque um ou mais termos
+da consulta têm zero ocorrências no índice, ele tenta de novo removendo apenas
+esses termos sem hit. Ele não transforma termos que existem separadamente em uma
+consulta OR ampla, então consultas genuinamente sem resposta continuam
+conservadoras. Use o experimental `--ranker rrf` quando a busca mistura sinais
+corretos com termos extras ou variantes lexicais.
 Se existir um `glossary.md` no topo do vault, aliases aprovados entram no mesmo
 fluxo determinístico de busca. Assim, termos como `k8s` e `kubernetes`
 conseguem recuperar as mesmas notas sem sinônimos chumbados em Python.
@@ -447,7 +451,9 @@ apollokairn search "cache stampede" --path ~/brain --json --explain
 
 `--explain` envolve os resultados com diagnósticos determinísticos de ranking:
 score, campos encontrados, termos da consulta encontrados e uma nota explícita
-de que score não é confiança.
+de que score não é confiança. A saída JSON com explain também inclui
+`query_diagnostics` com `strict_query`, `zero_hit_terms`, `relaxed_query` e
+`relaxation_applied`.
 
 ### `apollokairn retrieve`
 
@@ -480,9 +486,9 @@ retornado. Use `--ranker rrf` quando quiser ranking lexical fundido sempre.
 A saída JSON retorna o mesmo pacote de contexto com metadados: query, modo,
 ranker pedido, ranker realmente usado, orçamento de tokens, tokens estimados
 usados, quantidade de fontes, contexto renderizado e metadados por fonte.
-Com `--explain`, a saída JSON é `{ "packet": ..., "explanations": [...] }`, e
-cada explicação inclui campos/termos encontrados mais a nota diagnóstica do
-score.
+Com `--explain`, a saída JSON é
+`{ "packet": ..., "query_diagnostics": ..., "explanations": [...] }`, e cada
+explicação inclui campos/termos encontrados mais a nota diagnóstica do score.
 
 Filtros funcionam como em `search`:
 
@@ -686,7 +692,7 @@ python bench/run_eval.py --quiet --compare-golden bench/golden.json
 python bench/run_grep_baseline.py --quiet --compare-golden bench/grep-golden.json
 python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
 python bench/run_perf_eval.py --quiet --repeat 1
-python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 236
+python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 242
 ```
 
 Tópicos do benchmark podem incluir `category`, `mode`, `compare_mode`, `ranker`

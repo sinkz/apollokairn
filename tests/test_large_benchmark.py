@@ -13,6 +13,7 @@ VAULT = ROOT / "bench" / "fixtures" / "vault-large"
 TOPICS = ROOT / "bench" / "topics-large.jsonl"
 QRELS = ROOT / "bench" / "qrels-large.tsv"
 GOLDEN = ROOT / "bench" / "golden-large.json"
+TASKS = ROOT / "bench" / "agent" / "tasks-large.jsonl"
 
 
 def run_bench(*args: str) -> subprocess.CompletedProcess[str]:
@@ -45,6 +46,14 @@ def load_qrels() -> dict[str, list[str]]:
         rows.setdefault(topic_id, []).append(path)
         int(relevance)
     return rows
+
+
+def load_tasks() -> list[dict[str, object]]:
+    return [
+        json.loads(line)
+        for line in TASKS.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
 
 
 class LargeBenchmarkTests(unittest.TestCase):
@@ -86,6 +95,44 @@ class LargeBenchmarkTests(unittest.TestCase):
             for rel_path in paths:
                 self.assertNotIn(" ", rel_path)
                 self.assertTrue((VAULT / rel_path).exists(), rel_path)
+
+    def test_large_agent_tasks_match_topics_qrels_and_fixture_paths(self) -> None:
+        topics = {str(topic["id"]): topic for topic in load_topics()}
+        qrels = load_qrels()
+        tasks = load_tasks()
+        tasks_by_query_id = {str(task["query_id"]): task for task in tasks}
+
+        self.assertEqual(len(tasks_by_query_id), len(tasks), "duplicate task query_id")
+        self.assertEqual(set(tasks_by_query_id), set(topics))
+
+        for query_id, task in tasks_by_query_id.items():
+            topic = topics[query_id]
+            self.assertEqual(task["question"], topic["query"], query_id)
+            self.assertEqual(task["slice"], topic["category"], query_id)
+            self.assertGreaterEqual(int(task["budget"]), int(topic["budget"]), query_id)
+            for field in ("mode", "ranker", "type", "tag", "system"):
+                if field in task or field in topic:
+                    self.assertEqual(task.get(field), topic.get(field), f"{query_id} {field}")
+
+            expected_paths = list(task["expected_paths"])
+            qrel_paths = qrels.get(query_id, [])
+            if topic["category"] == "no_answer":
+                self.assertTrue(task["expect_abstention"], query_id)
+                self.assertEqual(expected_paths, [], query_id)
+                self.assertEqual(task["expected_facts"], [], query_id)
+                self.assertEqual(qrel_paths, [], query_id)
+                continue
+
+            self.assertFalse(task["expect_abstention"], query_id)
+            self.assertGreaterEqual(len(expected_paths), 1, query_id)
+            self.assertIn(query_id, qrels)
+            self.assertLessEqual(set(expected_paths), set(qrel_paths), query_id)
+            for rel_path in set(expected_paths) | set(qrel_paths):
+                self.assertTrue((VAULT / rel_path).is_file(), f"{query_id}: {rel_path}")
+            if topic["category"] == "filtered":
+                self.assertEqual(expected_paths, qrel_paths, query_id)
+                self.assertEqual(len(qrel_paths), 1, query_id)
+                self.assertTrue(qrel_paths[0].startswith("knowledge/"), query_id)
 
     def test_large_fixture_matches_golden_with_quality_floor(self) -> None:
         result = run_bench(

@@ -9,9 +9,9 @@ from typing import Sequence
 from cairn.config import is_excluded, load_config
 from cairn.frontmatter import FrontmatterError, parse_document
 from cairn.passages import split_passages
-from cairn.ranking import fts_query, fts_query_variants, rrf_merge
+from cairn.ranking import fts_query, fts_query_variants, query_tokens, rrf_merge
 from cairn.validate import RESERVED_NAMES
-from cairn.vocabulary import expanded_fts_and_query, expanded_fts_or_query
+from cairn.vocabulary import expanded_fts_and_query, expanded_query_groups
 
 
 class CairnIndexError(RuntimeError):
@@ -47,6 +47,14 @@ class IndexStats:
     updated: int = 0
     removed: int = 0
     skipped: int = 0
+
+
+@dataclass(frozen=True)
+class QueryDiagnostics:
+    strict_query: str
+    zero_hit_terms: list[str]
+    relaxed_query: str
+    relaxation_applied: bool
 
 
 _INDEX_ERROR = "search index is missing or invalid; run `apollokairn index --rebuild`"
@@ -317,25 +325,148 @@ def _search_doc_rows(con: sqlite3.Connection, fts_query: str, candidate_limit: i
     ).fetchall()
 
 
+def _append_diagnostics(target: list[QueryDiagnostics] | None, diagnostics: QueryDiagnostics) -> None:
+    if target is not None:
+        target.append(diagnostics)
+
+
+def _dedupe_query_tokens(query: str) -> list[str]:
+    out: list[str] = []
+    seen: set[str] = set()
+    for token in query_tokens(query):
+        key = token.casefold()
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        out.append(token)
+    return out
+
+
+def _fts_query_from_tokens(tokens: Sequence[str]) -> str:
+    return " ".join(f'"{token}"' for token in tokens)
+
+
+def _query_term_groups(root: Path, query: str) -> list[list[str]]:
+    groups = expanded_query_groups(root, query)
+    if groups:
+        return groups
+    return [[token] for token in _dedupe_query_tokens(query)]
+
+
+def _fts_query_from_group(group: Sequence[str]) -> str:
+    if len(group) == 1:
+        return _fts_query_from_tokens(group)
+    return "(" + " OR ".join(f'"{token}"' for token in group) + ")"
+
+
+def _fts_query_from_groups(groups: Sequence[Sequence[str]]) -> str:
+    return " AND ".join(_fts_query_from_group(group) for group in groups)
+
+
+def _validate_fts_table(table: str) -> None:
+    if table not in {"docs", "passages"}:
+        raise ValueError("table must be 'docs' or 'passages'")
+
+
+def _has_fts_match(con: sqlite3.Connection, table: str, query_text: str) -> bool:
+    _validate_fts_table(table)
+    if not query_text:
+        return False
+    return con.execute(
+        f"SELECT 1 FROM {table} WHERE {table} MATCH ? LIMIT 1",
+        (query_text,),
+    ).fetchone() is not None
+
+
+def _zero_hit_relaxation(
+    con: sqlite3.Connection,
+    root: Path,
+    table: str,
+    query: str,
+    strict_query: str,
+    strict_has_rows: bool,
+) -> QueryDiagnostics:
+    if strict_has_rows:
+        return QueryDiagnostics(strict_query, [], "", False)
+    kept_groups: list[list[str]] = []
+    zero_hit_terms: list[str] = []
+    for group in _query_term_groups(root, query):
+        group_query = _fts_query_from_group(group)
+        if _has_fts_match(con, table, group_query):
+            kept_groups.append(group)
+        else:
+            zero_hit_terms.append(group[0])
+    relaxed_query = _fts_query_from_groups(kept_groups) if zero_hit_terms and kept_groups else ""
+    relaxation_applied = bool(relaxed_query and _has_fts_match(con, table, relaxed_query))
+    return QueryDiagnostics(strict_query, zero_hit_terms, relaxed_query, relaxation_applied)
+
+
+def query_diagnostics(root: Path, query: str, scope: str = "documents") -> QueryDiagnostics:
+    root = Path(root)
+    table = "passages" if scope == "passages" else "docs"
+    if scope not in {"documents", "passages"}:
+        raise ValueError("scope must be 'documents' or 'passages'")
+    query_text = fts_query(query)
+    if not query_text:
+        return QueryDiagnostics("", [], "", False)
+    repair_stale_index(root)
+    db = _db_path(root)
+    if not db.exists():
+        raise CairnIndexError(_INDEX_ERROR)
+    try:
+        con = sqlite3.connect(db)
+    except sqlite3.Error as exc:
+        raise CairnIndexError(_INDEX_ERROR) from exc
+    try:
+        try:
+            return _zero_hit_relaxation(
+                con,
+                root,
+                table,
+                query,
+                query_text,
+                strict_has_rows=_has_fts_match(con, table, query_text),
+            )
+        except sqlite3.Error as exc:
+            raise CairnIndexError(_INDEX_ERROR) from exc
+    finally:
+        con.close()
+
+
 def _search_doc_rows_with_fallback(
     con: sqlite3.Connection,
     root: Path,
     query: str,
     query_text: str,
     candidate_limit: int,
+    diagnostics: list[QueryDiagnostics] | None = None,
 ) -> list[sqlite3.Row]:
     expanded = expanded_fts_and_query(root, query)
     if expanded and expanded != query_text:
         rows = _search_doc_rows(con, expanded, max(candidate_limit, 100))
         if rows:
+            _append_diagnostics(diagnostics, QueryDiagnostics(query_text, [], "", False))
             return rows
     rows = _search_doc_rows(con, query_text, candidate_limit)
     if rows:
+        _append_diagnostics(diagnostics, QueryDiagnostics(query_text, [], "", False))
         return rows
-    expanded = expanded_fts_or_query(root, query)
-    if not expanded or expanded == query_text:
-        return rows
-    return _search_doc_rows(con, expanded, max(candidate_limit, 100))
+    query_diag = _zero_hit_relaxation(con, root, "docs", query, query_text, strict_has_rows=False)
+    if query_diag.relaxed_query:
+        rows = _search_doc_rows(con, query_diag.relaxed_query, max(candidate_limit, 100))
+        if rows:
+            _append_diagnostics(
+                diagnostics,
+                QueryDiagnostics(
+                    query_diag.strict_query,
+                    query_diag.zero_hit_terms,
+                    query_diag.relaxed_query,
+                    True,
+                ),
+            )
+            return rows
+    _append_diagnostics(diagnostics, query_diag)
+    return rows
 
 
 def _search_passage_rows(con: sqlite3.Connection, fts_query: str, candidate_limit: int) -> list[sqlite3.Row]:
@@ -364,19 +495,34 @@ def _search_passage_rows_with_fallback(
     query: str,
     query_text: str,
     candidate_limit: int,
+    diagnostics: list[QueryDiagnostics] | None = None,
 ) -> list[sqlite3.Row]:
     expanded = expanded_fts_and_query(root, query)
     if expanded and expanded != query_text:
         rows = _search_passage_rows(con, expanded, max(candidate_limit, 100))
         if rows:
+            _append_diagnostics(diagnostics, QueryDiagnostics(query_text, [], "", False))
             return rows
     rows = _search_passage_rows(con, query_text, candidate_limit)
     if rows:
+        _append_diagnostics(diagnostics, QueryDiagnostics(query_text, [], "", False))
         return rows
-    expanded = expanded_fts_or_query(root, query)
-    if not expanded or expanded == query_text:
-        return rows
-    return _search_passage_rows(con, expanded, max(candidate_limit, 100))
+    query_diag = _zero_hit_relaxation(con, root, "passages", query, query_text, strict_has_rows=False)
+    if query_diag.relaxed_query:
+        rows = _search_passage_rows(con, query_diag.relaxed_query, max(candidate_limit, 100))
+        if rows:
+            _append_diagnostics(
+                diagnostics,
+                QueryDiagnostics(
+                    query_diag.strict_query,
+                    query_diag.zero_hit_terms,
+                    query_diag.relaxed_query,
+                    True,
+                ),
+            )
+            return rows
+    _append_diagnostics(diagnostics, query_diag)
+    return rows
 
 
 def _fts_query_variants_with_glossary(root: Path, query: str) -> list[str]:
@@ -433,6 +579,7 @@ def search(
     tag_filters: Sequence[str] = (),
     system_filters: Sequence[str] = (),
     ranker: str = "bm25",
+    diagnostics: list[QueryDiagnostics] | None = None,
 ) -> list[SearchResult]:
     root = Path(root)
     if limit <= 0:
@@ -460,8 +607,10 @@ def search(
             rows = (
                 _rrf_doc_rows(con, root, query, candidate_limit)
                 if ranker == "rrf"
-                else _search_doc_rows_with_fallback(con, root, query, query_text, candidate_limit)
+                else _search_doc_rows_with_fallback(con, root, query, query_text, candidate_limit, diagnostics)
             )
+            if ranker == "rrf":
+                _append_diagnostics(diagnostics, QueryDiagnostics(query_text, [], "", False))
         except sqlite3.Error as exc:
             raise CairnIndexError(_INDEX_ERROR) from exc
     finally:
@@ -495,6 +644,7 @@ def search_passages(
     tag_filters: Sequence[str] = (),
     system_filters: Sequence[str] = (),
     ranker: str = "bm25",
+    diagnostics: list[QueryDiagnostics] | None = None,
 ) -> list[PassageSearchResult]:
     root = Path(root)
     if limit <= 0:
@@ -522,8 +672,10 @@ def search_passages(
             rows = (
                 _rrf_passage_rows(con, root, query, candidate_limit)
                 if ranker == "rrf"
-                else _search_passage_rows_with_fallback(con, root, query, query_text, candidate_limit)
+                else _search_passage_rows_with_fallback(con, root, query, query_text, candidate_limit, diagnostics)
             )
+            if ranker == "rrf":
+                _append_diagnostics(diagnostics, QueryDiagnostics(query_text, [], "", False))
         except sqlite3.Error as exc:
             raise CairnIndexError(_INDEX_ERROR) from exc
     finally:

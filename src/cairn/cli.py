@@ -842,6 +842,7 @@ def main(argv: list[str] | None = None, invoked_as: str | None = None) -> int:
         if args.limit <= 0:
             parser.error("--limit must be positive")
         try:
+            query_diagnostics = [] if args.explain else None
             results = search(
                 root,
                 args.query,
@@ -850,6 +851,7 @@ def main(argv: list[str] | None = None, invoked_as: str | None = None) -> int:
                 tag_filters=args.tag,
                 system_filters=args.system,
                 ranker=args.ranker,
+                diagnostics=query_diagnostics,
             )
         except CairnIndexError as exc:
             _record_usage(
@@ -884,6 +886,7 @@ def main(argv: list[str] | None = None, invoked_as: str | None = None) -> int:
                     {
                         "query": args.query,
                         "ranker": args.ranker,
+                        "query_diagnostics": query_diagnostics[0] if query_diagnostics else None,
                         "results": [
                             {"result": result, "explanation": explanation}
                             for result, explanation in zip(results, explanations)
@@ -915,6 +918,7 @@ def main(argv: list[str] | None = None, invoked_as: str | None = None) -> int:
         if args.budget <= 0:
             parser.error("--budget must be positive")
         try:
+            query_diagnostics = [] if args.explain else None
             packet = retrieve_packet(
                 root,
                 args.query,
@@ -925,6 +929,7 @@ def main(argv: list[str] | None = None, invoked_as: str | None = None) -> int:
                 tag_filters=args.tag,
                 system_filters=args.system,
                 ranker=args.ranker,
+                diagnostics=query_diagnostics,
             )
         except (CairnIndexError, FileNotFoundError, ValueError) as exc:
             _record_usage(
@@ -956,7 +961,13 @@ def main(argv: list[str] | None = None, invoked_as: str | None = None) -> int:
         if args.explain:
             explanations = explain_retrieval_sources(root, args.query, packet.sources, packet.ranker)
             if args.json:
-                _print_json({"packet": packet, "explanations": explanations})
+                _print_json(
+                    {
+                        "packet": packet,
+                        "query_diagnostics": query_diagnostics[0] if query_diagnostics else None,
+                        "explanations": explanations,
+                    }
+                )
             else:
                 print(packet.context, end="")
                 if explanations:

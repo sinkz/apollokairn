@@ -12,9 +12,9 @@
   <p>
     <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white">
     <img alt="Dependências de runtime: zero" src="https://img.shields.io/badge/dependencias_runtime-0-2f6f4e">
-    <img alt="Testes de regressão: 236" src="https://img.shields.io/badge/testes-236-3b6ea8">
+    <img alt="Testes de regressão: 242" src="https://img.shields.io/badge/testes-242-3b6ea8">
     <img alt="Recall at 3: 1.00" src="https://img.shields.io/badge/Recall%403-1.00-2f6f4e">
-    <img alt="Redução de contexto: 91.83%" src="https://img.shields.io/badge/reducao_contexto-91.83%25-8a5a44">
+    <img alt="Redução de contexto: 92.78%" src="https://img.shields.io/badge/reducao_contexto-92.78%25-8a5a44">
     <img alt="Acurácia de decisão de escrita: 100%" src="https://img.shields.io/badge/escrita_decisoes-100%25-285da8">
     <img alt="Licença: MIT" src="https://img.shields.io/badge/licenca-MIT-15130f">
   </p>
@@ -49,11 +49,11 @@ atualizar vs criar.
 | Recall@3 | `1.00` | Notas esperadas aparecem nos três primeiros resultados. |
 | MRR@3 | `1.00` | Resultados relevantes aparecem primeiro no conjunto atual. |
 | nDCG@3 | `0.9941` | Qualidade de ranking contra rótulos determinísticos de relevância. |
-| Redução de contexto | `91.83%` | Recuperação por passagens retorna muito menos texto que abrir documentos completos. |
+| Redução de contexto | `92.78%` | Recuperação por passagens retorna muito menos texto que abrir documentos completos. |
 | Redução em comparativos | `53.73%` | Redução medida nas rodadas comparativas configuradas. |
 | Acurácia de decisão de escrita | `100%` | Decisões corretas de criar, atualizar, no-op e conflito no conjunto de fixtures. |
 | Prevenção de duplicatas | `100%` | Notas reutilizáveis existentes são atualizadas ou preservadas em vez de duplicadas. |
-| Testes de regressão | `236` | Testes unitários e de workflow rodados antes da publicação atual. |
+| Testes de regressão | `242` | Testes unitários e de workflow rodados antes da publicação atual. |
 
 Os dados do benchmark também são publicados no site por
 [`docs/data/benchmarks.json`](docs/data/benchmarks.json).
@@ -63,7 +63,7 @@ python bench/run_eval.py --quiet --compare-golden bench/golden.json
 python bench/run_grep_baseline.py --quiet --compare-golden bench/grep-golden.json
 python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
 python bench/run_perf_eval.py --quiet --repeat 1
-python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 236
+python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 242
 ```
 
 ## Instalação Rápida
@@ -226,6 +226,11 @@ apollokairn search "deploy token rotation kubernetes secret" --path CAMINHO_DO_V
 apollokairn search "deploy 403 token" --path CAMINHO_DO_VAULT --json --explain
 ```
 
+Quando o BM25 estrito não encontra linhas porque um termo da consulta tem zero
+ocorrências no vault, a busca tenta de novo removendo apenas esses termos sem
+hit. Ela não transforma termos que existem separadamente em uma consulta OR ampla.
+`--json --explain` relata isso em `query_diagnostics`.
+
 Se seu time usa sinônimos estáveis como `k8s` e `kubernetes`, mantenha isso em
 `glossary.md` para a busca expandir vocabulário aprovado de forma
 determinística:
@@ -332,7 +337,7 @@ python bench/run_eval.py --quiet --compare-golden bench/golden.json
 python bench/run_grep_baseline.py --quiet --compare-golden bench/grep-golden.json
 python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
 python bench/run_perf_eval.py --quiet --repeat 1
-python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 236
+python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 242
 ```
 
 Os benchmarks verificam qualidade de ranking, prefixos golden, orçamentos de

@@ -12,9 +12,9 @@
   <p>
     <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white">
     <img alt="Runtime dependencies: zero" src="https://img.shields.io/badge/runtime_dependencies-0-2f6f4e">
-    <img alt="Regression tests: 236" src="https://img.shields.io/badge/tests-236-3b6ea8">
+    <img alt="Regression tests: 242" src="https://img.shields.io/badge/tests-242-3b6ea8">
     <img alt="Recall at 3: 1.00" src="https://img.shields.io/badge/Recall%403-1.00-2f6f4e">
-    <img alt="Context reduction: 91.83%" src="https://img.shields.io/badge/context_reduction-91.83%25-8a5a44">
+    <img alt="Context reduction: 92.78%" src="https://img.shields.io/badge/context_reduction-92.78%25-8a5a44">
     <img alt="Writeback decision accuracy: 100%" src="https://img.shields.io/badge/writeback_decisions-100%25-285da8">
     <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-15130f">
   </p>
@@ -48,11 +48,11 @@ writeback decisions for update-vs-create workflows.
 | Recall@3 | `1.00` | Expected notes appear in the top three results. |
 | MRR@3 | `1.00` | Relevant results are ranked first in the current fixture set. |
 | nDCG@3 | `0.9941` | Ranking quality against deterministic relevance labels. |
-| Context reduction | `91.83%` | Passage retrieval returns far less text than opening full documents. |
+| Context reduction | `92.78%` | Passage retrieval returns far less text than opening full documents. |
 | Comparison reduction | `53.73%` | Reduction measured in configured comparison runs. |
 | Writeback decision accuracy | `100%` | Correct create, update, no-op, and conflict decisions in the fixture set. |
 | Duplicate avoidance | `100%` | Existing reusable notes are updated or preserved instead of duplicated. |
-| Regression tests | `236` | Unit and workflow tests run before publishing the current page. |
+| Regression tests | `242` | Unit and workflow tests run before publishing the current page. |
 
 Benchmark data is also published on the website through
 [`docs/data/benchmarks.json`](docs/data/benchmarks.json).
@@ -62,7 +62,7 @@ python bench/run_eval.py --quiet --compare-golden bench/golden.json
 python bench/run_grep_baseline.py --quiet --compare-golden bench/grep-golden.json
 python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
 python bench/run_perf_eval.py --quiet --repeat 1
-python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 236
+python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 242
 ```
 
 ## Quick Install
@@ -223,6 +223,11 @@ apollokairn search "deploy token rotation kubernetes secret" --path PATH_TO_VAUL
 apollokairn search "deploy 403 token" --path PATH_TO_VAULT --json --explain
 ```
 
+When strict BM25 finds no rows because one query term has zero hits in the
+vault, search retries after dropping only those zero-hit terms. It does not turn
+separately matching terms into a broad OR query. `--json --explain` reports this
+under `query_diagnostics`.
+
 If your team uses stable synonyms such as `k8s` and `kubernetes`, keep them in
 `glossary.md` so search can expand approved vocabulary deterministically:
 
@@ -328,7 +333,7 @@ python bench/run_eval.py --quiet --compare-golden bench/golden.json
 python bench/run_grep_baseline.py --quiet --compare-golden bench/grep-golden.json
 python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
 python bench/run_perf_eval.py --quiet --repeat 1
-python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 236
+python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 242
 ```
 
 The benchmarks check ranking quality, golden result prefixes, token budgets,

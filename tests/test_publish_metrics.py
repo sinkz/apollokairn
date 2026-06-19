@@ -60,11 +60,11 @@ class PublishMetricsTests(unittest.TestCase):
 
             metrics = {metric["id"]: metric for metric in retrieval["current"]["metrics"]}
             self.assertEqual(metrics["recall_at_3"]["value"], 1.0)
-            self.assertEqual(metrics["context_reduction"]["value"], 0.9183)
+            self.assertEqual(metrics["context_reduction"]["value"], 0.9278)
             self.assertEqual(metrics["ndcg_at_3"]["delta"]["value"], 0.001)
             self.assertEqual(metrics["ndcg_at_3"]["delta"]["direction"], "up")
             self.assertEqual(metrics["ndcg_at_3"]["delta"]["trend"], "better")
-            self.assertEqual(metrics["context_reduction"]["delta"]["direction"], "down")
+            self.assertEqual(metrics["context_reduction"]["delta"]["direction"], "up")
             baseline = retrieval["current"]["baselines"]["grep_raw_read"]
             self.assertEqual(baseline["suite"], "grep_raw_read")
             self.assertEqual(baseline["topics"], 28)
@@ -77,7 +77,7 @@ class PublishMetricsTests(unittest.TestCase):
             self.assertIn("slice_metrics", retrieval["current"])
             self.assertTrue(any(row["slice"] == "passage_budget" for row in retrieval["current"]["slice_metrics"]))
             self.assertEqual(retrieval["current"]["quality"]["mean_ndcg_at_k"], 0.9941)
-            self.assertEqual(retrieval["current"]["efficiency"]["context_reduction"], 0.9183)
+            self.assertEqual(retrieval["current"]["efficiency"]["context_reduction"], 0.9278)
             self.assertEqual(data["current"]["corpus"], corpus)
             self.assertEqual(data["current"]["slice_metrics"], retrieval["current"]["slice_metrics"])
             self.assertEqual(data["current"]["quality"], retrieval["current"]["quality"])

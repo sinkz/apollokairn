@@ -172,7 +172,7 @@ class BenchTests(unittest.TestCase):
         self.assertEqual(rrf_topic["docs"][0], "knowledge/deploy-403.md")
         self.assertEqual(rrf_topic["recall_at_k"], 1.0)
         self.assertEqual(rrf_topic["compare"]["ranker"], "bm25")
-        self.assertEqual(rrf_topic["compare"]["recall_at_k"], 0.0)
+        self.assertEqual(rrf_topic["compare"]["recall_at_k"], 1.0)
 
     def test_benchmark_reports_corpus_metadata(self) -> None:
         result = run_bench()

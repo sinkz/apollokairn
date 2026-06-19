@@ -214,6 +214,63 @@ class IndexerTests(unittest.TestCase):
             self.assertEqual(default_results, [])
             self.assertEqual(fused_results[0].path, "knowledge/deploy-secret.md")
 
+    def test_bm25_search_relaxes_only_zero_hit_terms(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="engineering")
+            write_concept(
+                root,
+                "deploy-credentials.md",
+                (
+                    "type: Runbook",
+                    "title: Deploy credentials rotation",
+                    "description: Update credentials for deployment jobs.",
+                    "tags: [deploy, security]",
+                    "timestamp: 2026-06-17T10:00:00Z",
+                    "signals: [credentials rotation]",
+                ),
+                "# Resolution\n\nRotate the deployment credentials and rerun the job.\n",
+            )
+            rebuild_index(root)
+
+            results = search(root, "credentials xyzzy", limit=3)
+
+            self.assertEqual([result.path for result in results], ["knowledge/deploy-credentials.md"])
+
+    def test_bm25_search_does_not_or_terms_that_exist_separately(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="engineering")
+            write_concept(
+                root,
+                "deploy.md",
+                (
+                    "type: Runbook",
+                    "title: Deploy credentials",
+                    "description: Deploy credentials procedure.",
+                    "tags: [deploy]",
+                    "timestamp: 2026-06-17T10:00:00Z",
+                ),
+                "# Context\n\nCredentials handling for deployment.\n",
+            )
+            write_concept(
+                root,
+                "oauth.md",
+                (
+                    "type: Note",
+                    "title: OAuth reference",
+                    "description: OAuth background.",
+                    "tags: [reference]",
+                    "timestamp: 2026-06-17T10:00:00Z",
+                ),
+                "# Context\n\nOAuth background for identity providers.\n",
+            )
+            rebuild_index(root)
+
+            results = search(root, "credentials oauth", limit=3)
+
+            self.assertEqual(results, [])
+
     def test_rrf_search_recovers_safe_inflection_variant(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -840,6 +897,11 @@ class IndexerTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stderr)
             payload = json.loads(result.stdout)
             self.assertEqual(payload["query"], "deploy 403 token")
+            diagnostics = payload["query_diagnostics"]
+            self.assertEqual(diagnostics["strict_query"], '"deploy" "403" "token"')
+            self.assertEqual(diagnostics["zero_hit_terms"], [])
+            self.assertEqual(diagnostics["relaxed_query"], "")
+            self.assertFalse(diagnostics["relaxation_applied"])
             first = payload["results"][0]
             self.assertEqual(first["result"]["path"], "knowledge/deploy-403.md")
             explanation = first["explanation"]
@@ -848,6 +910,35 @@ class IndexerTests(unittest.TestCase):
             matched = {item["term"]: item["fields"] for item in explanation["matched_terms"]}
             self.assertIn("title", matched["deploy"])
             self.assertIn("signals", matched["token"])
+
+    def test_cli_search_json_explain_reports_zero_hit_relaxation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="engineering")
+            write_concept(
+                root,
+                "deploy-credentials.md",
+                (
+                    "type: Runbook",
+                    "title: Deploy credentials rotation",
+                    "description: Update credentials for deployment jobs.",
+                    "tags: [deploy, security]",
+                    "timestamp: 2026-06-17T10:00:00Z",
+                ),
+                "# Resolution\n\nRotate the deployment credentials and rerun the job.\n",
+            )
+            rebuild_index(root)
+
+            result = run_cairn(root, "search", "credentials xyzzy", "--json", "--explain")
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            payload = json.loads(result.stdout)
+            diagnostics = payload["query_diagnostics"]
+            self.assertEqual(diagnostics["strict_query"], '"credentials" "xyzzy"')
+            self.assertEqual(diagnostics["zero_hit_terms"], ["xyzzy"])
+            self.assertEqual(diagnostics["relaxed_query"], '"credentials"')
+            self.assertTrue(diagnostics["relaxation_applied"])
+            self.assertEqual(payload["results"][0]["result"]["path"], "knowledge/deploy-credentials.md")
 
     def test_cli_search_path_searches_vault_from_outside_directory(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

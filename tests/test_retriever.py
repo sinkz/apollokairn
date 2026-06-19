@@ -204,6 +204,11 @@ class RetrieverTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stderr)
             payload = json.loads(result.stdout)
             self.assertIn("packet", payload)
+            diagnostics = payload["query_diagnostics"]
+            self.assertEqual(diagnostics["strict_query"], '"deploy" "403" "token"')
+            self.assertEqual(diagnostics["zero_hit_terms"], [])
+            self.assertEqual(diagnostics["relaxed_query"], "")
+            self.assertFalse(diagnostics["relaxation_applied"])
             self.assertEqual(payload["packet"]["source_count"], 1)
             explanation = payload["explanations"][0]
             self.assertEqual(explanation["path"], "knowledge/deploy-403.md")
@@ -212,6 +217,45 @@ class RetrieverTests(unittest.TestCase):
             matched = {item["term"]: item["fields"] for item in explanation["matched_terms"]}
             self.assertIn("title", matched["deploy"])
             self.assertIn("signals", matched["token"])
+
+    def test_cli_retrieve_json_explain_reports_zero_hit_relaxation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="engineering")
+            write_concept(
+                root,
+                "deploy-credentials.md",
+                (
+                    "type: Runbook",
+                    "title: Deploy credentials rotation",
+                    "description: Update credentials for deployment jobs.",
+                    "tags: [deploy, security]",
+                    "timestamp: 2026-06-17T10:00:00Z",
+                ),
+                "# Resolution\n\nRotate the deployment credentials and rerun the job.\n",
+            )
+            run_cairn(root, "index", "--rebuild")
+
+            result = run_cairn(
+                root,
+                "retrieve",
+                "credentials xyzzy",
+                "--mode",
+                "passages",
+                "--budget",
+                "300",
+                "--json",
+                "--explain",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            payload = json.loads(result.stdout)
+            diagnostics = payload["query_diagnostics"]
+            self.assertEqual(diagnostics["strict_query"], '"credentials" "xyzzy"')
+            self.assertEqual(diagnostics["zero_hit_terms"], ["xyzzy"])
+            self.assertEqual(diagnostics["relaxed_query"], '"credentials"')
+            self.assertTrue(diagnostics["relaxation_applied"])
+            self.assertEqual(payload["packet"]["sources"][0]["path"], "knowledge/deploy-credentials.md")
 
     def test_cli_retrieve_accepts_rrf_ranker(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

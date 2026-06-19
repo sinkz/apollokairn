@@ -89,7 +89,7 @@
               "en": "Context reduction",
               "pt": "Redução de contexto"
             },
-            "value": 0.9183,
+            "value": 0.9278,
             "format": "percent",
             "precision": 2,
             "description": {
@@ -97,9 +97,9 @@
               "pt": "Recuperação por passagens retorna muito menos texto que abrir documentos completos."
             },
             "delta": {
-              "value": 0.0,
-              "direction": "flat",
-              "trend": "flat",
+              "value": 0.0095,
+              "direction": "up",
+              "trend": "better",
               "baseline_date": "2026-06-18",
               "baseline_label": "BM25 + glossary aliases"
             }
@@ -336,9 +336,9 @@
             "mean_recall_at_k": 1.0,
             "mean_mrr_at_k": 1.0,
             "mean_ndcg_at_k": 1.0,
-            "returned_tokens": 573,
-            "mean_returned_tokens": 573.0,
-            "context_reduction": 0.8159,
+            "returned_tokens": 157,
+            "mean_returned_tokens": 157.0,
+            "context_reduction": 0.9496,
             "budget_compliance_rate": 1.0,
             "false_positive_rate": 0.0
           },
@@ -372,9 +372,9 @@
             "mean_recall_at_k": 1.0,
             "mean_mrr_at_k": 1.0,
             "mean_ndcg_at_k": 1.0,
-            "returned_tokens": 573,
-            "mean_returned_tokens": 573.0,
-            "context_reduction": 0.8159,
+            "returned_tokens": 157,
+            "mean_returned_tokens": 157.0,
+            "context_reduction": 0.9496,
             "budget_compliance_rate": 1.0,
             "false_positive_rate": 0.0
           }
@@ -387,8 +387,8 @@
         },
         "efficiency": {
           "full_context_tokens": 87136,
-          "returned_tokens": 7122,
-          "context_reduction": 0.9183,
+          "returned_tokens": 6290,
+          "context_reduction": 0.9278,
           "budget_compliance_rate": 1.0
         },
         "baselines": {
@@ -438,7 +438,7 @@
           "recall_at_3": 1.0,
           "mrr_at_3": 1.0,
           "ndcg_at_3": 0.9941,
-          "context_reduction": 0.9183,
+          "context_reduction": 0.9278,
           "comparison_reduction": 0.5373,
           "corpus": {
             "markdown_files": 25,
@@ -650,9 +650,9 @@
               "mean_recall_at_k": 1.0,
               "mean_mrr_at_k": 1.0,
               "mean_ndcg_at_k": 1.0,
-              "returned_tokens": 573,
-              "mean_returned_tokens": 573.0,
-              "context_reduction": 0.8159,
+              "returned_tokens": 157,
+              "mean_returned_tokens": 157.0,
+              "context_reduction": 0.9496,
               "budget_compliance_rate": 1.0,
               "false_positive_rate": 0.0
             },
@@ -686,9 +686,9 @@
               "mean_recall_at_k": 1.0,
               "mean_mrr_at_k": 1.0,
               "mean_ndcg_at_k": 1.0,
-              "returned_tokens": 573,
-              "mean_returned_tokens": 573.0,
-              "context_reduction": 0.8159,
+              "returned_tokens": 157,
+              "mean_returned_tokens": 157.0,
+              "context_reduction": 0.9496,
               "budget_compliance_rate": 1.0,
               "false_positive_rate": 0.0
             }
@@ -701,8 +701,8 @@
           },
           "efficiency": {
             "full_context_tokens": 87136,
-            "returned_tokens": 7122,
-            "context_reduction": 0.9183,
+            "returned_tokens": 6290,
+            "context_reduction": 0.9278,
             "budget_compliance_rate": 1.0
           },
           "baselines": {
@@ -911,7 +911,7 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 123.324
+            "value": 122.676
           },
           {
             "id": "search_p95_ms",
@@ -921,7 +921,7 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 127.3025
+            "value": 129.4144
           },
           {
             "id": "retrieve_p50_ms",
@@ -931,7 +931,7 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 124.5555
+            "value": 123.5351
           },
           {
             "id": "retrieve_p95_ms",
@@ -941,7 +941,7 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 130.6739
+            "value": 131.0997
           },
           {
             "id": "full_index_ms",
@@ -951,7 +951,7 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 790.2752
+            "value": 748.62
           },
           {
             "id": "incremental_index_ms",
@@ -961,7 +961,7 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 146.6871
+            "value": 143.0113
           },
           {
             "id": "index_db_bytes",
@@ -979,8 +979,8 @@
           "topics": 80,
           "repeat": 1,
           "limit": 3,
-          "full_index_ms": 790.2752,
-          "incremental_index_ms": 146.6871,
+          "full_index_ms": 748.62,
+          "incremental_index_ms": 143.0113,
           "incremental_index": {
             "updated": 1,
             "removed": 0,
@@ -989,17 +989,17 @@
           "index_db_bytes": 1744896,
           "search_ms": {
             "samples": 80,
-            "min": 118.8322,
-            "p50": 123.324,
-            "p95": 127.3025,
-            "max": 131.1136
+            "min": 117.0284,
+            "p50": 122.676,
+            "p95": 129.4144,
+            "max": 139.01
           },
           "retrieve_ms": {
             "samples": 80,
-            "min": 120.1506,
-            "p50": 124.5555,
-            "p95": 130.6739,
-            "max": 134.9842
+            "min": 118.5416,
+            "p50": 123.5351,
+            "p95": 131.0997,
+            "max": 140.9979
           }
         }
       },
@@ -1008,12 +1008,12 @@
           "date": "2026-06-19",
           "label": "large-fixture-local",
           "topics": 80,
-          "search_p50_ms": 123.324,
-          "search_p95_ms": 127.3025,
-          "retrieve_p50_ms": 124.5555,
-          "retrieve_p95_ms": 130.6739,
-          "full_index_ms": 790.2752,
-          "incremental_index_ms": 146.6871,
+          "search_p50_ms": 122.676,
+          "search_p95_ms": 129.4144,
+          "retrieve_p50_ms": 123.5351,
+          "retrieve_p95_ms": 131.0997,
+          "full_index_ms": 748.62,
+          "incremental_index_ms": 143.0113,
           "index_db_bytes": 1744896
         }
       ],
@@ -1102,7 +1102,7 @@
           "en": "Context reduction",
           "pt": "Redução de contexto"
         },
-        "value": 0.9183,
+        "value": 0.9278,
         "format": "percent",
         "precision": 2,
         "description": {
@@ -1110,9 +1110,9 @@
           "pt": "Recuperação por passagens retorna muito menos texto que abrir documentos completos."
         },
         "delta": {
-          "value": 0.0,
-          "direction": "flat",
-          "trend": "flat",
+          "value": 0.0095,
+          "direction": "up",
+          "trend": "better",
           "baseline_date": "2026-06-18",
           "baseline_label": "BM25 + glossary aliases"
         }
@@ -1144,7 +1144,7 @@
           "en": "Regression tests",
           "pt": "Testes de regressão"
         },
-        "value": 236,
+        "value": 242,
         "format": "integer",
         "precision": 0,
         "description": {
@@ -1363,9 +1363,9 @@
         "mean_recall_at_k": 1.0,
         "mean_mrr_at_k": 1.0,
         "mean_ndcg_at_k": 1.0,
-        "returned_tokens": 573,
-        "mean_returned_tokens": 573.0,
-        "context_reduction": 0.8159,
+        "returned_tokens": 157,
+        "mean_returned_tokens": 157.0,
+        "context_reduction": 0.9496,
         "budget_compliance_rate": 1.0,
         "false_positive_rate": 0.0
       },
@@ -1399,9 +1399,9 @@
         "mean_recall_at_k": 1.0,
         "mean_mrr_at_k": 1.0,
         "mean_ndcg_at_k": 1.0,
-        "returned_tokens": 573,
-        "mean_returned_tokens": 573.0,
-        "context_reduction": 0.8159,
+        "returned_tokens": 157,
+        "mean_returned_tokens": 157.0,
+        "context_reduction": 0.9496,
         "budget_compliance_rate": 1.0,
         "false_positive_rate": 0.0
       }
@@ -1414,8 +1414,8 @@
     },
     "efficiency": {
       "full_context_tokens": 87136,
-      "returned_tokens": 7122,
-      "context_reduction": 0.9183,
+      "returned_tokens": 6290,
+      "context_reduction": 0.9278,
       "budget_compliance_rate": 1.0
     },
     "baselines": {
@@ -1471,7 +1471,7 @@
       "recall_at_3": 1.0,
       "mrr_at_3": 1.0,
       "ndcg_at_3": 0.9941,
-      "context_reduction": 0.9183,
+      "context_reduction": 0.9278,
       "comparison_reduction": 0.5373,
       "corpus": {
         "markdown_files": 25,
@@ -1683,9 +1683,9 @@
           "mean_recall_at_k": 1.0,
           "mean_mrr_at_k": 1.0,
           "mean_ndcg_at_k": 1.0,
-          "returned_tokens": 573,
-          "mean_returned_tokens": 573.0,
-          "context_reduction": 0.8159,
+          "returned_tokens": 157,
+          "mean_returned_tokens": 157.0,
+          "context_reduction": 0.9496,
           "budget_compliance_rate": 1.0,
           "false_positive_rate": 0.0
         },
@@ -1719,9 +1719,9 @@
           "mean_recall_at_k": 1.0,
           "mean_mrr_at_k": 1.0,
           "mean_ndcg_at_k": 1.0,
-          "returned_tokens": 573,
-          "mean_returned_tokens": 573.0,
-          "context_reduction": 0.8159,
+          "returned_tokens": 157,
+          "mean_returned_tokens": 157.0,
+          "context_reduction": 0.9496,
           "budget_compliance_rate": 1.0,
           "false_positive_rate": 0.0
         }
@@ -1734,8 +1734,8 @@
       },
       "efficiency": {
         "full_context_tokens": 87136,
-        "returned_tokens": 7122,
-        "context_reduction": 0.9183,
+        "returned_tokens": 6290,
+        "context_reduction": 0.9278,
         "budget_compliance_rate": 1.0
       },
       "baselines": {

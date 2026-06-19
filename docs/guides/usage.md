@@ -418,9 +418,13 @@ apollokairn search "deploy token rotation kubernetes secret" --path ~/brain --ra
 ```
 
 Use search before opening full documents. This is the main token-saving command.
-The default `bm25` ranker is strict and stable. Use experimental `--ranker rrf`
-when the query may contain extra terms or lexical variants and you want ApolloKairn to
-fuse multiple cheap lexical runs.
+The default `bm25` ranker is strict and stable. It first tries the strict AND
+query. If that returns no rows because one or more query terms have zero hits
+anywhere in the index, it retries after dropping only those zero-hit terms. It
+does not OR together terms that exist separately, so genuine no-answer queries
+remain conservative. Use experimental `--ranker rrf` when the query may contain
+extra terms or lexical variants and you want ApolloKairn to fuse multiple cheap
+lexical runs.
 If a top-level `glossary.md` exists, approved aliases are folded into the
 deterministic search flow so terms such as `k8s` and `kubernetes` can retrieve
 the same notes without hard-coded Python synonyms.
@@ -442,6 +446,8 @@ apollokairn search "cache stampede" --path ~/brain --json --explain
 
 `--explain` wraps results with deterministic ranking diagnostics: score, matched
 fields, matched query terms, and an explicit note that scores are not confidence.
+JSON explain output also includes `query_diagnostics` with `strict_query`,
+`zero_hit_terms`, `relaxed_query`, and `relaxation_applied`.
 
 ### `apollokairn retrieve`
 
@@ -474,8 +480,9 @@ Use `--ranker rrf` when you explicitly want fused lexical ranking every time.
 JSON output returns the same context packet with metadata: query, mode, requested
 ranker, ranker actually used, token budget, estimated tokens used, source count,
 rendered context, and per-source metadata.
-With `--explain`, JSON output is `{ "packet": ..., "explanations": [...] }` and
-each explanation includes matched fields/terms plus the score diagnostic note.
+With `--explain`, JSON output is
+`{ "packet": ..., "query_diagnostics": ..., "explanations": [...] }` and each
+explanation includes matched fields/terms plus the score diagnostic note.
 
 Filters work the same way as `search`:
 
@@ -673,7 +680,7 @@ python bench/run_eval.py --quiet --compare-golden bench/golden.json
 python bench/run_grep_baseline.py --quiet --compare-golden bench/grep-golden.json
 python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
 python bench/run_perf_eval.py --quiet --repeat 1
-python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 236
+python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 242
 ```
 
 Benchmark topics may include `category`, `mode`, `compare_mode`, `ranker`, and

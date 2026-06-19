@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Sequence
 
-from cairn.indexer import search, search_passages, show
+from cairn.indexer import QueryDiagnostics, search, search_passages, show
 from cairn.secret_scan import redact_text
 
 
@@ -70,6 +70,7 @@ def _retrieve_passages(
     tag_filters: Sequence[str],
     system_filters: Sequence[str],
     ranker: str,
+    diagnostics: list[QueryDiagnostics] | None = None,
 ) -> tuple[str, list[RetrievedSource]]:
     parts: list[str] = []
     sources: list[RetrievedSource] = []
@@ -82,6 +83,7 @@ def _retrieve_passages(
         tag_filters=tag_filters,
         system_filters=system_filters,
         ranker=ranker,
+        diagnostics=diagnostics,
     ):
         prefix = (
             f"path: {result.path}\n"
@@ -132,6 +134,7 @@ def _retrieve_documents(
     tag_filters: Sequence[str],
     system_filters: Sequence[str],
     ranker: str,
+    diagnostics: list[QueryDiagnostics] | None = None,
 ) -> tuple[str, list[RetrievedSource]]:
     parts: list[str] = []
     sources: list[RetrievedSource] = []
@@ -144,6 +147,7 @@ def _retrieve_documents(
         tag_filters=tag_filters,
         system_filters=system_filters,
         ranker=ranker,
+        diagnostics=diagnostics,
     ):
         prefix = (
             f"path: {result.path}\n"
@@ -191,6 +195,7 @@ def retrieve_packet(
     tag_filters: Sequence[str] = (),
     system_filters: Sequence[str] = (),
     ranker: str = "bm25",
+    diagnostics: list[QueryDiagnostics] | None = None,
 ) -> RetrievalPacket:
     if limit <= 0:
         raise ValueError("limit must be positive")
@@ -204,7 +209,9 @@ def retrieve_packet(
     max_chars = budget_tokens * CHARS_PER_TOKEN
 
     if mode == "passages":
+        last_diagnostics: list[QueryDiagnostics] = []
         for attempt in _ranker_attempts(ranker):
+            attempt_diagnostics: list[QueryDiagnostics] = []
             context, sources = _retrieve_passages(
                 root,
                 query,
@@ -214,8 +221,12 @@ def retrieve_packet(
                 tag_filters,
                 system_filters,
                 attempt,
+                diagnostics=attempt_diagnostics,
             )
+            last_diagnostics = attempt_diagnostics
             if context:
+                if diagnostics is not None:
+                    diagnostics.extend(attempt_diagnostics)
                 return RetrievalPacket(
                     query=query,
                     mode=mode,
@@ -228,9 +239,13 @@ def retrieve_packet(
                     context=context,
                     sources=sources,
                 )
+        if diagnostics is not None:
+            diagnostics.extend(last_diagnostics)
         return RetrievalPacket(query, mode, ranker, _ranker_attempts(ranker)[-1], limit, budget_tokens, 0, 0, "", [])
 
+    last_diagnostics: list[QueryDiagnostics] = []
     for attempt in _ranker_attempts(ranker):
+        attempt_diagnostics: list[QueryDiagnostics] = []
         context, sources = _retrieve_documents(
             root,
             query,
@@ -240,8 +255,12 @@ def retrieve_packet(
             tag_filters,
             system_filters,
             attempt,
+            diagnostics=attempt_diagnostics,
         )
+        last_diagnostics = attempt_diagnostics
         if context:
+            if diagnostics is not None:
+                diagnostics.extend(attempt_diagnostics)
             return RetrievalPacket(
                 query=query,
                 mode=mode,
@@ -254,6 +273,8 @@ def retrieve_packet(
                 context=context,
                 sources=sources,
             )
+    if diagnostics is not None:
+        diagnostics.extend(last_diagnostics)
     return RetrievalPacket(query, mode, ranker, _ranker_attempts(ranker)[-1], limit, budget_tokens, 0, 0, "", [])
 
 

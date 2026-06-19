@@ -107,6 +107,39 @@ class VocabularyTests(unittest.TestCase):
             self.assertIn("knowledge/kubernetes-reference.md", paths)
             self.assertIn("knowledge/rollback-k8s.md", paths)
 
+    def test_search_does_not_or_separate_glossary_groups(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="engineering")
+            write_glossary(root)
+            (root / "knowledge" / "k8s-only.md").write_text(
+                "---\n"
+                "type: Note\n"
+                "title: K8s cluster reference\n"
+                "description: Cluster notes.\n"
+                "tags: [reference]\n"
+                "timestamp: 2026-06-18T00:00:00Z\n"
+                "---\n\n"
+                "# Context\n\nK8s cluster operations.\n",
+                encoding="utf-8",
+            )
+            (root / "knowledge" / "oauth-only.md").write_text(
+                "---\n"
+                "type: Note\n"
+                "title: OAuth reference\n"
+                "description: Identity provider notes.\n"
+                "tags: [reference]\n"
+                "timestamp: 2026-06-18T00:00:00Z\n"
+                "---\n\n"
+                "# Context\n\nOAuth identity provider operations.\n",
+                encoding="utf-8",
+            )
+            rebuild_index(root)
+
+            results = search(root, "kubernetes oauth", limit=3)
+
+            self.assertEqual(results, [])
+
     def test_search_rrf_uses_approved_glossary_alias_when_exact_query_already_matches(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -140,6 +173,10 @@ class VocabularyTests(unittest.TestCase):
 
             self.assertEqual(result.returncode, 0, result.stderr)
             payload = json.loads(result.stdout)
+            diagnostics = payload["query_diagnostics"]
+            self.assertEqual(diagnostics["zero_hit_terms"], ["emergencial"])
+            self.assertIn('"k8s"', diagnostics["relaxed_query"])
+            self.assertNotIn('"emergencial"', diagnostics["relaxed_query"])
             explanation = payload["results"][0]["explanation"]
             matched = {item["term"]: item["fields"] for item in explanation["matched_terms"]}
             self.assertIn("k8s", matched)

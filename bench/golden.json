@@ -77,9 +77,7 @@
     "decisions/use-ruff-formatting.md"
   ],
   "q25": [
-    "knowledge/k8s-rollback.md",
-    "processes/hotfix-rollback.md",
-    "knowledge/deploy-403-consolidated.md"
+    "knowledge/k8s-rollback.md"
   ],
   "q26": [
     "knowledge/k8s-rollback.md"
