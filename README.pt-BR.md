@@ -310,6 +310,7 @@ Veja [examples/README.md](examples/README.md) para mais walkthroughs.
 | [Guia de uso](docs/guides/usage.pt-BR.md) | Guia completo dos comandos |
 | [Assets agentic](agentic/README.md) | Fonte da skill compartilhada para Codex/Hermes |
 | [Adapters para agentes](docs/guides/adapters.pt-BR.md) | Guias gerados para Codex, Claude, OpenCode, Hermes, Copilot e agentes genéricos |
+| [Experimentos de ranking](docs/guides/ranking-experiments.pt-BR.md) | Gates de aceite para tuning de recuperação, RRF e embeddings opcionais |
 | [Vaults de exemplo](examples/README.md) | Exemplos reproduzíveis |
 | [Roadmap](ROADMAP.md) | Fases atuais de implementação |
 | [Changelog](CHANGELOG.md) | Mudanças publicadas |

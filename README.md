@@ -306,6 +306,7 @@ See [examples/README.md](examples/README.md) for more walkthroughs.
 | [Usage guide](docs/guides/usage.md) | Full command guide |
 | [Agentic assets](agentic/README.md) | Shared Codex/Hermes skill source |
 | [Agent adapters](docs/guides/adapters.md) | Generated guides for Codex, Claude, OpenCode, Hermes, Copilot, and generic agents |
+| [Ranking experiments](docs/guides/ranking-experiments.md) | Acceptance gates for retrieval tuning, RRF, and optional embeddings |
 | [Example vaults](examples/README.md) | Reproducible examples |
 | [Roadmap](ROADMAP.md) | Current implementation phases |
 | [Changelog](CHANGELOG.md) | Released changes |

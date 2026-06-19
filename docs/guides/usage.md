@@ -677,15 +677,17 @@ Benchmark topics may include `category`, `mode`, `compare_mode`, `ranker`, and
 returned tokens against `documents`, whether experimental rankers improve
 quality against the default `bm25` baseline, and which workflow class each topic
 protects. The benchmark output includes a `comparison` summary for
-token-reduction comparisons.
+token-reduction comparisons. See
+[Ranking and embedding experiments](ranking-experiments.md) for the acceptance
+criteria used before tuning ranking, RRF, or optional embeddings.
 
 The writeback benchmark uses deterministic cases for create, update, no-op,
 conflict, duplicate avoidance, and target-path accuracy. It does not call a
 model; it exercises ApolloKairn's local similarity and writeback primitives.
 
 `bench/publish_metrics.py` is the publishing step for the GitHub Pages
-dashboard. It runs both deterministic suites, updates current metric values,
-deduplicates the latest history row by date and label, and adds metric deltas
-against the previous run.
+dashboard. It runs the retrieval, writeback, grep baseline, and performance
+suites, updates current metric values, deduplicates the latest history row by
+date and label, and adds metric deltas against the previous run.
 
 The runtime uses only the Python standard library.

@@ -688,15 +688,18 @@ Tópicos do benchmark podem incluir `category`, `mode`, `compare_mode`, `ranker`
 e `compare_ranker`. Isso permite medir se `passages` reduz tokens contra
 `documents`, se rankers experimentais melhoram qualidade contra a linha de base
 `bm25`, e qual classe de workflow cada tópico protege. A saída do benchmark
-inclui um resumo `comparison` para comparações de redução de tokens.
+inclui um resumo `comparison` para comparações de redução de tokens. Veja
+[Experimentos de ranking e embeddings](ranking-experiments.pt-BR.md) para os
+critérios de aceite usados antes de ajustar ranking, RRF ou embeddings opcionais.
 
 O benchmark de escrita usa casos determinísticos para criar, atualizar, no-op,
 conflito, prevenção de duplicatas e acurácia do caminho alvo. Ele não chama
 modelo; exercita os primitivos locais de similaridade e escrita do ApolloKairn.
 
 `bench/publish_metrics.py` é a etapa de publicação para o dashboard do GitHub
-Pages. Ele roda as duas suítes determinísticas, atualiza os valores atuais,
-deduplica a linha mais recente do histórico por data e rótulo e adiciona deltas
-das métricas contra a rodada anterior.
+Pages. Ele roda as suítes de recuperação, writeback, baseline grep e
+performance, atualiza os valores atuais, deduplica a linha mais recente do
+histórico por data e rótulo e adiciona deltas das métricas contra a rodada
+anterior.
 
 O runtime usa apenas a biblioteca padrão do Python.
