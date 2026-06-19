@@ -549,7 +549,7 @@
           "en": "Regression tests",
           "pt": "Testes de regressão"
         },
-        "value": 210,
+        "value": 213,
         "format": "integer",
         "precision": 0,
         "description": {

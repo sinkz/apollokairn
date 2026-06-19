@@ -315,6 +315,16 @@ class BenchTests(unittest.TestCase):
             self.assertEqual(result.returncode, 1)
             self.assertIn("golden regression", result.stderr)
 
+    def test_benchmark_compare_golden_detects_topic_set_regression(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            golden = Path(tmp) / "golden.json"
+            golden.write_text('{"q1":["knowledge/deploy-403.md"]}\n', encoding="utf-8")
+
+            result = run_bench("--compare-golden", str(golden))
+
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("missing from golden", result.stderr)
+
     def test_benchmark_rejects_duplicate_topic_ids(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             base = Path(tmp)

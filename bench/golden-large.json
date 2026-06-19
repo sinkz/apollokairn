@@ -1,0 +1,372 @@
+{
+  "q_large_001": [],
+  "q_large_002": [],
+  "q_large_003": [],
+  "q_large_004": [],
+  "q_large_005": [],
+  "q_large_006": [
+    "knowledge/deploy-drift-006-runbook.md",
+    "references/deploy-drift-006-reference.md",
+    "decisions/deploy-drift-006-decision.md"
+  ],
+  "q_large_007": [
+    "knowledge/deploy-saturation-007-runbook.md",
+    "references/deploy-saturation-007-reference.md",
+    "decisions/deploy-saturation-007-decision.md"
+  ],
+  "q_large_008": [
+    "knowledge/deploy-mismatch-008-runbook.md",
+    "references/deploy-mismatch-008-reference.md",
+    "decisions/deploy-mismatch-008-decision.md"
+  ],
+  "q_large_009": [
+    "knowledge/auth-403-009-runbook.md",
+    "references/auth-403-009-reference.md",
+    "decisions/auth-403-009-decision.md"
+  ],
+  "q_large_010": [
+    "knowledge/auth-expired-010-runbook.md",
+    "decisions/auth-expired-010-decision.md",
+    "references/auth-expired-010-reference.md"
+  ],
+  "q_large_011": [
+    "knowledge/auth-timeout-011-runbook.md",
+    "decisions/auth-timeout-011-decision.md",
+    "references/auth-timeout-011-reference.md"
+  ],
+  "q_large_012": [
+    "knowledge/auth-missing-012-runbook.md",
+    "references/auth-missing-012-reference.md",
+    "decisions/auth-missing-012-decision.md"
+  ],
+  "q_large_013": [
+    "knowledge/auth-duplicate-013-runbook.md",
+    "decisions/auth-duplicate-013-decision.md",
+    "references/auth-duplicate-013-reference.md"
+  ],
+  "q_large_014": [
+    "knowledge/auth-drift-014-runbook.md",
+    "references/auth-drift-014-reference.md",
+    "decisions/auth-drift-014-decision.md"
+  ],
+  "q_large_015": [
+    "knowledge/auth-saturation-015-runbook.md",
+    "references/auth-saturation-015-reference.md",
+    "decisions/auth-saturation-015-decision.md"
+  ],
+  "q_large_016": [
+    "knowledge/auth-mismatch-016-runbook.md",
+    "references/auth-mismatch-016-reference.md",
+    "decisions/auth-mismatch-016-decision.md"
+  ],
+  "q_large_017": [
+    "knowledge/cache-403-017-runbook.md",
+    "references/cache-403-017-reference.md",
+    "decisions/cache-403-017-decision.md"
+  ],
+  "q_large_018": [
+    "knowledge/cache-expired-018-runbook.md",
+    "decisions/cache-expired-018-decision.md",
+    "references/cache-expired-018-reference.md"
+  ],
+  "q_large_019": [
+    "knowledge/cache-timeout-019-runbook.md",
+    "decisions/cache-timeout-019-decision.md",
+    "references/cache-timeout-019-reference.md"
+  ],
+  "q_large_020": [
+    "knowledge/cache-missing-020-runbook.md",
+    "references/cache-missing-020-reference.md",
+    "decisions/cache-missing-020-decision.md"
+  ],
+  "q_large_021": [
+    "knowledge/cache-duplicate-021-runbook.md",
+    "decisions/cache-duplicate-021-decision.md",
+    "references/cache-duplicate-021-reference.md"
+  ],
+  "q_large_022": [
+    "knowledge/cache-drift-022-runbook.md",
+    "decisions/cache-drift-022-decision.md",
+    "references/cache-drift-022-reference.md"
+  ],
+  "q_large_023": [
+    "knowledge/cache-saturation-023-runbook.md",
+    "decisions/cache-saturation-023-decision.md",
+    "references/cache-saturation-023-reference.md"
+  ],
+  "q_large_024": [
+    "knowledge/cache-mismatch-024-runbook.md",
+    "decisions/cache-mismatch-024-decision.md",
+    "references/cache-mismatch-024-reference.md"
+  ],
+  "q_large_025": [
+    "knowledge/database-403-025-runbook.md",
+    "decisions/database-403-025-decision.md",
+    "references/database-403-025-reference.md"
+  ],
+  "q_large_026": [
+    "knowledge/database-expired-026-runbook.md",
+    "decisions/database-expired-026-decision.md",
+    "references/database-expired-026-reference.md"
+  ],
+  "q_large_027": [
+    "knowledge/database-timeout-027-runbook.md",
+    "decisions/database-timeout-027-decision.md",
+    "references/database-timeout-027-reference.md"
+  ],
+  "q_large_028": [
+    "decisions/database-missing-028-decision.md",
+    "knowledge/database-missing-028-runbook.md",
+    "references/database-missing-028-reference.md"
+  ],
+  "q_large_029": [
+    "decisions/database-duplicate-029-decision.md",
+    "knowledge/database-duplicate-029-runbook.md",
+    "references/database-duplicate-029-reference.md"
+  ],
+  "q_large_030": [
+    "decisions/database-drift-030-decision.md",
+    "knowledge/database-drift-030-runbook.md",
+    "references/database-drift-030-reference.md"
+  ],
+  "q_large_031": [
+    "decisions/database-saturation-031-decision.md",
+    "knowledge/database-saturation-031-runbook.md",
+    "references/database-saturation-031-reference.md"
+  ],
+  "q_large_032": [
+    "decisions/database-mismatch-032-decision.md",
+    "knowledge/database-mismatch-032-runbook.md",
+    "references/database-mismatch-032-reference.md"
+  ],
+  "q_large_033": [
+    "decisions/support-403-033-decision.md",
+    "knowledge/support-403-033-runbook.md",
+    "references/support-403-033-reference.md"
+  ],
+  "q_large_034": [
+    "decisions/support-expired-034-decision.md",
+    "knowledge/support-expired-034-runbook.md",
+    "references/support-expired-034-reference.md"
+  ],
+  "q_large_035": [
+    "decisions/support-timeout-035-decision.md",
+    "knowledge/support-timeout-035-runbook.md",
+    "references/support-timeout-035-reference.md"
+  ],
+  "q_large_036": [
+    "decisions/support-missing-036-decision.md",
+    "knowledge/support-missing-036-runbook.md",
+    "references/support-missing-036-reference.md"
+  ],
+  "q_large_037": [
+    "decisions/support-duplicate-037-decision.md",
+    "knowledge/support-duplicate-037-runbook.md",
+    "references/support-duplicate-037-reference.md"
+  ],
+  "q_large_038": [
+    "decisions/support-drift-038-decision.md",
+    "knowledge/support-drift-038-runbook.md",
+    "references/support-drift-038-reference.md"
+  ],
+  "q_large_039": [
+    "decisions/support-saturation-039-decision.md",
+    "knowledge/support-saturation-039-runbook.md",
+    "references/support-saturation-039-reference.md"
+  ],
+  "q_large_040": [
+    "decisions/support-mismatch-040-decision.md",
+    "knowledge/support-mismatch-040-runbook.md",
+    "references/support-mismatch-040-reference.md"
+  ],
+  "q_large_041": [
+    "references/access-403-041-reference.md",
+    "knowledge/access-403-041-runbook.md",
+    "decisions/access-403-041-decision.md"
+  ],
+  "q_large_042": [
+    "references/access-expired-042-reference.md",
+    "knowledge/access-expired-042-runbook.md",
+    "decisions/access-expired-042-decision.md"
+  ],
+  "q_large_043": [
+    "references/access-timeout-043-reference.md",
+    "knowledge/access-timeout-043-runbook.md",
+    "decisions/access-timeout-043-decision.md"
+  ],
+  "q_large_044": [
+    "references/access-missing-044-reference.md",
+    "knowledge/access-missing-044-runbook.md",
+    "decisions/access-missing-044-decision.md"
+  ],
+  "q_large_045": [
+    "references/access-duplicate-045-reference.md",
+    "knowledge/access-duplicate-045-runbook.md",
+    "decisions/access-duplicate-045-decision.md"
+  ],
+  "q_large_046": [
+    "references/access-drift-046-reference.md",
+    "knowledge/access-drift-046-runbook.md",
+    "decisions/access-drift-046-decision.md"
+  ],
+  "q_large_047": [
+    "references/access-saturation-047-reference.md",
+    "knowledge/access-saturation-047-runbook.md",
+    "decisions/access-saturation-047-decision.md"
+  ],
+  "q_large_048": [
+    "decisions/access-mismatch-048-decision.md",
+    "knowledge/access-mismatch-048-runbook.md",
+    "references/access-mismatch-048-reference.md"
+  ],
+  "q_large_049": [
+    "decisions/mobile-403-049-decision.md",
+    "knowledge/mobile-403-049-runbook.md",
+    "references/mobile-403-049-reference.md"
+  ],
+  "q_large_050": [
+    "decisions/mobile-expired-050-decision.md",
+    "knowledge/mobile-expired-050-runbook.md",
+    "references/mobile-expired-050-reference.md"
+  ],
+  "q_large_051": [
+    "decisions/mobile-timeout-051-decision.md",
+    "knowledge/mobile-timeout-051-runbook.md",
+    "references/mobile-timeout-051-reference.md"
+  ],
+  "q_large_052": [
+    "decisions/mobile-missing-052-decision.md",
+    "knowledge/mobile-missing-052-runbook.md",
+    "references/mobile-missing-052-reference.md"
+  ],
+  "q_large_053": [
+    "decisions/mobile-duplicate-053-decision.md",
+    "knowledge/mobile-duplicate-053-runbook.md",
+    "references/mobile-duplicate-053-reference.md"
+  ],
+  "q_large_054": [
+    "decisions/mobile-drift-054-decision.md",
+    "knowledge/mobile-drift-054-runbook.md",
+    "references/mobile-drift-054-reference.md"
+  ],
+  "q_large_055": [
+    "decisions/mobile-saturation-055-decision.md",
+    "knowledge/mobile-saturation-055-runbook.md",
+    "references/mobile-saturation-055-reference.md"
+  ],
+  "q_large_056": [
+    "knowledge/mobile-mismatch-056-runbook.md",
+    "references/mobile-mismatch-056-reference.md",
+    "decisions/mobile-mismatch-056-decision.md"
+  ],
+  "q_large_057": [
+    "knowledge/billing-403-057-runbook.md",
+    "references/billing-403-057-reference.md",
+    "decisions/billing-403-057-decision.md"
+  ],
+  "q_large_058": [
+    "knowledge/billing-expired-058-runbook.md",
+    "references/billing-expired-058-reference.md",
+    "decisions/billing-expired-058-decision.md"
+  ],
+  "q_large_059": [
+    "knowledge/billing-timeout-059-runbook.md",
+    "references/billing-timeout-059-reference.md",
+    "decisions/billing-timeout-059-decision.md"
+  ],
+  "q_large_060": [
+    "knowledge/billing-missing-060-runbook.md",
+    "references/billing-missing-060-reference.md",
+    "decisions/billing-missing-060-decision.md"
+  ],
+  "q_large_061": [
+    "knowledge/billing-duplicate-061-runbook.md",
+    "references/billing-duplicate-061-reference.md",
+    "decisions/billing-duplicate-061-decision.md"
+  ],
+  "q_large_062": [
+    "knowledge/billing-drift-062-runbook.md",
+    "references/billing-drift-062-reference.md",
+    "decisions/billing-drift-062-decision.md"
+  ],
+  "q_large_063": [
+    "knowledge/billing-saturation-063-runbook.md",
+    "references/billing-saturation-063-reference.md",
+    "decisions/billing-saturation-063-decision.md"
+  ],
+  "q_large_064": [
+    "knowledge/billing-mismatch-064-runbook.md",
+    "references/billing-mismatch-064-reference.md",
+    "decisions/billing-mismatch-064-decision.md"
+  ],
+  "q_large_065": [
+    "knowledge/observability-403-065-runbook.md",
+    "references/observability-403-065-reference.md",
+    "decisions/observability-403-065-decision.md"
+  ],
+  "q_large_066": [
+    "knowledge/observability-expired-066-runbook.md",
+    "references/observability-expired-066-reference.md",
+    "decisions/observability-expired-066-decision.md"
+  ],
+  "q_large_067": [
+    "knowledge/observability-timeout-067-runbook.md",
+    "references/observability-timeout-067-reference.md",
+    "decisions/observability-timeout-067-decision.md"
+  ],
+  "q_large_068": [
+    "knowledge/observability-missing-068-runbook.md",
+    "references/observability-missing-068-reference.md",
+    "decisions/observability-missing-068-decision.md"
+  ],
+  "q_large_069": [
+    "knowledge/observability-duplicate-069-runbook.md",
+    "references/observability-duplicate-069-reference.md",
+    "decisions/observability-duplicate-069-decision.md"
+  ],
+  "q_large_070": [
+    "knowledge/observability-drift-070-runbook.md",
+    "references/observability-drift-070-reference.md",
+    "decisions/observability-drift-070-decision.md"
+  ],
+  "q_large_071": [
+    "knowledge/observability-saturation-071-runbook.md",
+    "references/observability-saturation-071-reference.md",
+    "decisions/observability-saturation-071-decision.md"
+  ],
+  "q_large_072": [
+    "knowledge/observability-mismatch-072-runbook.md",
+    "references/observability-mismatch-072-reference.md",
+    "decisions/observability-mismatch-072-decision.md"
+  ],
+  "q_large_073": [
+    "knowledge/search-403-073-runbook.md",
+    "references/search-403-073-reference.md",
+    "decisions/search-403-073-decision.md"
+  ],
+  "q_large_074": [
+    "knowledge/search-expired-074-runbook.md",
+    "references/search-expired-074-reference.md",
+    "decisions/search-expired-074-decision.md"
+  ],
+  "q_large_075": [
+    "knowledge/search-timeout-075-runbook.md"
+  ],
+  "q_large_076": [
+    "knowledge/search-missing-076-runbook.md"
+  ],
+  "q_large_077": [
+    "knowledge/search-duplicate-077-runbook.md"
+  ],
+  "q_large_078": [
+    "knowledge/search-drift-078-runbook.md",
+    "distractors/search-skew-016.md",
+    "distractors/search-skew-056.md"
+  ],
+  "q_large_079": [
+    "knowledge/search-saturation-079-runbook.md"
+  ],
+  "q_large_080": [
+    "knowledge/search-mismatch-080-runbook.md"
+  ]
+}

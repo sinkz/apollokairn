@@ -357,7 +357,14 @@ def compare_golden(actual: dict[str, list[str]], golden_path: Path) -> list[str]
     failures: list[str] = []
     if not isinstance(expected, dict):
         return [f"golden regression: {golden_path} must contain an object"]
-    for qid, expected_docs in expected.items():
+    actual_ids = set(actual)
+    expected_ids = {str(qid) for qid in expected}
+    for missing in sorted(expected_ids - actual_ids):
+        failures.append(f"golden regression: {missing} is in golden but missing from actual run")
+    for extra in sorted(actual_ids - expected_ids):
+        failures.append(f"golden regression: {extra} is in actual run but missing from golden")
+    for qid in sorted(expected_ids & actual_ids):
+        expected_docs = expected[qid]
         if not isinstance(expected_docs, list):
             failures.append(f"golden regression: {qid} expected docs must be a list")
             continue
@@ -443,7 +450,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.write_golden:
         golden_path = Path(args.write_golden)
         golden_path.parent.mkdir(parents=True, exist_ok=True)
-        golden_path.write_text(json.dumps(actual_run, indent=2) + "\n", encoding="utf-8")
+        golden_path.write_text(json.dumps(actual_run, indent=2) + "\n", encoding="utf-8", newline="\n")
     golden_failures: list[str] = []
     if args.compare_golden:
         golden_failures = compare_golden(actual_run, Path(args.compare_golden))

@@ -1,0 +1,80 @@
+{"budget": 700, "category": "no_answer", "id": "q_large_001", "query": "unmapped constellation payroll zephyr 001"}
+{"budget": 700, "category": "no_answer", "id": "q_large_002", "query": "unmapped constellation payroll zephyr 002"}
+{"budget": 700, "category": "no_answer", "id": "q_large_003", "query": "unmapped constellation payroll zephyr 003"}
+{"budget": 700, "category": "no_answer", "id": "q_large_004", "query": "unmapped constellation payroll zephyr 004"}
+{"budget": 700, "category": "no_answer", "id": "q_large_005", "query": "unmapped constellation payroll zephyr 005"}
+{"budget": 700, "category": "exact_error", "id": "q_large_006", "query": "deployment drift artifact skew rollback"}
+{"budget": 700, "category": "exact_error", "id": "q_large_007", "query": "deployment saturation artifact pressure rollback"}
+{"budget": 700, "category": "exact_error", "id": "q_large_008", "query": "deployment mismatch artifact inconsistent rollback"}
+{"budget": 700, "category": "exact_error", "id": "q_large_009", "query": "authentication 403 token forbidden identity"}
+{"budget": 700, "category": "exact_error", "id": "q_large_010", "query": "authentication expired token stale identity"}
+{"budget": 700, "category": "exact_error", "id": "q_large_011", "query": "authentication timeout token latency identity"}
+{"budget": 700, "category": "exact_error", "id": "q_large_012", "query": "authentication missing token not found identity"}
+{"budget": 700, "category": "exact_error", "id": "q_large_013", "query": "authentication duplicate token repeat identity"}
+{"budget": 700, "category": "exact_error", "id": "q_large_014", "query": "authentication drift token skew identity"}
+{"budget": 700, "category": "exact_error", "id": "q_large_015", "query": "authentication saturation token pressure identity"}
+{"budget": 700, "category": "exact_error", "id": "q_large_016", "query": "authentication mismatch token inconsistent identity"}
+{"budget": 700, "category": "exact_error", "id": "q_large_017", "query": "cache 403 failover forbidden reconnection"}
+{"budget": 700, "category": "paraphrase", "id": "q_large_018", "query": "invalid state cache reconnection recovery playbook"}
+{"budget": 700, "category": "paraphrase", "id": "q_large_019", "query": "slow response cache reconnection recovery playbook"}
+{"budget": 700, "category": "paraphrase", "id": "q_large_020", "query": "absent record cache reconnection recovery playbook"}
+{"budget": 700, "category": "paraphrase", "id": "q_large_021", "query": "repeated entry cache reconnection recovery playbook"}
+{"budget": 700, "category": "paraphrase", "id": "q_large_022", "query": "clock mismatch cache reconnection recovery playbook"}
+{"budget": 700, "category": "paraphrase", "id": "q_large_023", "query": "capacity limit cache reconnection recovery playbook"}
+{"budget": 700, "category": "paraphrase", "id": "q_large_024", "query": "contract difference cache reconnection recovery playbook"}
+{"budget": 700, "category": "paraphrase", "id": "q_large_025", "query": "authorization denied database connection recovery playbook"}
+{"budget": 700, "category": "paraphrase", "id": "q_large_026", "query": "invalid state database connection recovery playbook"}
+{"budget": 700, "category": "paraphrase", "id": "q_large_027", "query": "slow response database connection recovery playbook"}
+{"budget": 700, "category": "role_workflow", "id": "q_large_028", "query": "owner triage database not found customer impact escalation"}
+{"budget": 700, "category": "role_workflow", "id": "q_large_029", "query": "owner triage database repeat customer impact escalation"}
+{"budget": 700, "category": "role_workflow", "id": "q_large_030", "query": "owner triage database skew customer impact escalation"}
+{"budget": 700, "category": "role_workflow", "id": "q_large_031", "query": "owner triage database pressure customer impact escalation"}
+{"budget": 700, "category": "role_workflow", "id": "q_large_032", "query": "owner triage database inconsistent customer impact escalation"}
+{"budget": 700, "category": "role_workflow", "id": "q_large_033", "query": "owner triage support forbidden customer impact escalation"}
+{"budget": 700, "category": "role_workflow", "id": "q_large_034", "query": "owner triage support stale customer impact escalation"}
+{"budget": 700, "category": "role_workflow", "id": "q_large_035", "query": "owner triage support latency customer impact escalation"}
+{"budget": 700, "category": "role_workflow", "id": "q_large_036", "query": "owner triage support not found customer impact escalation"}
+{"budget": 700, "category": "role_workflow", "id": "q_large_037", "query": "owner triage support repeat customer impact escalation"}
+{"budget": 700, "category": "cross_doc", "id": "q_large_038", "query": "support customer escalation skew decision runbook"}
+{"budget": 700, "category": "cross_doc", "id": "q_large_039", "query": "support customer escalation pressure decision runbook"}
+{"budget": 700, "category": "cross_doc", "id": "q_large_040", "query": "support customer escalation inconsistent decision runbook"}
+{"budget": 700, "category": "cross_doc", "id": "q_large_041", "query": "access approval audit forbidden decision runbook"}
+{"budget": 700, "category": "cross_doc", "id": "q_large_042", "query": "access approval audit stale decision runbook"}
+{"budget": 700, "category": "cross_doc", "id": "q_large_043", "query": "access approval audit latency decision runbook"}
+{"budget": 700, "category": "cross_doc", "id": "q_large_044", "query": "access approval audit not found decision runbook"}
+{"budget": 700, "category": "cross_doc", "id": "q_large_045", "query": "access approval audit repeat decision runbook"}
+{"budget": 700, "category": "cross_doc", "id": "q_large_046", "query": "access approval audit skew decision runbook"}
+{"budget": 700, "category": "cross_doc", "id": "q_large_047", "query": "access approval audit pressure decision runbook"}
+{"budget": 700, "category": "pt_br", "id": "q_large_048", "query": "access inconsistent resolver incidente cliente prioridade"}
+{"budget": 700, "category": "pt_br", "id": "q_large_049", "query": "mobile forbidden resolver incidente cliente prioridade"}
+{"budget": 700, "category": "pt_br", "id": "q_large_050", "query": "mobile stale resolver incidente cliente prioridade"}
+{"budget": 700, "category": "pt_br", "id": "q_large_051", "query": "mobile latency resolver incidente cliente prioridade"}
+{"budget": 700, "category": "pt_br", "id": "q_large_052", "query": "mobile not found resolver incidente cliente prioridade"}
+{"budget": 700, "category": "pt_br", "id": "q_large_053", "query": "mobile repeat resolver incidente cliente prioridade"}
+{"budget": 700, "category": "pt_br", "id": "q_large_054", "query": "mobile skew resolver incidente cliente prioridade"}
+{"budget": 700, "category": "pt_br", "id": "q_large_055", "query": "mobile pressure resolver incidente cliente prioridade"}
+{"budget": 300, "category": "passage_budget", "compare_mode": "documents", "id": "q_large_056", "mode": "passages", "query": "mobile store inconsistent diagnosis resolution checklist"}
+{"budget": 300, "category": "passage_budget", "compare_mode": "documents", "id": "q_large_057", "mode": "passages", "query": "billing payment forbidden diagnosis resolution checklist"}
+{"budget": 300, "category": "passage_budget", "compare_mode": "documents", "id": "q_large_058", "mode": "passages", "query": "billing payment stale diagnosis resolution checklist"}
+{"budget": 300, "category": "passage_budget", "compare_mode": "documents", "id": "q_large_059", "mode": "passages", "query": "billing payment latency diagnosis resolution checklist"}
+{"budget": 300, "category": "passage_budget", "compare_mode": "documents", "id": "q_large_060", "mode": "passages", "query": "billing payment not found diagnosis resolution checklist"}
+{"budget": 300, "category": "passage_budget", "compare_mode": "documents", "id": "q_large_061", "mode": "passages", "query": "billing payment repeat diagnosis resolution checklist"}
+{"budget": 300, "category": "passage_budget", "compare_mode": "documents", "id": "q_large_062", "mode": "passages", "query": "billing payment skew diagnosis resolution checklist"}
+{"budget": 300, "category": "passage_budget", "compare_mode": "documents", "id": "q_large_063", "mode": "passages", "query": "billing payment pressure diagnosis resolution checklist"}
+{"budget": 300, "category": "passage_budget", "compare_mode": "documents", "id": "q_large_064", "mode": "passages", "query": "billing payment inconsistent diagnosis resolution checklist"}
+{"budget": 300, "category": "passage_budget", "compare_mode": "documents", "id": "q_large_065", "mode": "passages", "query": "observability trace forbidden diagnosis resolution checklist"}
+{"budget": 700, "category": "noisy_query", "compare_ranker": "bm25", "id": "q_large_066", "query": "observability expired trace stale asteroid irrelevant extra", "ranker": "rrf"}
+{"budget": 700, "category": "noisy_query", "compare_ranker": "bm25", "id": "q_large_067", "query": "observability timeout trace latency asteroid irrelevant extra", "ranker": "rrf"}
+{"budget": 700, "category": "noisy_query", "compare_ranker": "bm25", "id": "q_large_068", "query": "observability missing trace not found asteroid irrelevant extra", "ranker": "rrf"}
+{"budget": 700, "category": "noisy_query", "compare_ranker": "bm25", "id": "q_large_069", "query": "observability duplicate trace repeat asteroid irrelevant extra", "ranker": "rrf"}
+{"budget": 700, "category": "noisy_query", "compare_ranker": "bm25", "id": "q_large_070", "query": "observability drift trace skew asteroid irrelevant extra", "ranker": "rrf"}
+{"budget": 700, "category": "noisy_query", "compare_ranker": "bm25", "id": "q_large_071", "query": "observability saturation trace pressure asteroid irrelevant extra", "ranker": "rrf"}
+{"budget": 700, "category": "noisy_query", "compare_ranker": "bm25", "id": "q_large_072", "query": "observability mismatch trace inconsistent asteroid irrelevant extra", "ranker": "rrf"}
+{"budget": 700, "category": "noisy_query", "compare_ranker": "bm25", "id": "q_large_073", "query": "search 403 retrieval forbidden asteroid irrelevant extra", "ranker": "rrf"}
+{"budget": 700, "category": "noisy_query", "compare_ranker": "bm25", "id": "q_large_074", "query": "search expired retrieval stale asteroid irrelevant extra", "ranker": "rrf"}
+{"budget": 700, "category": "filtered", "id": "q_large_075", "query": "search retrieval latency ranking", "system": "search", "type": "Runbook"}
+{"budget": 700, "category": "filtered", "id": "q_large_076", "query": "search retrieval not found ranking", "system": "search", "type": "Runbook"}
+{"budget": 700, "category": "filtered", "id": "q_large_077", "query": "search retrieval repeat ranking", "system": "search", "type": "Runbook"}
+{"budget": 700, "category": "filtered", "id": "q_large_078", "query": "search retrieval skew ranking", "system": "search", "type": "Runbook"}
+{"budget": 700, "category": "filtered", "id": "q_large_079", "query": "search retrieval pressure ranking", "system": "search", "type": "Runbook"}
+{"budget": 700, "category": "filtered", "id": "q_large_080", "query": "search retrieval inconsistent ranking", "system": "search", "type": "Runbook"}
