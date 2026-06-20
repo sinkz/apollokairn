@@ -580,6 +580,7 @@ apollokairn usage enable --path ~/brain
 apollokairn usage report --path ~/brain
 apollokairn usage report --path ~/brain --html
 apollokairn usage report --path ~/brain --json
+apollokairn usage evidence --path ~/brain --json
 apollokairn usage disable --path ~/brain
 ```
 
@@ -587,6 +588,10 @@ When enabled, ApolloKairn writes redacted command events to
 `.cairn/usage/events.jsonl`. `usage report --html` writes a local static page to
 `.cairn/reports/usage.html` and a JSON summary to
 `.cairn/reports/usage-summary.json`.
+`usage evidence` writes `.cairn/reports/usage-evidence.json`, an aggregate
+decision pack with no-result rates, no-source retrieval rates, passage retrieval
+usage, query examples after redaction, and notes about whether there is enough
+local evidence to review ranking, RRF, or embeddings.
 
 Usage metrics are local and disabled by default. Events include command names,
 redacted queries, paths returned or touched, elapsed time, result counts, and
@@ -687,7 +692,7 @@ python bench/run_eval.py --quiet --compare-golden bench/golden.json
 python bench/run_grep_baseline.py --quiet --compare-golden bench/grep-golden.json
 python bench/run_writeback_eval.py --quiet --compare-golden bench/writeback/golden.json
 python bench/run_perf_eval.py --quiet --repeat 1
-python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 251
+python bench/publish_metrics.py --output docs/data/benchmarks.json --tests 253
 ```
 
 Benchmark topics may include `category`, `mode`, `compare_mode`, `ranker`, and

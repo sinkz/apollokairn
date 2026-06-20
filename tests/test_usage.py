@@ -143,6 +143,69 @@ class UsageTests(unittest.TestCase):
             self.assertIn("ApolloKairn Usage Report", page)
             self.assertIn("deploy", page)
 
+    def test_usage_evidence_generates_decision_pack_from_local_events(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="engineering")
+            note_path = write_note(root)
+            rebuild_index(root)
+            run_cairn(root, "usage", "enable")
+            commands = [
+                run_cairn(root, "search", "deploy 403", "--json"),
+                run_cairn(root, "search", "constellation payroll", "--json"),
+                run_cairn(root, "retrieve", "deploy 403", "--mode", "passages", "--ranker", "auto", "--budget", "300", "--json"),
+                run_cairn(root, "retrieve", "constellation payroll", "--mode", "passages", "--ranker", "auto", "--budget", "300", "--json"),
+                run_cairn(root, "update", note_path, "--append", "Also verify token scope."),
+            ]
+            for result in commands:
+                self.assertEqual(result.returncode, 0, result.stderr)
+
+            evidence = run_cairn(root, "usage", "evidence", "--json")
+
+            self.assertEqual(evidence.returncode, 0, evidence.stderr)
+            payload = json.loads(evidence.stdout)
+            self.assertEqual(payload["event_count"], 5)
+            self.assertEqual(payload["observation_counts"]["searches"], 2)
+            self.assertEqual(payload["observation_counts"]["retrieves"], 2)
+            self.assertEqual(payload["observation_counts"]["writes"], 1)
+            self.assertEqual(payload["observation_counts"]["zero_result_searches"], 1)
+            self.assertEqual(payload["observation_counts"]["zero_source_retrieves"], 1)
+            self.assertEqual(payload["observation_counts"]["passage_retrieves"], 2)
+            self.assertEqual(payload["rates"]["zero_result_search_rate"], 0.5)
+            self.assertEqual(payload["rates"]["zero_source_retrieve_rate"], 0.5)
+            self.assertEqual(payload["rates"]["retrieve_per_search_rate"], 1.0)
+            self.assertEqual(payload["privacy"]["stores_note_bodies"], False)
+            self.assertEqual(payload["privacy"]["stores_snippets"], False)
+            self.assertIn("ranker_or_embedding_decision", payload["decision_notes"])
+            report_path = root / payload["report_path"]
+            self.assertTrue(report_path.is_file())
+            self.assertEqual(json.loads(report_path.read_text(encoding="utf-8"))["event_count"], 5)
+
+    def test_usage_evidence_does_not_store_note_bodies_snippets_or_secret_like_values(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="engineering")
+            write_note(root)
+            rebuild_index(root)
+            run_cairn(root, "usage", "enable")
+            token = "ghp_1234567890abcdefghijklmnop"
+            search = run_cairn(root, "search", f"deploy {token}", "--json")
+            retrieve = run_cairn(root, "retrieve", "deploy 403", "--budget", "300", "--json")
+            self.assertEqual(search.returncode, 0, search.stderr)
+            self.assertEqual(retrieve.returncode, 0, retrieve.stderr)
+
+            evidence = run_cairn(root, "usage", "evidence", "--json")
+
+            self.assertEqual(evidence.returncode, 0, evidence.stderr)
+            serialized = json.dumps(json.loads(evidence.stdout))
+            report_path = root / json.loads(evidence.stdout)["report_path"]
+            artifact = report_path.read_text(encoding="utf-8")
+            self.assertNotIn(token, serialized)
+            self.assertNotIn(token, artifact)
+            self.assertNotIn("Update the CI secret", artifact)
+            self.assertNotIn('"snippet":', artifact)
+            self.assertIn("[REDACTED:GitHub token]", artifact)
+
     def test_usage_events_redact_secret_like_query_values(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

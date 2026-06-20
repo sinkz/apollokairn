@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-19",
+  "updated_at": "2026-06-20",
   "suites": [
     {
       "id": "retrieval",
@@ -37,7 +37,7 @@
               "value": 0.0,
               "direction": "flat",
               "trend": "flat",
-              "baseline_date": "2026-06-18",
+              "baseline_date": "2026-06-19",
               "baseline_label": "BM25 + glossary aliases"
             }
           },
@@ -58,7 +58,7 @@
               "value": 0.0,
               "direction": "flat",
               "trend": "flat",
-              "baseline_date": "2026-06-18",
+              "baseline_date": "2026-06-19",
               "baseline_label": "BM25 + glossary aliases"
             }
           },
@@ -79,7 +79,7 @@
               "value": 0.0,
               "direction": "flat",
               "trend": "flat",
-              "baseline_date": "2026-06-18",
+              "baseline_date": "2026-06-19",
               "baseline_label": "BM25 + glossary aliases"
             }
           },
@@ -97,10 +97,10 @@
               "pt": "Recuperação por passagens retorna muito menos texto que abrir documentos completos."
             },
             "delta": {
-              "value": 0.0095,
-              "direction": "up",
-              "trend": "better",
-              "baseline_date": "2026-06-18",
+              "value": 0.0,
+              "direction": "flat",
+              "trend": "flat",
+              "baseline_date": "2026-06-19",
               "baseline_label": "BM25 + glossary aliases"
             }
           },
@@ -121,7 +121,7 @@
               "value": 0.0,
               "direction": "flat",
               "trend": "flat",
-              "baseline_date": "2026-06-18",
+              "baseline_date": "2026-06-19",
               "baseline_label": "BM25 + glossary aliases"
             }
           }
@@ -721,6 +721,296 @@
               "mean_returned_tokens": 142.4286
             }
           }
+        },
+        {
+          "date": "2026-06-20",
+          "label": "BM25 + glossary aliases",
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 0.9941,
+          "context_reduction": 0.9278,
+          "comparison_reduction": 0.5373,
+          "corpus": {
+            "markdown_files": 25,
+            "topics": 28,
+            "qrel_rows": 31,
+            "positive_qrels": 31,
+            "answerable_topics": 28,
+            "no_answer_topics": 0,
+            "mean_positive_qrels_per_answerable_topic": 1.1071,
+            "slices": [
+              "access",
+              "alias",
+              "duplicates",
+              "exact_error",
+              "filters",
+              "library",
+              "multilingual",
+              "passage_budget",
+              "role_workflow",
+              "rrf_extra_terms",
+              "rrf_filter",
+              "rrf_inflection",
+              "rrf_passage",
+              "same_problem_synonyms",
+              "support_access_synonyms",
+              "tooling_abbreviation",
+              "vocabulary"
+            ],
+            "topics_by_slice": {
+              "access": 1,
+              "alias": 1,
+              "duplicates": 1,
+              "exact_error": 4,
+              "filters": 3,
+              "library": 2,
+              "multilingual": 1,
+              "passage_budget": 5,
+              "role_workflow": 2,
+              "rrf_extra_terms": 1,
+              "rrf_filter": 1,
+              "rrf_inflection": 1,
+              "rrf_passage": 1,
+              "same_problem_synonyms": 1,
+              "support_access_synonyms": 1,
+              "tooling_abbreviation": 1,
+              "vocabulary": 1
+            }
+          },
+          "slice_metrics": [
+            {
+              "slice": "access",
+              "topics": 1,
+              "mean_recall_at_k": 1.0,
+              "mean_mrr_at_k": 1.0,
+              "mean_ndcg_at_k": 1.0,
+              "returned_tokens": 242,
+              "mean_returned_tokens": 242.0,
+              "context_reduction": 0.9222,
+              "budget_compliance_rate": 1.0,
+              "false_positive_rate": 0.0
+            },
+            {
+              "slice": "alias",
+              "topics": 1,
+              "mean_recall_at_k": 1.0,
+              "mean_mrr_at_k": 1.0,
+              "mean_ndcg_at_k": 1.0,
+              "returned_tokens": 239,
+              "mean_returned_tokens": 239.0,
+              "context_reduction": 0.9232,
+              "budget_compliance_rate": 1.0,
+              "false_positive_rate": 0.0
+            },
+            {
+              "slice": "duplicates",
+              "topics": 1,
+              "mean_recall_at_k": 1.0,
+              "mean_mrr_at_k": 1.0,
+              "mean_ndcg_at_k": 1.0,
+              "returned_tokens": 385,
+              "mean_returned_tokens": 385.0,
+              "context_reduction": 0.8763,
+              "budget_compliance_rate": 1.0,
+              "false_positive_rate": 0.0
+            },
+            {
+              "slice": "exact_error",
+              "topics": 4,
+              "mean_recall_at_k": 1.0,
+              "mean_mrr_at_k": 1.0,
+              "mean_ndcg_at_k": 0.9585,
+              "returned_tokens": 1121,
+              "mean_returned_tokens": 280.25,
+              "context_reduction": 0.9099,
+              "budget_compliance_rate": 1.0,
+              "false_positive_rate": 0.0
+            },
+            {
+              "slice": "filters",
+              "topics": 3,
+              "mean_recall_at_k": 1.0,
+              "mean_mrr_at_k": 1.0,
+              "mean_ndcg_at_k": 1.0,
+              "returned_tokens": 770,
+              "mean_returned_tokens": 256.6667,
+              "context_reduction": 0.9175,
+              "budget_compliance_rate": 1.0,
+              "false_positive_rate": 0.0
+            },
+            {
+              "slice": "library",
+              "topics": 2,
+              "mean_recall_at_k": 1.0,
+              "mean_mrr_at_k": 1.0,
+              "mean_ndcg_at_k": 1.0,
+              "returned_tokens": 450,
+              "mean_returned_tokens": 225.0,
+              "context_reduction": 0.9277,
+              "budget_compliance_rate": 1.0,
+              "false_positive_rate": 0.0
+            },
+            {
+              "slice": "multilingual",
+              "topics": 1,
+              "mean_recall_at_k": 1.0,
+              "mean_mrr_at_k": 1.0,
+              "mean_ndcg_at_k": 1.0,
+              "returned_tokens": 207,
+              "mean_returned_tokens": 207.0,
+              "context_reduction": 0.9335,
+              "budget_compliance_rate": 1.0,
+              "false_positive_rate": 0.0
+            },
+            {
+              "slice": "passage_budget",
+              "topics": 5,
+              "mean_recall_at_k": 1.0,
+              "mean_mrr_at_k": 1.0,
+              "mean_ndcg_at_k": 1.0,
+              "returned_tokens": 521,
+              "mean_returned_tokens": 104.2,
+              "context_reduction": 0.9665,
+              "budget_compliance_rate": 1.0,
+              "false_positive_rate": 0.0
+            },
+            {
+              "slice": "role_workflow",
+              "topics": 2,
+              "mean_recall_at_k": 1.0,
+              "mean_mrr_at_k": 1.0,
+              "mean_ndcg_at_k": 1.0,
+              "returned_tokens": 462,
+              "mean_returned_tokens": 231.0,
+              "context_reduction": 0.9258,
+              "budget_compliance_rate": 1.0,
+              "false_positive_rate": 0.0
+            },
+            {
+              "slice": "rrf_extra_terms",
+              "topics": 1,
+              "mean_recall_at_k": 1.0,
+              "mean_mrr_at_k": 1.0,
+              "mean_ndcg_at_k": 1.0,
+              "returned_tokens": 593,
+              "mean_returned_tokens": 593.0,
+              "context_reduction": 0.8094,
+              "budget_compliance_rate": 1.0,
+              "false_positive_rate": 0.0
+            },
+            {
+              "slice": "rrf_filter",
+              "topics": 1,
+              "mean_recall_at_k": 1.0,
+              "mean_mrr_at_k": 1.0,
+              "mean_ndcg_at_k": 1.0,
+              "returned_tokens": 236,
+              "mean_returned_tokens": 236.0,
+              "context_reduction": 0.9242,
+              "budget_compliance_rate": 1.0,
+              "false_positive_rate": 0.0
+            },
+            {
+              "slice": "rrf_inflection",
+              "topics": 1,
+              "mean_recall_at_k": 1.0,
+              "mean_mrr_at_k": 1.0,
+              "mean_ndcg_at_k": 1.0,
+              "returned_tokens": 188,
+              "mean_returned_tokens": 188.0,
+              "context_reduction": 0.9396,
+              "budget_compliance_rate": 1.0,
+              "false_positive_rate": 0.0
+            },
+            {
+              "slice": "rrf_passage",
+              "topics": 1,
+              "mean_recall_at_k": 1.0,
+              "mean_mrr_at_k": 1.0,
+              "mean_ndcg_at_k": 1.0,
+              "returned_tokens": 89,
+              "mean_returned_tokens": 89.0,
+              "context_reduction": 0.9714,
+              "budget_compliance_rate": 1.0,
+              "false_positive_rate": 0.0
+            },
+            {
+              "slice": "same_problem_synonyms",
+              "topics": 1,
+              "mean_recall_at_k": 1.0,
+              "mean_mrr_at_k": 1.0,
+              "mean_ndcg_at_k": 1.0,
+              "returned_tokens": 157,
+              "mean_returned_tokens": 157.0,
+              "context_reduction": 0.9496,
+              "budget_compliance_rate": 1.0,
+              "false_positive_rate": 0.0
+            },
+            {
+              "slice": "support_access_synonyms",
+              "topics": 1,
+              "mean_recall_at_k": 1.0,
+              "mean_mrr_at_k": 1.0,
+              "mean_ndcg_at_k": 1.0,
+              "returned_tokens": 243,
+              "mean_returned_tokens": 243.0,
+              "context_reduction": 0.9219,
+              "budget_compliance_rate": 1.0,
+              "false_positive_rate": 0.0
+            },
+            {
+              "slice": "tooling_abbreviation",
+              "topics": 1,
+              "mean_recall_at_k": 1.0,
+              "mean_mrr_at_k": 1.0,
+              "mean_ndcg_at_k": 1.0,
+              "returned_tokens": 230,
+              "mean_returned_tokens": 230.0,
+              "context_reduction": 0.9261,
+              "budget_compliance_rate": 1.0,
+              "false_positive_rate": 0.0
+            },
+            {
+              "slice": "vocabulary",
+              "topics": 1,
+              "mean_recall_at_k": 1.0,
+              "mean_mrr_at_k": 1.0,
+              "mean_ndcg_at_k": 1.0,
+              "returned_tokens": 157,
+              "mean_returned_tokens": 157.0,
+              "context_reduction": 0.9496,
+              "budget_compliance_rate": 1.0,
+              "false_positive_rate": 0.0
+            }
+          ],
+          "quality": {
+            "limit": 3,
+            "mean_recall_at_k": 1.0,
+            "mean_mrr_at_k": 1.0,
+            "mean_ndcg_at_k": 0.9941
+          },
+          "efficiency": {
+            "full_context_tokens": 87136,
+            "returned_tokens": 6290,
+            "context_reduction": 0.9278,
+            "budget_compliance_rate": 1.0
+          },
+          "baselines": {
+            "grep_raw_read": {
+              "suite": "grep_raw_read",
+              "command": "python bench/run_grep_baseline.py --quiet --compare-golden bench/grep-golden.json",
+              "topics": 28,
+              "max_files": 20,
+              "mean_recall_at_k": 0.7857,
+              "mean_mrr_at_k": 0.7857,
+              "mean_ndcg_at_k": 0.7857,
+              "false_positive_rate": 0.0,
+              "files_read": 25,
+              "mean_files_read": 0.8929,
+              "returned_tokens": 3988,
+              "mean_returned_tokens": 142.4286
+            }
+          }
         }
       ]
     },
@@ -760,7 +1050,7 @@
               "value": 0.0,
               "direction": "flat",
               "trend": "flat",
-              "baseline_date": "2026-06-18",
+              "baseline_date": "2026-06-19",
               "baseline_label": "similarity-threshold-v1"
             }
           },
@@ -781,7 +1071,7 @@
               "value": 0.0,
               "direction": "flat",
               "trend": "flat",
-              "baseline_date": "2026-06-18",
+              "baseline_date": "2026-06-19",
               "baseline_label": "similarity-threshold-v1"
             }
           },
@@ -802,7 +1092,7 @@
               "value": 0.0,
               "direction": "flat",
               "trend": "flat",
-              "baseline_date": "2026-06-18",
+              "baseline_date": "2026-06-19",
               "baseline_label": "similarity-threshold-v1"
             }
           },
@@ -823,7 +1113,7 @@
               "value": 0.0,
               "direction": "flat",
               "trend": "flat",
-              "baseline_date": "2026-06-18",
+              "baseline_date": "2026-06-19",
               "baseline_label": "similarity-threshold-v1"
             }
           },
@@ -844,7 +1134,7 @@
               "value": 0.0,
               "direction": "flat",
               "trend": "flat",
-              "baseline_date": "2026-06-18",
+              "baseline_date": "2026-06-19",
               "baseline_label": "similarity-threshold-v1"
             }
           },
@@ -865,7 +1155,7 @@
               "value": 0,
               "direction": "flat",
               "trend": "flat",
-              "baseline_date": "2026-06-18",
+              "baseline_date": "2026-06-19",
               "baseline_label": "similarity-threshold-v1"
             }
           }
@@ -896,6 +1186,16 @@
           "conflict_detection_rate": 1.0,
           "duplicate_avoidance_rate": 1.0,
           "writeback_cases": 11
+        },
+        {
+          "date": "2026-06-20",
+          "label": "similarity-threshold-v1",
+          "decision_accuracy": 1.0,
+          "target_path_accuracy": 1.0,
+          "noop_accuracy": 1.0,
+          "conflict_detection_rate": 1.0,
+          "duplicate_avoidance_rate": 1.0,
+          "writeback_cases": 11
         }
       ]
     },
@@ -911,7 +1211,14 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 120.0442
+            "value": 135.2001,
+            "delta": {
+              "value": 15.1559,
+              "direction": "up",
+              "trend": "better",
+              "baseline_date": "2026-06-19",
+              "baseline_label": "large-fixture-local"
+            }
           },
           {
             "id": "search_p95_ms",
@@ -921,7 +1228,14 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 124.7068
+            "value": 161.3251,
+            "delta": {
+              "value": 36.6183,
+              "direction": "up",
+              "trend": "better",
+              "baseline_date": "2026-06-19",
+              "baseline_label": "large-fixture-local"
+            }
           },
           {
             "id": "retrieve_p50_ms",
@@ -931,7 +1245,14 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 121.2694
+            "value": 134.8535,
+            "delta": {
+              "value": 13.5841,
+              "direction": "up",
+              "trend": "better",
+              "baseline_date": "2026-06-19",
+              "baseline_label": "large-fixture-local"
+            }
           },
           {
             "id": "retrieve_p95_ms",
@@ -941,7 +1262,14 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 127.3347
+            "value": 174.4888,
+            "delta": {
+              "value": 47.1541,
+              "direction": "up",
+              "trend": "better",
+              "baseline_date": "2026-06-19",
+              "baseline_label": "large-fixture-local"
+            }
           },
           {
             "id": "full_index_ms",
@@ -951,7 +1279,14 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 770.5323
+            "value": 1056.6063,
+            "delta": {
+              "value": 286.074,
+              "direction": "up",
+              "trend": "better",
+              "baseline_date": "2026-06-19",
+              "baseline_label": "large-fixture-local"
+            }
           },
           {
             "id": "incremental_index_ms",
@@ -961,7 +1296,14 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 143.5944
+            "value": 151.5602,
+            "delta": {
+              "value": 7.9658,
+              "direction": "up",
+              "trend": "better",
+              "baseline_date": "2026-06-19",
+              "baseline_label": "large-fixture-local"
+            }
           },
           {
             "id": "index_db_bytes",
@@ -971,7 +1313,14 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 1744896
+            "value": 1744896,
+            "delta": {
+              "value": 0,
+              "direction": "flat",
+              "trend": "flat",
+              "baseline_date": "2026-06-19",
+              "baseline_label": "large-fixture-local"
+            }
           }
         ],
         "summary": {
@@ -979,8 +1328,8 @@
           "topics": 80,
           "repeat": 1,
           "limit": 3,
-          "full_index_ms": 770.5323,
-          "incremental_index_ms": 143.5944,
+          "full_index_ms": 1056.6063,
+          "incremental_index_ms": 151.5602,
           "incremental_index": {
             "updated": 1,
             "removed": 0,
@@ -989,17 +1338,17 @@
           "index_db_bytes": 1744896,
           "search_ms": {
             "samples": 80,
-            "min": 116.0717,
-            "p50": 120.0442,
-            "p95": 124.7068,
-            "max": 134.2551
+            "min": 124.0394,
+            "p50": 135.2001,
+            "p95": 161.3251,
+            "max": 267.9442
           },
           "retrieve_ms": {
             "samples": 80,
-            "min": 116.8805,
-            "p50": 121.2694,
-            "p95": 127.3347,
-            "max": 131.9039
+            "min": 126.4311,
+            "p50": 134.8535,
+            "p95": 174.4888,
+            "max": 222.5189
           }
         }
       },
@@ -1014,6 +1363,18 @@
           "retrieve_p95_ms": 127.3347,
           "full_index_ms": 770.5323,
           "incremental_index_ms": 143.5944,
+          "index_db_bytes": 1744896
+        },
+        {
+          "date": "2026-06-20",
+          "label": "large-fixture-local",
+          "topics": 80,
+          "search_p50_ms": 135.2001,
+          "search_p95_ms": 161.3251,
+          "retrieve_p50_ms": 134.8535,
+          "retrieve_p95_ms": 174.4888,
+          "full_index_ms": 1056.6063,
+          "incremental_index_ms": 151.5602,
           "index_db_bytes": 1744896
         }
       ],
@@ -1050,7 +1411,7 @@
           "value": 0.0,
           "direction": "flat",
           "trend": "flat",
-          "baseline_date": "2026-06-18",
+          "baseline_date": "2026-06-19",
           "baseline_label": "BM25 + glossary aliases"
         }
       },
@@ -1071,7 +1432,7 @@
           "value": 0.0,
           "direction": "flat",
           "trend": "flat",
-          "baseline_date": "2026-06-18",
+          "baseline_date": "2026-06-19",
           "baseline_label": "BM25 + glossary aliases"
         }
       },
@@ -1092,7 +1453,7 @@
           "value": 0.0,
           "direction": "flat",
           "trend": "flat",
-          "baseline_date": "2026-06-18",
+          "baseline_date": "2026-06-19",
           "baseline_label": "BM25 + glossary aliases"
         }
       },
@@ -1110,10 +1471,10 @@
           "pt": "Recuperação por passagens retorna muito menos texto que abrir documentos completos."
         },
         "delta": {
-          "value": 0.0095,
-          "direction": "up",
-          "trend": "better",
-          "baseline_date": "2026-06-18",
+          "value": 0.0,
+          "direction": "flat",
+          "trend": "flat",
+          "baseline_date": "2026-06-19",
           "baseline_label": "BM25 + glossary aliases"
         }
       },
@@ -1134,7 +1495,7 @@
           "value": 0.0,
           "direction": "flat",
           "trend": "flat",
-          "baseline_date": "2026-06-18",
+          "baseline_date": "2026-06-19",
           "baseline_label": "BM25 + glossary aliases"
         }
       },
@@ -1144,7 +1505,7 @@
           "en": "Regression tests",
           "pt": "Testes de regressão"
         },
-        "value": 251,
+        "value": 253,
         "format": "integer",
         "precision": 0,
         "description": {
@@ -1467,6 +1828,296 @@
     },
     {
       "date": "2026-06-19",
+      "label": "BM25 + glossary aliases",
+      "recall_at_3": 1.0,
+      "mrr_at_3": 1.0,
+      "ndcg_at_3": 0.9941,
+      "context_reduction": 0.9278,
+      "comparison_reduction": 0.5373,
+      "corpus": {
+        "markdown_files": 25,
+        "topics": 28,
+        "qrel_rows": 31,
+        "positive_qrels": 31,
+        "answerable_topics": 28,
+        "no_answer_topics": 0,
+        "mean_positive_qrels_per_answerable_topic": 1.1071,
+        "slices": [
+          "access",
+          "alias",
+          "duplicates",
+          "exact_error",
+          "filters",
+          "library",
+          "multilingual",
+          "passage_budget",
+          "role_workflow",
+          "rrf_extra_terms",
+          "rrf_filter",
+          "rrf_inflection",
+          "rrf_passage",
+          "same_problem_synonyms",
+          "support_access_synonyms",
+          "tooling_abbreviation",
+          "vocabulary"
+        ],
+        "topics_by_slice": {
+          "access": 1,
+          "alias": 1,
+          "duplicates": 1,
+          "exact_error": 4,
+          "filters": 3,
+          "library": 2,
+          "multilingual": 1,
+          "passage_budget": 5,
+          "role_workflow": 2,
+          "rrf_extra_terms": 1,
+          "rrf_filter": 1,
+          "rrf_inflection": 1,
+          "rrf_passage": 1,
+          "same_problem_synonyms": 1,
+          "support_access_synonyms": 1,
+          "tooling_abbreviation": 1,
+          "vocabulary": 1
+        }
+      },
+      "slice_metrics": [
+        {
+          "slice": "access",
+          "topics": 1,
+          "mean_recall_at_k": 1.0,
+          "mean_mrr_at_k": 1.0,
+          "mean_ndcg_at_k": 1.0,
+          "returned_tokens": 242,
+          "mean_returned_tokens": 242.0,
+          "context_reduction": 0.9222,
+          "budget_compliance_rate": 1.0,
+          "false_positive_rate": 0.0
+        },
+        {
+          "slice": "alias",
+          "topics": 1,
+          "mean_recall_at_k": 1.0,
+          "mean_mrr_at_k": 1.0,
+          "mean_ndcg_at_k": 1.0,
+          "returned_tokens": 239,
+          "mean_returned_tokens": 239.0,
+          "context_reduction": 0.9232,
+          "budget_compliance_rate": 1.0,
+          "false_positive_rate": 0.0
+        },
+        {
+          "slice": "duplicates",
+          "topics": 1,
+          "mean_recall_at_k": 1.0,
+          "mean_mrr_at_k": 1.0,
+          "mean_ndcg_at_k": 1.0,
+          "returned_tokens": 385,
+          "mean_returned_tokens": 385.0,
+          "context_reduction": 0.8763,
+          "budget_compliance_rate": 1.0,
+          "false_positive_rate": 0.0
+        },
+        {
+          "slice": "exact_error",
+          "topics": 4,
+          "mean_recall_at_k": 1.0,
+          "mean_mrr_at_k": 1.0,
+          "mean_ndcg_at_k": 0.9585,
+          "returned_tokens": 1121,
+          "mean_returned_tokens": 280.25,
+          "context_reduction": 0.9099,
+          "budget_compliance_rate": 1.0,
+          "false_positive_rate": 0.0
+        },
+        {
+          "slice": "filters",
+          "topics": 3,
+          "mean_recall_at_k": 1.0,
+          "mean_mrr_at_k": 1.0,
+          "mean_ndcg_at_k": 1.0,
+          "returned_tokens": 770,
+          "mean_returned_tokens": 256.6667,
+          "context_reduction": 0.9175,
+          "budget_compliance_rate": 1.0,
+          "false_positive_rate": 0.0
+        },
+        {
+          "slice": "library",
+          "topics": 2,
+          "mean_recall_at_k": 1.0,
+          "mean_mrr_at_k": 1.0,
+          "mean_ndcg_at_k": 1.0,
+          "returned_tokens": 450,
+          "mean_returned_tokens": 225.0,
+          "context_reduction": 0.9277,
+          "budget_compliance_rate": 1.0,
+          "false_positive_rate": 0.0
+        },
+        {
+          "slice": "multilingual",
+          "topics": 1,
+          "mean_recall_at_k": 1.0,
+          "mean_mrr_at_k": 1.0,
+          "mean_ndcg_at_k": 1.0,
+          "returned_tokens": 207,
+          "mean_returned_tokens": 207.0,
+          "context_reduction": 0.9335,
+          "budget_compliance_rate": 1.0,
+          "false_positive_rate": 0.0
+        },
+        {
+          "slice": "passage_budget",
+          "topics": 5,
+          "mean_recall_at_k": 1.0,
+          "mean_mrr_at_k": 1.0,
+          "mean_ndcg_at_k": 1.0,
+          "returned_tokens": 521,
+          "mean_returned_tokens": 104.2,
+          "context_reduction": 0.9665,
+          "budget_compliance_rate": 1.0,
+          "false_positive_rate": 0.0
+        },
+        {
+          "slice": "role_workflow",
+          "topics": 2,
+          "mean_recall_at_k": 1.0,
+          "mean_mrr_at_k": 1.0,
+          "mean_ndcg_at_k": 1.0,
+          "returned_tokens": 462,
+          "mean_returned_tokens": 231.0,
+          "context_reduction": 0.9258,
+          "budget_compliance_rate": 1.0,
+          "false_positive_rate": 0.0
+        },
+        {
+          "slice": "rrf_extra_terms",
+          "topics": 1,
+          "mean_recall_at_k": 1.0,
+          "mean_mrr_at_k": 1.0,
+          "mean_ndcg_at_k": 1.0,
+          "returned_tokens": 593,
+          "mean_returned_tokens": 593.0,
+          "context_reduction": 0.8094,
+          "budget_compliance_rate": 1.0,
+          "false_positive_rate": 0.0
+        },
+        {
+          "slice": "rrf_filter",
+          "topics": 1,
+          "mean_recall_at_k": 1.0,
+          "mean_mrr_at_k": 1.0,
+          "mean_ndcg_at_k": 1.0,
+          "returned_tokens": 236,
+          "mean_returned_tokens": 236.0,
+          "context_reduction": 0.9242,
+          "budget_compliance_rate": 1.0,
+          "false_positive_rate": 0.0
+        },
+        {
+          "slice": "rrf_inflection",
+          "topics": 1,
+          "mean_recall_at_k": 1.0,
+          "mean_mrr_at_k": 1.0,
+          "mean_ndcg_at_k": 1.0,
+          "returned_tokens": 188,
+          "mean_returned_tokens": 188.0,
+          "context_reduction": 0.9396,
+          "budget_compliance_rate": 1.0,
+          "false_positive_rate": 0.0
+        },
+        {
+          "slice": "rrf_passage",
+          "topics": 1,
+          "mean_recall_at_k": 1.0,
+          "mean_mrr_at_k": 1.0,
+          "mean_ndcg_at_k": 1.0,
+          "returned_tokens": 89,
+          "mean_returned_tokens": 89.0,
+          "context_reduction": 0.9714,
+          "budget_compliance_rate": 1.0,
+          "false_positive_rate": 0.0
+        },
+        {
+          "slice": "same_problem_synonyms",
+          "topics": 1,
+          "mean_recall_at_k": 1.0,
+          "mean_mrr_at_k": 1.0,
+          "mean_ndcg_at_k": 1.0,
+          "returned_tokens": 157,
+          "mean_returned_tokens": 157.0,
+          "context_reduction": 0.9496,
+          "budget_compliance_rate": 1.0,
+          "false_positive_rate": 0.0
+        },
+        {
+          "slice": "support_access_synonyms",
+          "topics": 1,
+          "mean_recall_at_k": 1.0,
+          "mean_mrr_at_k": 1.0,
+          "mean_ndcg_at_k": 1.0,
+          "returned_tokens": 243,
+          "mean_returned_tokens": 243.0,
+          "context_reduction": 0.9219,
+          "budget_compliance_rate": 1.0,
+          "false_positive_rate": 0.0
+        },
+        {
+          "slice": "tooling_abbreviation",
+          "topics": 1,
+          "mean_recall_at_k": 1.0,
+          "mean_mrr_at_k": 1.0,
+          "mean_ndcg_at_k": 1.0,
+          "returned_tokens": 230,
+          "mean_returned_tokens": 230.0,
+          "context_reduction": 0.9261,
+          "budget_compliance_rate": 1.0,
+          "false_positive_rate": 0.0
+        },
+        {
+          "slice": "vocabulary",
+          "topics": 1,
+          "mean_recall_at_k": 1.0,
+          "mean_mrr_at_k": 1.0,
+          "mean_ndcg_at_k": 1.0,
+          "returned_tokens": 157,
+          "mean_returned_tokens": 157.0,
+          "context_reduction": 0.9496,
+          "budget_compliance_rate": 1.0,
+          "false_positive_rate": 0.0
+        }
+      ],
+      "quality": {
+        "limit": 3,
+        "mean_recall_at_k": 1.0,
+        "mean_mrr_at_k": 1.0,
+        "mean_ndcg_at_k": 0.9941
+      },
+      "efficiency": {
+        "full_context_tokens": 87136,
+        "returned_tokens": 6290,
+        "context_reduction": 0.9278,
+        "budget_compliance_rate": 1.0
+      },
+      "baselines": {
+        "grep_raw_read": {
+          "suite": "grep_raw_read",
+          "command": "python bench/run_grep_baseline.py --quiet --compare-golden bench/grep-golden.json",
+          "topics": 28,
+          "max_files": 20,
+          "mean_recall_at_k": 0.7857,
+          "mean_mrr_at_k": 0.7857,
+          "mean_ndcg_at_k": 0.7857,
+          "false_positive_rate": 0.0,
+          "files_read": 25,
+          "mean_files_read": 0.8929,
+          "returned_tokens": 3988,
+          "mean_returned_tokens": 142.4286
+        }
+      }
+    },
+    {
+      "date": "2026-06-20",
       "label": "BM25 + glossary aliases",
       "recall_at_3": 1.0,
       "mrr_at_3": 1.0,

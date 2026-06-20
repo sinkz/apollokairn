@@ -19,6 +19,7 @@ REPORT_DIR = Path(".cairn") / "reports"
 EVENTS_FILE = USAGE_DIR / "events.jsonl"
 SUMMARY_FILE = REPORT_DIR / "usage-summary.json"
 HTML_REPORT_FILE = REPORT_DIR / "usage.html"
+EVIDENCE_FILE = REPORT_DIR / "usage-evidence.json"
 _PRIVATE_GITIGNORE_LINES = (".cairn/index.db", ".cairn/usage/", ".cairn/reports/")
 _OMITTED_KEYS = {"body", "content", "snippet", "append", "append_text"}
 
@@ -46,6 +47,21 @@ class UsageSummary:
     total_estimated_tokens: int
     top_query_terms: list[dict[str, object]]
     top_documents: list[dict[str, object]]
+    report_path: str | None = None
+
+
+@dataclass(frozen=True)
+class UsageEvidence:
+    enabled: bool
+    event_count: int
+    generated_at: str
+    observation_counts: dict[str, int]
+    rates: dict[str, float]
+    query_examples: list[str]
+    top_query_terms: list[dict[str, object]]
+    top_documents: list[dict[str, object]]
+    decision_notes: dict[str, dict[str, object]]
+    privacy: dict[str, object]
     report_path: str | None = None
 
 
@@ -205,6 +221,86 @@ def write_usage_report(root: Path, output: str | None = None) -> UsageSummary:
     return replace(summary, report_path=_display_path(root, report_path))
 
 
+def write_usage_evidence(root: Path, output: str | None = None) -> UsageEvidence:
+    root = Path(root)
+    evidence = summarize_usage_evidence(root)
+    report_path = _evidence_output_path(root, output)
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    evidence = replace(evidence, report_path=_display_path(root, report_path))
+    report_path.write_text(json.dumps(_evidence_payload(evidence), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return evidence
+
+
+def summarize_usage_evidence(root: Path) -> UsageEvidence:
+    root = Path(root)
+    events = load_events(root)
+    summary = summarize_usage(root)
+    searches = _count_events(events, "search")
+    retrieves = _count_events(events, "retrieve")
+    writes = sum(_count_events(events, command) for command in ("add", "capture", "update"))
+    zero_result_searches = _count_matching(events, "search", "result_count", 0)
+    zero_source_retrieves = _count_matching(events, "retrieve", "source_count", 0)
+    passage_retrieves = _count_matching(events, "retrieve", "mode", "passages")
+    auto_ranker_retrieves = _count_matching(events, "retrieve", "requested_ranker", "auto")
+    rrf_searches = _count_matching(events, "search", "ranker", "rrf")
+    errors = sum(1 for event in events if event.get("status") != "ok")
+    observation_counts = {
+        "events": len(events),
+        "searches": searches,
+        "retrieves": retrieves,
+        "writes": writes,
+        "errors": errors,
+        "zero_result_searches": zero_result_searches,
+        "zero_source_retrieves": zero_source_retrieves,
+        "passage_retrieves": passage_retrieves,
+        "auto_ranker_retrieves": auto_ranker_retrieves,
+        "rrf_searches": rrf_searches,
+    }
+    rates = {
+        "zero_result_search_rate": _rate(zero_result_searches, searches),
+        "zero_source_retrieve_rate": _rate(zero_source_retrieves, retrieves),
+        "retrieve_per_search_rate": _rate(retrieves, searches),
+        "passage_retrieve_rate": _rate(passage_retrieves, retrieves),
+        "error_rate": _rate(errors, len(events)),
+    }
+    return UsageEvidence(
+        enabled=usage_enabled(root),
+        event_count=len(events),
+        generated_at=datetime.now(timezone.utc).isoformat(),
+        observation_counts=observation_counts,
+        rates=rates,
+        query_examples=_query_examples(events),
+        top_query_terms=summary.top_query_terms,
+        top_documents=summary.top_documents,
+        decision_notes=_decision_notes(observation_counts, rates),
+        privacy={
+            "stores_note_bodies": False,
+            "stores_snippets": False,
+            "stores_raw_context": False,
+            "source": EVENTS_FILE.as_posix(),
+            "artifact_scope": "aggregates plus redacted query examples",
+        },
+    )
+
+
+def render_usage_evidence(evidence: UsageEvidence) -> str:
+    lines = [
+        f"events: {evidence.event_count}",
+        f"searches: {evidence.observation_counts['searches']}",
+        f"retrieves: {evidence.observation_counts['retrieves']}",
+        f"writes: {evidence.observation_counts['writes']}",
+        f"zero_result_search_rate: {evidence.rates['zero_result_search_rate']}",
+        f"zero_source_retrieve_rate: {evidence.rates['zero_source_retrieve_rate']}",
+        f"retrieve_per_search_rate: {evidence.rates['retrieve_per_search_rate']}",
+        "decision_notes:",
+    ]
+    for key, note in evidence.decision_notes.items():
+        lines.append(f"  {key}: {note['status']} - {note['rationale']}")
+    if evidence.report_path:
+        lines.append(f"report: {evidence.report_path}")
+    return "\n".join(lines) + "\n"
+
+
 def render_usage_html(summary: UsageSummary) -> str:
     commands = _bar_list(summary.commands)
     terms = _bar_list({str(item["value"]): int(item["count"]) for item in summary.top_query_terms})
@@ -335,11 +431,34 @@ def _summary_payload(summary: UsageSummary) -> dict[str, Any]:
     }
 
 
+def _evidence_payload(evidence: UsageEvidence) -> dict[str, Any]:
+    return {
+        "enabled": evidence.enabled,
+        "event_count": evidence.event_count,
+        "generated_at": evidence.generated_at,
+        "observation_counts": evidence.observation_counts,
+        "rates": evidence.rates,
+        "query_examples": evidence.query_examples,
+        "top_query_terms": evidence.top_query_terms,
+        "top_documents": evidence.top_documents,
+        "decision_notes": evidence.decision_notes,
+        "privacy": evidence.privacy,
+        "report_path": evidence.report_path,
+    }
+
+
 def _report_output_path(root: Path, output: str | None) -> Path:
     if output:
         path = Path(output)
         return path if path.is_absolute() else Path(root) / path
     return Path(root) / HTML_REPORT_FILE
+
+
+def _evidence_output_path(root: Path, output: str | None) -> Path:
+    if output:
+        path = Path(output)
+        return path if path.is_absolute() else Path(root) / path
+    return Path(root) / EVIDENCE_FILE
 
 
 def _display_path(root: Path, path: Path) -> str:
@@ -365,3 +484,72 @@ def _bar_list(values: Mapping[str, int]) -> str:
         )
     return "\n".join(rows)
 
+
+def _count_events(events: list[dict[str, Any]], command: str) -> int:
+    return sum(1 for event in events if event.get("command") == command)
+
+
+def _count_matching(events: list[dict[str, Any]], command: str, key: str, expected: object) -> int:
+    count = 0
+    for event in events:
+        if event.get("command") != command:
+            continue
+        data = event.get("data")
+        if isinstance(data, Mapping) and data.get(key) == expected:
+            count += 1
+    return count
+
+
+def _rate(numerator: int, denominator: int) -> float:
+    return round(numerator / denominator, 4) if denominator else 0.0
+
+
+def _query_examples(events: list[dict[str, Any]], limit: int = 10) -> list[str]:
+    out: list[str] = []
+    seen: set[str] = set()
+    for event in events:
+        data = event.get("data")
+        if not isinstance(data, Mapping):
+            continue
+        query = data.get("query")
+        if not isinstance(query, str) or not query:
+            continue
+        if query in seen:
+            continue
+        seen.add(query)
+        out.append(query)
+        if len(out) >= limit:
+            break
+    return out
+
+
+def _decision_notes(observation_counts: Mapping[str, int], rates: Mapping[str, float]) -> dict[str, dict[str, object]]:
+    events = observation_counts["events"]
+    searches = observation_counts["searches"]
+    retrieves = observation_counts["retrieves"]
+    enough_usage = events >= 30 and searches >= 10 and retrieves >= 5
+    ranker_status = "ready_for_review" if enough_usage else "needs_more_usage"
+    ranker_rationale = (
+        "enough local search/retrieve usage exists to review ranking or embedding changes"
+        if enough_usage
+        else "collect at least 30 events, 10 searches, and 5 retrieves before tuning ranking or embeddings"
+    )
+    no_answer_status = "watch" if rates["zero_result_search_rate"] >= 0.2 or rates["zero_source_retrieve_rate"] >= 0.2 else "ok"
+    no_answer_rationale = (
+        "no-answer or zero-source cases are frequent enough to prioritize abstention/no-signal slices"
+        if no_answer_status == "watch"
+        else "no-answer rates are not elevated in the current local sample"
+    )
+    return {
+        "ranker_or_embedding_decision": {
+            "status": ranker_status,
+            "rationale": ranker_rationale,
+            "minimum_events": 30,
+            "minimum_searches": 10,
+            "minimum_retrieves": 5,
+        },
+        "no_answer_and_abstention": {
+            "status": no_answer_status,
+            "rationale": no_answer_rationale,
+        },
+    }

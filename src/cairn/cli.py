@@ -292,6 +292,10 @@ def build_parser(prog: str = PUBLIC_COMMAND) -> argparse.ArgumentParser:
     usage_report.add_argument("--output", help="Optional HTML output path. Defaults to .cairn/reports/usage.html.")
     usage_report.add_argument("--json", action="store_true")
     _add_vault_path(usage_report)
+    usage_evidence = usage_sub.add_parser("evidence", help="Write a local evidence pack for usage-based decisions.")
+    usage_evidence.add_argument("--output", help="Optional JSON output path. Defaults to .cairn/reports/usage-evidence.json.")
+    usage_evidence.add_argument("--json", action="store_true")
+    _add_vault_path(usage_evidence)
     return parser
 
 
@@ -460,10 +464,12 @@ def main(argv: list[str] | None = None, invoked_as: str | None = None) -> int:
         return 1
     if args.command == "usage":
         from cairn.usage import (
+            render_usage_evidence,
             render_usage_summary,
             set_usage_enabled,
             summarize_usage,
             usage_status,
+            write_usage_evidence,
             write_usage_report,
         )
 
@@ -497,6 +503,13 @@ def main(argv: list[str] | None = None, invoked_as: str | None = None) -> int:
                 _print_json(summary)
             else:
                 print(render_usage_summary(summary), end="")
+            return 0
+        if args.usage_command == "evidence":
+            evidence = write_usage_evidence(root, output=args.output)
+            if args.json:
+                _print_json(evidence)
+            else:
+                print(render_usage_evidence(evidence), end="")
             return 0
         parser.error("usage requires a subcommand")
     if args.command in {"add", "capture"}:
