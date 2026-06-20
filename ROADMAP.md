@@ -47,8 +47,8 @@ implementation history.
   search, passage retrieval, glossary guidance, schema-compatible writes,
   multi-line body handling, and post-write validation/indexing.
 - Optional shared Agent Skill source under `agentic/` plus
-  `apollokairn agent install/doctor` for Codex and Hermes setup outside a
-  specific vault.
+  `apollokairn agent install/doctor` for Codex, Hermes, and Claude Code setup
+  outside a specific vault.
 - Standalone GitHub Release binaries, checksums, and quick install scripts for
   Linux, macOS, and Windows.
 - Opt-in local usage metrics with redacted JSONL events and static vault reports
