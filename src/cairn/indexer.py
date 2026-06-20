@@ -63,6 +63,44 @@ _HIGHLIGHT_END = "__CAIRN_HIGHLIGHT_END__"
 _BM25_WEIGHTS = (0.1, 1.5, 8.0, 4.0, 6.0, 6.0, 5.0, 5.0, 0.2, 3.0)
 _PASSAGE_BM25_WEIGHTS = (0.1, 1.5, 8.0, 6.0, 5.0, 4.0, 0.1, 0.1, 1.0, 3.0)
 _RRF_K = 60
+_RELAXATION_STOPWORDS = {
+    "a",
+    "an",
+    "and",
+    "are",
+    "as",
+    "at",
+    "be",
+    "by",
+    "da",
+    "das",
+    "de",
+    "do",
+    "dos",
+    "e",
+    "em",
+    "for",
+    "from",
+    "in",
+    "into",
+    "is",
+    "it",
+    "na",
+    "nas",
+    "no",
+    "nos",
+    "o",
+    "of",
+    "on",
+    "or",
+    "ou",
+    "para",
+    "por",
+    "sem",
+    "the",
+    "to",
+    "with",
+}
 
 
 def _db_path(root: Path) -> Path:
@@ -349,8 +387,12 @@ def _fts_query_from_tokens(tokens: Sequence[str]) -> str:
 def _query_term_groups(root: Path, query: str) -> list[list[str]]:
     groups = expanded_query_groups(root, query)
     if groups:
-        return groups
+        return [group for group in groups if not _is_stopword_group(group)]
     return [[token] for token in _dedupe_query_tokens(query)]
+
+
+def _is_stopword_group(group: Sequence[str]) -> bool:
+    return all(token.casefold() in _RELAXATION_STOPWORDS for token in group)
 
 
 def _fts_query_from_group(group: Sequence[str]) -> str:
@@ -391,13 +433,16 @@ def _zero_hit_relaxation(
     kept_groups: list[list[str]] = []
     zero_hit_terms: list[str] = []
     for group in _query_term_groups(root, query):
+        if _is_stopword_group(group):
+            continue
         group_query = _fts_query_from_group(group)
         if _has_fts_match(con, table, group_query):
             kept_groups.append(group)
         else:
             zero_hit_terms.append(group[0])
     relaxed_query = _fts_query_from_groups(kept_groups) if zero_hit_terms and kept_groups else ""
-    relaxation_applied = bool(relaxed_query and _has_fts_match(con, table, relaxed_query))
+    enough_signal = len(kept_groups) >= len(zero_hit_terms)
+    relaxation_applied = bool(relaxed_query and enough_signal and _has_fts_match(con, table, relaxed_query))
     return QueryDiagnostics(strict_query, zero_hit_terms, relaxed_query, relaxation_applied)
 
 
@@ -452,18 +497,10 @@ def _search_doc_rows_with_fallback(
         _append_diagnostics(diagnostics, QueryDiagnostics(query_text, [], "", False))
         return rows
     query_diag = _zero_hit_relaxation(con, root, "docs", query, query_text, strict_has_rows=False)
-    if query_diag.relaxed_query:
+    if query_diag.relaxation_applied and query_diag.relaxed_query:
         rows = _search_doc_rows(con, query_diag.relaxed_query, max(candidate_limit, 100))
         if rows:
-            _append_diagnostics(
-                diagnostics,
-                QueryDiagnostics(
-                    query_diag.strict_query,
-                    query_diag.zero_hit_terms,
-                    query_diag.relaxed_query,
-                    True,
-                ),
-            )
+            _append_diagnostics(diagnostics, query_diag)
             return rows
     _append_diagnostics(diagnostics, query_diag)
     return rows
@@ -508,18 +545,10 @@ def _search_passage_rows_with_fallback(
         _append_diagnostics(diagnostics, QueryDiagnostics(query_text, [], "", False))
         return rows
     query_diag = _zero_hit_relaxation(con, root, "passages", query, query_text, strict_has_rows=False)
-    if query_diag.relaxed_query:
+    if query_diag.relaxation_applied and query_diag.relaxed_query:
         rows = _search_passage_rows(con, query_diag.relaxed_query, max(candidate_limit, 100))
         if rows:
-            _append_diagnostics(
-                diagnostics,
-                QueryDiagnostics(
-                    query_diag.strict_query,
-                    query_diag.zero_hit_terms,
-                    query_diag.relaxed_query,
-                    True,
-                ),
-            )
+            _append_diagnostics(diagnostics, query_diag)
             return rows
     _append_diagnostics(diagnostics, query_diag)
     return rows

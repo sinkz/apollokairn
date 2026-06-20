@@ -271,6 +271,57 @@ class IndexerTests(unittest.TestCase):
 
             self.assertEqual(results, [])
 
+    def test_bm25_search_does_not_relax_to_stopword(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="engineering")
+            write_concept(
+                root,
+                "clock-skew.md",
+                (
+                    "type: Runbook",
+                    "title: Clock skew in JWT validation",
+                    "description: Token timestamp drift in auth.",
+                    "tags: [auth]",
+                    "timestamp: 2026-06-17T10:00:00Z",
+                    "signals: [iat in future]",
+                ),
+                "# Context\n\nJWT timestamps appear in the future when clocks drift.\n",
+            )
+            rebuild_index(root)
+
+            results = search(root, "best hiking trails in patagonia", limit=3)
+
+            self.assertEqual(results, [])
+
+    def test_cli_search_json_explain_does_not_report_stopword_relaxation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="engineering")
+            write_concept(
+                root,
+                "formatting.md",
+                (
+                    "type: Decision",
+                    "title: Use Ruff for formatting",
+                    "description: Tooling decision for Python.",
+                    "tags: [tooling]",
+                    "timestamp: 2026-06-17T10:00:00Z",
+                ),
+                "# Context\n\nRuff is used for linting and formatting.\n",
+            )
+            rebuild_index(root)
+
+            result = run_cairn(root, "search", "yoga breathing exercises for beginners", "--json", "--explain")
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            payload = json.loads(result.stdout)
+            diagnostics = payload["query_diagnostics"]
+            self.assertEqual(diagnostics["zero_hit_terms"], ["yoga", "breathing", "exercises", "beginners"])
+            self.assertEqual(diagnostics["relaxed_query"], "")
+            self.assertFalse(diagnostics["relaxation_applied"])
+            self.assertEqual(payload["results"], [])
+
     def test_rrf_search_recovers_safe_inflection_variant(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

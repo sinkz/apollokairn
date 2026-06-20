@@ -257,6 +257,42 @@ class RetrieverTests(unittest.TestCase):
             self.assertTrue(diagnostics["relaxation_applied"])
             self.assertEqual(payload["packet"]["sources"][0]["path"], "knowledge/deploy-credentials.md")
 
+    def test_cli_retrieve_json_explain_abstains_when_relaxation_drops_most_terms(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="engineering")
+            write_concept(
+                root,
+                "configuration.md",
+                (
+                    "type: Reference",
+                    "title: Service configuration",
+                    "description: Internal configuration notes.",
+                    "tags: [infra]",
+                    "timestamp: 2026-06-17T10:00:00Z",
+                ),
+                "# Context\n\nConfiguration values are managed by the platform team.\n",
+            )
+            run_cairn(root, "index", "--rebuild")
+
+            result = run_cairn(
+                root,
+                "retrieve",
+                "rocket engine cryogenic fuel configuration xyz",
+                "--budget",
+                "300",
+                "--json",
+                "--explain",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            payload = json.loads(result.stdout)
+            diagnostics = payload["query_diagnostics"]
+            self.assertIn("configuration", diagnostics["relaxed_query"])
+            self.assertFalse(diagnostics["relaxation_applied"])
+            self.assertEqual(payload["packet"]["source_count"], 0)
+            self.assertEqual(payload["packet"]["context"], "")
+
     def test_cli_retrieve_accepts_rrf_ranker(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
