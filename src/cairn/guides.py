@@ -62,6 +62,10 @@ def render_agent_guide(name: str = "Agents") -> str:
         "4. Use only types and tags declared in `SCHEMA.md`; ApolloKairn rejects invalid writes before creating files.\n"
         "5. Use `--body-file` or `--body-stdin` for multi-line Markdown instead of shell-escaped `\\n` text.\n"
         "6. Run `apollokairn validate --path <vault>` and `apollokairn index --path <vault>` after every successful write.\n\n"
+        "## Measuring Real Use\n\n"
+        "1. When the user asks whether ranking, RRF, or embeddings are justified, run `apollokairn usage status --path <vault> --json`.\n"
+        "2. If usage tracking is enabled, run `apollokairn usage evidence --path <vault> --json` and discuss the aggregate rates.\n"
+        "3. Treat usage evidence as local telemetry, not as answer-success labels unless explicit user feedback is recorded.\n\n"
         "Never store secrets, credentials, tokens, private keys, or passwords.\n"
     )
 

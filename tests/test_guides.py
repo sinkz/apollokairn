@@ -47,6 +47,7 @@ class GuidesTests(unittest.TestCase):
             self.assertIn("SCHEMA.md", text)
             self.assertIn("--body-file", text)
             self.assertIn("apollokairn vocab suggest", text)
+            self.assertIn("apollokairn usage evidence", text)
             self.assertIn(
                 "Run `apollokairn validate --path <vault>` and `apollokairn index --path <vault>` after every successful write",
                 text,

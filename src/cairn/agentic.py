@@ -38,6 +38,12 @@ the whole vault unless targeted retrieval is not enough.
 - Update with `--append-file FILE` or `--append-stdin`; create with `--body-file FILE` or `--body-stdin`.
 - After writes, run `apollokairn validate --vault NAME` and `apollokairn index --vault NAME`.
 
+## Usage Evidence
+
+- When asked to evaluate real vault behavior, first make sure usage metrics are explicitly enabled with `apollokairn usage status --vault NAME --json`.
+- Generate local evidence with `apollokairn usage evidence --vault NAME --json`; use it to discuss no-result rates, no-source retrieves, passage usage, and whether ranking/RRF/embeddings have enough evidence for review.
+- Do not treat usage logs as success labels unless explicit user feedback is recorded.
+
 Never store secrets, credentials, tokens, private keys, or passwords.
 See `references/commands.md` and `references/workflows.md` for concise recipes.
 """
@@ -62,6 +68,9 @@ apollokairn capture --title "Deploy 403 after token rotation" --description "Fix
 cat note.md | apollokairn capture --title "Deploy 403 after token rotation" --description "Fix for CI deploy failures." --type Runbook --tag deploy --body-stdin --vault work
 apollokairn validate --vault work
 apollokairn index --vault work
+
+apollokairn usage status --vault work --json
+apollokairn usage evidence --vault work --json
 ```
 """
 
@@ -86,6 +95,13 @@ WORKFLOWS_MD = """# ApolloKairn Workflows
 
 When a query may use different words than the vault, run `vocab suggest`. Add or
 request aliases only when the evidence is clear, such as `k8s` and `kubernetes`.
+
+## Measuring real use
+
+When the user asks whether ranking, RRF, or embeddings are justified, run
+`usage evidence` and discuss the aggregate rates. Treat the evidence pack as
+local telemetry, not as a success label. Do not infer answer correctness from
+usage events unless explicit user feedback is present.
 """
 
 README_MD = """# ApolloKairn Agentic Assets

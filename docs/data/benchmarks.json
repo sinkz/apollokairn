@@ -1211,9 +1211,9 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 135.2001,
+            "value": 121.3946,
             "delta": {
-              "value": 15.1559,
+              "value": 1.3504,
               "direction": "up",
               "trend": "better",
               "baseline_date": "2026-06-19",
@@ -1228,9 +1228,9 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 161.3251,
+            "value": 126.5766,
             "delta": {
-              "value": 36.6183,
+              "value": 1.8698,
               "direction": "up",
               "trend": "better",
               "baseline_date": "2026-06-19",
@@ -1245,9 +1245,9 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 134.8535,
+            "value": 122.4906,
             "delta": {
-              "value": 13.5841,
+              "value": 1.2212,
               "direction": "up",
               "trend": "better",
               "baseline_date": "2026-06-19",
@@ -1262,9 +1262,9 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 174.4888,
+            "value": 127.5381,
             "delta": {
-              "value": 47.1541,
+              "value": 0.2034,
               "direction": "up",
               "trend": "better",
               "baseline_date": "2026-06-19",
@@ -1279,9 +1279,9 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 1056.6063,
+            "value": 934.1572,
             "delta": {
-              "value": 286.074,
+              "value": 163.6249,
               "direction": "up",
               "trend": "better",
               "baseline_date": "2026-06-19",
@@ -1296,9 +1296,9 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 151.5602,
+            "value": 160.613,
             "delta": {
-              "value": 7.9658,
+              "value": 17.0186,
               "direction": "up",
               "trend": "better",
               "baseline_date": "2026-06-19",
@@ -1328,8 +1328,8 @@
           "topics": 80,
           "repeat": 1,
           "limit": 3,
-          "full_index_ms": 1056.6063,
-          "incremental_index_ms": 151.5602,
+          "full_index_ms": 934.1572,
+          "incremental_index_ms": 160.613,
           "incremental_index": {
             "updated": 1,
             "removed": 0,
@@ -1338,17 +1338,17 @@
           "index_db_bytes": 1744896,
           "search_ms": {
             "samples": 80,
-            "min": 124.0394,
-            "p50": 135.2001,
-            "p95": 161.3251,
-            "max": 267.9442
+            "min": 116.8004,
+            "p50": 121.3946,
+            "p95": 126.5766,
+            "max": 139.2098
           },
           "retrieve_ms": {
             "samples": 80,
-            "min": 126.4311,
-            "p50": 134.8535,
-            "p95": 174.4888,
-            "max": 222.5189
+            "min": 118.565,
+            "p50": 122.4906,
+            "p95": 127.5381,
+            "max": 130.6203
           }
         }
       },
@@ -1369,12 +1369,12 @@
           "date": "2026-06-20",
           "label": "large-fixture-local",
           "topics": 80,
-          "search_p50_ms": 135.2001,
-          "search_p95_ms": 161.3251,
-          "retrieve_p50_ms": 134.8535,
-          "retrieve_p95_ms": 174.4888,
-          "full_index_ms": 1056.6063,
-          "incremental_index_ms": 151.5602,
+          "search_p50_ms": 121.3946,
+          "search_p95_ms": 126.5766,
+          "retrieve_p50_ms": 122.4906,
+          "retrieve_p95_ms": 127.5381,
+          "full_index_ms": 934.1572,
+          "incremental_index_ms": 160.613,
           "index_db_bytes": 1744896
         }
       ],
@@ -1505,7 +1505,7 @@
           "en": "Regression tests",
           "pt": "Testes de regressão"
         },
-        "value": 253,
+        "value": 254,
         "format": "integer",
         "precision": 0,
         "description": {

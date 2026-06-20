@@ -49,6 +49,17 @@ class AgenticTests(unittest.TestCase):
         for relative, embedded in ASSET_FILES.items():
             self.assertEqual((skill_dir / relative).read_text(encoding="utf-8"), embedded)
 
+    def test_versioned_skill_teaches_usage_evidence_workflow(self) -> None:
+        skill_dir = ROOT / "agentic" / "skills" / "apollokairn-vault"
+
+        skill_text = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
+        commands = (skill_dir / "references" / "commands.md").read_text(encoding="utf-8")
+        workflows = (skill_dir / "references" / "workflows.md").read_text(encoding="utf-8")
+
+        self.assertIn("apollokairn usage evidence", skill_text)
+        self.assertIn("apollokairn usage evidence", commands)
+        self.assertIn("usage evidence", workflows)
+
     def test_install_codex_user_copy_to_custom_target(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             target_dir = Path(tmp) / "codex-skills"

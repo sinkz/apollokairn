@@ -19,3 +19,10 @@
 
 When a query may use different words than the vault, run `vocab suggest`. Add or
 request aliases only when the evidence is clear, such as `k8s` and `kubernetes`.
+
+## Measuring real use
+
+When the user asks whether ranking, RRF, or embeddings are justified, run
+`usage evidence` and discuss the aggregate rates. Treat the evidence pack as
+local telemetry, not as a success label. Do not infer answer correctness from
+usage events unless explicit user feedback is present.

@@ -18,4 +18,7 @@ apollokairn capture --title "Deploy 403 after token rotation" --description "Fix
 cat note.md | apollokairn capture --title "Deploy 403 after token rotation" --description "Fix for CI deploy failures." --type Runbook --tag deploy --body-stdin --vault work
 apollokairn validate --vault work
 apollokairn index --vault work
+
+apollokairn usage status --vault work --json
+apollokairn usage evidence --vault work --json
 ```
