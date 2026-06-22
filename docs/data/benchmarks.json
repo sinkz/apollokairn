@@ -1511,9 +1511,9 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 121.2683,
+            "value": 119.7648,
             "delta": {
-              "value": -3.289,
+              "value": -4.7925,
               "direction": "down",
               "trend": "worse",
               "baseline_date": "2026-06-20",
@@ -1528,9 +1528,9 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 125.1747,
+            "value": 124.8017,
             "delta": {
-              "value": -18.3642,
+              "value": -18.7372,
               "direction": "down",
               "trend": "worse",
               "baseline_date": "2026-06-20",
@@ -1545,9 +1545,9 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 122.987,
+            "value": 121.9427,
             "delta": {
-              "value": -3.7229,
+              "value": -4.7672,
               "direction": "down",
               "trend": "worse",
               "baseline_date": "2026-06-20",
@@ -1562,9 +1562,9 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 126.6231,
+            "value": 129.6807,
             "delta": {
-              "value": -17.9554,
+              "value": -14.8978,
               "direction": "down",
               "trend": "worse",
               "baseline_date": "2026-06-20",
@@ -1579,11 +1579,11 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 862.4476,
+            "value": 873.9898,
             "delta": {
-              "value": -11.3024,
-              "direction": "down",
-              "trend": "worse",
+              "value": 0.2398,
+              "direction": "up",
+              "trend": "better",
               "baseline_date": "2026-06-20",
               "baseline_label": "large-fixture-local"
             }
@@ -1596,9 +1596,9 @@
             },
             "format": "decimal",
             "precision": 4,
-            "value": 135.9595,
+            "value": 141.6433,
             "delta": {
-              "value": -8.1205,
+              "value": -2.4367,
               "direction": "down",
               "trend": "worse",
               "baseline_date": "2026-06-20",
@@ -1628,8 +1628,8 @@
           "topics": 80,
           "repeat": 1,
           "limit": 3,
-          "full_index_ms": 862.4476,
-          "incremental_index_ms": 135.9595,
+          "full_index_ms": 873.9898,
+          "incremental_index_ms": 141.6433,
           "incremental_index": {
             "updated": 1,
             "removed": 0,
@@ -1638,17 +1638,17 @@
           "index_db_bytes": 1744896,
           "search_ms": {
             "samples": 80,
-            "min": 117.7054,
-            "p50": 121.2683,
-            "p95": 125.1747,
-            "max": 138.9148
+            "min": 116.9725,
+            "p50": 119.7648,
+            "p95": 124.8017,
+            "max": 144.3116
           },
           "retrieve_ms": {
             "samples": 80,
-            "min": 118.7841,
-            "p50": 122.987,
-            "p95": 126.6231,
-            "max": 132.0087
+            "min": 115.8306,
+            "p50": 121.9427,
+            "p95": 129.6807,
+            "max": 140.6091
           }
         }
       },
@@ -1681,12 +1681,12 @@
           "date": "2026-06-21",
           "label": "large-fixture-local",
           "topics": 80,
-          "search_p50_ms": 121.2683,
-          "search_p95_ms": 125.1747,
-          "retrieve_p50_ms": 122.987,
-          "retrieve_p95_ms": 126.6231,
-          "full_index_ms": 862.4476,
-          "incremental_index_ms": 135.9595,
+          "search_p50_ms": 119.7648,
+          "search_p95_ms": 124.8017,
+          "retrieve_p50_ms": 121.9427,
+          "retrieve_p95_ms": 129.6807,
+          "full_index_ms": 873.9898,
+          "incremental_index_ms": 141.6433,
           "index_db_bytes": 1744896
         }
       ],
@@ -1817,7 +1817,7 @@
           "en": "Regression tests",
           "pt": "Testes de regressão"
         },
-        "value": 257,
+        "value": 258,
         "format": "integer",
         "precision": 0,
         "description": {

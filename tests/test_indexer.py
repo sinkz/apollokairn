@@ -371,6 +371,64 @@ class IndexerTests(unittest.TestCase):
             self.assertEqual(diagnostics["relaxed_query"], '"deslocamento" AND "casa" AND "trabalho" AND "como" AND "jornada"')
             self.assertTrue(diagnostics["relaxation_applied"])
 
+    def test_bm25_search_uses_lower_signal_mass_for_natural_language(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init_vault(root, profile_name="custom")
+            write_concept(
+                root,
+                "antibiotico-extracao.md",
+                (
+                    "type: Reference",
+                    "title: Antibiotico apos extracao",
+                    "description: Receita para controle de infeccao apos extracao.",
+                    "tags: [clinica]",
+                    "timestamp: 2026-06-22T00:00:00Z",
+                ),
+                "# Context\n\nTomar antibiotico apos extracao quando houver sinal de infeccao.\n",
+            )
+            write_concept(
+                root,
+                "bruxismo-dente.md",
+                (
+                    "type: Reference",
+                    "title: Bruxismo e desgaste no dente",
+                    "description: Sinais de desgaste no dente.",
+                    "tags: [clinica]",
+                    "timestamp: 2026-06-22T00:00:00Z",
+                ),
+                "# Context\n\nDente com desgaste pode indicar bruxismo noturno.\n",
+            )
+            write_concept(
+                root,
+                "limpeza-tempo.md",
+                (
+                    "type: Reference",
+                    "title: Tempo de limpeza profissional",
+                    "description: Duracao de limpeza profissional.",
+                    "tags: [clinica]",
+                    "timestamp: 2026-06-22T00:00:00Z",
+                ),
+                "# Context\n\nTempo medio de limpeza profissional e de quarenta minutos.\n",
+            )
+            rebuild_index(root)
+
+            result = run_cairn(
+                root,
+                "search",
+                "Preciso tomar antibiotico apos extracao de dente. O que devo tomar e por quanto tempo?",
+                "--json",
+                "--explain",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            payload = json.loads(result.stdout)
+            self.assertGreater(len(payload["results"]), 0)
+            self.assertEqual(payload["results"][0]["result"]["path"], "knowledge/antibiotico-extracao.md")
+            diagnostics = payload["query_diagnostics"]
+            self.assertEqual(diagnostics["relaxed_query"], '"tomar" AND "antibiotico" AND "apos" AND "extracao"')
+            self.assertTrue(diagnostics["relaxation_applied"])
+
     def test_cli_search_json_explain_does_not_report_stopword_relaxation(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

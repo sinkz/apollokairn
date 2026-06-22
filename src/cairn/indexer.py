@@ -89,6 +89,7 @@ _LOW_SIGNAL_DF_RATIO = 0.80
 _MIN_RELAX_MATCHED_GROUPS = 2
 _MIN_RELAX_COVERAGE = 0.60
 _MIN_RELAX_SIGNAL_MASS = 0.81
+_MIN_RELAX_SIGNAL_MASS_WITH_DROPS = 0.65
 _SINGLE_SURVIVOR_MAX_DROPPED = 1
 _RELAXATION_STOPWORDS = {
     "a",
@@ -557,7 +558,12 @@ def _cooccurrence_relaxed_query(
         coverage = len(matched) / len(signal.eligible_groups)
         signal_mass = sum(group.idf for group in matched)
         signal_ratio = signal_mass / signal.total_signal_mass if signal.total_signal_mass else 0.0
-        if coverage < _MIN_RELAX_COVERAGE or signal_ratio < _MIN_RELAX_SIGNAL_MASS:
+        min_signal_mass = (
+            _MIN_RELAX_SIGNAL_MASS_WITH_DROPS
+            if signal.dropped_groups
+            else _MIN_RELAX_SIGNAL_MASS
+        )
+        if coverage < _MIN_RELAX_COVERAGE or signal_ratio < min_signal_mass:
             continue
         key = (signal_ratio, coverage, len(matched), -rank)
         if best_key is None or key > best_key:
